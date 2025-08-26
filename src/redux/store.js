@@ -1,16 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './slices/authSlice.js';
+import fileProcessingReducer from './slices/fileProcessingSlice.js';
+import validationReducer from './slices/validationSlice.js';
 
 // Import slices here as they are created
 // import invoiceSlice from './slices/invoiceSlice';
-// import validationSlice from './slices/validationSlice';
-// import userSlice from './slices/userSlice';
 
 export const store = configureStore({
   reducer: {
-    // Add reducers here as they are created
+    auth: authReducer,
+    fileProcessing: fileProcessingReducer,
+    validation: validationReducer,
+    // Add other reducers here as they are created
     // invoices: invoiceSlice,
-    // validation: validationSlice,
-    // user: userSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

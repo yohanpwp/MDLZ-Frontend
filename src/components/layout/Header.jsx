@@ -1,18 +1,10 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Menu, User, Bell, Settings, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Menu, Bell, PanelLeftClose, PanelLeft } from 'lucide-react';
 import Button from '../ui/Button';
+import UserMenu from '../auth/UserMenu.jsx';
 import { cn } from '../../utils/cn';
 
 const Header = ({ onMenuToggle, onSidebarToggle, sidebarCollapsed, className }) => {
-  const [showUserMenu, setShowUserMenu] = useState(false);
-
-  // Mock user data - will be replaced with Redux state later
-  const user = {
-    name: 'John Doe',
-    email: 'john.doe@company.com',
-    role: 'Financial Administrator'
-  };
 
   return (
     <header className={cn(
@@ -72,41 +64,7 @@ const Header = ({ onMenuToggle, onSidebarToggle, sidebarCollapsed, className }) 
         </Button>
 
         {/* User menu */}
-        <div className="relative">
-          <Button
-            variant="ghost"
-            className="flex items-center gap-2 px-3 text-white hover:bg-slate-700"
-            onClick={() => setShowUserMenu(!showUserMenu)}
-          >
-            <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-white" />
-            </div>
-            <div className="hidden md:block text-left">
-              <div className="text-sm font-medium text-white">{user.name}</div>
-              <div className="text-xs text-slate-300">{user.role}</div>
-            </div>
-          </Button>
-
-          {/* User dropdown menu */}
-          {showUserMenu && (
-            <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-slate-200 rounded-md shadow-lg z-50">
-              <div className="p-3 border-b border-slate-200">
-                <div className="font-medium text-sm text-slate-900">{user.name}</div>
-                <div className="text-xs text-slate-600">{user.email}</div>
-                <div className="text-xs text-slate-600">{user.role}</div>
-              </div>
-              <div className="p-1">
-                <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-slate-700 hover:bg-slate-100">
-                  <Settings className="h-4 w-4" />
-                  Settings
-                </Button>
-                <Button variant="ghost" className="w-full justify-start text-sm text-slate-700 hover:bg-slate-100">
-                  Sign Out
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+        <UserMenu />
       </div>
     </header>
   );

@@ -1,3 +1,7 @@
+// Authentication pages
+export { default as Login } from './Login';
+export { default as AccessDenied } from './AccessDenied';
+
 // Main pages
 export { default as Dashboard } from './Dashboard';
 
