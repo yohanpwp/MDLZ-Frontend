@@ -9,6 +9,7 @@ import fileProcessingReducer, {
   removeRecord,
   clearAllData,
   processFile,
+  processBatchFiles,
   selectUploads,
   selectAllRecords,
   selectStatistics
@@ -291,6 +292,178 @@ describe('fileProcessingSlice', () => {
       const state = store.getState();
       expect(state.fileProcessing.errors).toHaveLength(1);
     });
+
+    it('should set processing state during file processing', async () => {
+      const fileData = {
+        id: 'upload-1',
+        file: new File(['test'], 'test.csv', { type: 'text/csv' })
+      };
+
+      store.dispatch(addUpload({
+        id: 'upload-1',
+        fileName: 'test.csv',
+        fileSize: 1000,
+        fileType: 'csv'
+      }));
+
+      // Start processing
+      const processPromise = store.dispatch(processFile(fileData));
+      
+      // Check pending state
+      let state = store.getState();
+      expect(state.fileProcessing.isProcessing).toBe(true);
+      
+      // Wait for completion
+      await processPromise;
+      
+      // Check completed state
+      state = store.getState();
+      expect(state.fileProcessing.isProcessing).toBe(false);
+      expect(state.fileProcessing.processingProgress).toBe(100);
+    });
+
+    it('should update upload status during processing', async () => {
+      const fileData = {
+        id: 'upload-1',
+        file: new File(['test'], 'test.csv', { type: 'text/csv' })
+      };
+
+      store.dispatch(addUpload({
+        id: 'upload-1',
+        fileName: 'test.csv',
+        fileSize: 1000,
+        fileType: 'csv'
+      }));
+
+      await store.dispatch(processFile(fileData));
+
+      const state = store.getState();
+      const uploads = selectUploads(state);
+      
+      expect(uploads[0].status).toBe('completed');
+    });
+
+    it('should handle TXT file processing', async () => {
+      const { FileValidator } = await import('../../../utils/FileValidator');
+      FileValidator.validateFile.mockReturnValueOnce({
+        isValid: true,
+        fileName: 'test.txt',
+        fileSize: 1000,
+        fileType: 'txt',
+        formattedSize: '1000 Bytes'
+      });
+
+      const fileData = {
+        id: 'upload-1',
+        file: new File(['test'], 'test.txt', { type: 'text/plain' })
+      };
+
+      store.dispatch(addUpload({
+        id: 'upload-1',
+        fileName: 'test.txt',
+        fileSize: 1000,
+        fileType: 'txt'
+      }));
+
+      await store.dispatch(processFile(fileData));
+
+      const state = store.getState();
+      expect(state.fileProcessing.processedFiles).toHaveLength(1);
+      expect(state.fileProcessing.processedFiles[0].fileInfo.fileType).toBe('txt');
+    });
+
+    it('should process batch files successfully', async () => {
+      const filesData = [
+        {
+          id: 'upload-1',
+          file: new File(['test1'], 'test1.csv', { type: 'text/csv' })
+        },
+        {
+          id: 'upload-2',
+          file: new File(['test2'], 'test2.csv', { type: 'text/csv' })
+        }
+      ];
+
+      // Add uploads first
+      filesData.forEach(fileData => {
+        store.dispatch(addUpload({
+          id: fileData.id,
+          fileName: fileData.file.name,
+          fileSize: fileData.file.size,
+          fileType: 'csv'
+        }));
+      });
+
+      await store.dispatch(processBatchFiles(filesData));
+
+      const state = store.getState();
+      expect(state.fileProcessing.processedFiles).toHaveLength(2);
+      expect(state.fileProcessing.allRecords).toHaveLength(2);
+    });
+
+    it('should handle batch processing errors', async () => {
+      const { FileValidator } = await import('../../../utils/FileValidator');
+      FileValidator.validateFile.mockImplementationOnce(() => {
+        throw new Error('Batch validation failed');
+      });
+
+      const filesData = [
+        {
+          id: 'upload-1',
+          file: new File(['test1'], 'test1.csv', { type: 'text/csv' })
+        }
+      ];
+
+      store.dispatch(addUpload({
+        id: 'upload-1',
+        fileName: 'test1.csv',
+        fileSize: 1000,
+        fileType: 'csv'
+      }));
+
+      await store.dispatch(processBatchFiles(filesData));
+
+      const state = store.getState();
+      expect(state.fileProcessing.errors).toHaveLength(1);
+      expect(state.fileProcessing.errors[0].type).toBe('batch_processing');
+    });
+
+    it('should handle processing with errors in file data', async () => {
+      // Create a new mock for this specific test
+      vi.doMock('../../../utils/CsvParser', () => ({
+        CsvParser: vi.fn().mockImplementation(() => ({
+          parseFile: vi.fn().mockResolvedValue({
+            success: false,
+            records: [],
+            totalRecords: 0,
+            validRecords: 0,
+            invalidRecords: 0,
+            errors: [
+              { row: 1, message: 'Invalid data format' },
+              { row: 3, message: 'Missing required field' }
+            ]
+          })
+        }))
+      }));
+
+      const fileData = {
+        id: 'upload-1',
+        file: new File(['test'], 'test.csv', { type: 'text/csv' })
+      };
+
+      store.dispatch(addUpload({
+        id: 'upload-1',
+        fileName: 'test.csv',
+        fileSize: 1000,
+        fileType: 'csv'
+      }));
+
+      await store.dispatch(processFile(fileData));
+
+      const state = store.getState();
+      expect(state.fileProcessing.processingErrors).toHaveLength(2);
+      expect(state.fileProcessing.processingErrors[0].fileId).toBe('upload-1');
+    });
   });
 
   describe('selectors', () => {
@@ -327,7 +500,14 @@ describe('fileProcessingSlice', () => {
             { id: '3', status: 'invalid' }
           ],
           processedFiles: [{ id: 'file-1' }],
-          processingErrors: [{ id: 'error-1' }]
+          processingErrors: [{ id: 'error-1' }],
+          statistics: {
+            totalFiles: 1,
+            totalRecords: 3,
+            validRecords: 2,
+            invalidRecords: 1,
+            processingErrors: 1
+          }
         }
       };
 

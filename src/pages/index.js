@@ -21,3 +21,6 @@ export { default as UserManagement } from './Roles/UserManagement';
 
 // Settings pages
 export { default as TermsConditions } from './Settings/TermsConditions';
+
+// Audit & Compliance pages
+export { default as AuditCompliance } from './AuditCompliance';

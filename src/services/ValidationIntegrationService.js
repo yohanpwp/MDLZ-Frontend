@@ -19,6 +19,7 @@ import {
   selectInvalidRecords 
 } from '../redux/slices/fileProcessingSlice.js';
 import { DEFAULT_VALIDATION_CONFIG } from '../types/validation.js';
+import { webWorkerService } from './WebWorkerService.js';
 
 /**
  * ValidationIntegrationService class for high-level validation operations
@@ -26,6 +27,23 @@ import { DEFAULT_VALIDATION_CONFIG } from '../types/validation.js';
 export class ValidationIntegrationService {
   constructor() {
     this.defaultConfig = DEFAULT_VALIDATION_CONFIG;
+    this.useWebWorker = webWorkerService.constructor.isSupported();
+    this.initializeWebWorker();
+  }
+
+  /**
+   * Initialize Web Worker for background validation
+   */
+  async initializeWebWorker() {
+    if (this.useWebWorker) {
+      try {
+        await webWorkerService.initializeValidationWorker();
+        console.log('Web Worker initialized for background validation');
+      } catch (error) {
+        console.warn('Failed to initialize Web Worker, falling back to main thread:', error);
+        this.useWebWorker = false;
+      }
+    }
   }
 
   /**
@@ -55,7 +73,12 @@ export class ValidationIntegrationService {
         store.dispatch(updateValidationConfig(config));
       }
 
-      // Dispatch batch validation
+      // Use Web Worker for large datasets (>100 records) if available
+      if (this.useWebWorker && allRecords.length > 100) {
+        return await this.validateWithWebWorker(allRecords, onProgress);
+      }
+
+      // Dispatch batch validation on main thread
       const result = await store.dispatch(validateBatch({ 
         records: allRecords, 
         config 
@@ -74,6 +97,55 @@ export class ValidationIntegrationService {
         error: error.message,
         recordsValidated: 0
       };
+    }
+  }
+
+  /**
+   * Validate records using Web Worker
+   * @param {Array} records - Records to validate
+   * @param {Function} onProgress - Progress callback
+   * @returns {Promise<Object>} Validation result
+   */
+  async validateWithWebWorker(records, onProgress) {
+    try {
+      const result = await webWorkerService.validateRecords(records, (progressData) => {
+        if (onProgress) {
+          onProgress({
+            batchId: `worker_${Date.now()}`,
+            totalRecords: progressData.total,
+            processedRecords: progressData.processed,
+            currentRecord: progressData.processed + 1,
+            status: 'processing',
+            progressPercentage: progressData.percentage,
+            currentOperation: `Processing record ${progressData.processed + 1} of ${progressData.total}`
+          });
+        }
+      });
+
+      // Update Redux store with Web Worker results
+      store.dispatch({
+        type: 'validation/setValidationResults',
+        payload: {
+          results: result.results,
+          summary: result.summary,
+          batchId: `worker_${Date.now()}`,
+          validatedAt: new Date().toISOString()
+        }
+      });
+
+      return {
+        success: true,
+        summary: result.summary,
+        batchId: `worker_${Date.now()}`,
+        recordsValidated: records.length,
+        validatedAt: new Date().toISOString(),
+        processedWithWebWorker: true
+      };
+    } catch (error) {
+      console.error('Web Worker validation failed:', error);
+      // Fallback to main thread validation
+      this.useWebWorker = false;
+      return await this.validateAllProcessedRecords({ onProgress });
     }
   }
 

@@ -1,11 +1,15 @@
-import PropTypes from 'prop-types';
+import React from 'react';
+import { cn } from '../../utils/cn.js';
 
 /**
- * LoadingSpinner Component
- * 
- * A reusable loading spinner component for the Invoice Validation System.
+ * LoadingSpinner component for displaying loading states
  */
-const LoadingSpinner = ({ size = 'md', className = '', text = 'Loading...' }) => {
+export const LoadingSpinner = ({ 
+  size = 'md', 
+  className = '', 
+  text = 'Loading...',
+  showText = true 
+}) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
     md: 'w-8 h-8',
@@ -14,25 +18,48 @@ const LoadingSpinner = ({ size = 'md', className = '', text = 'Loading...' }) =>
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center p-4 ${className}`}>
+    <div className={cn(
+      'flex flex-col items-center justify-center space-y-2',
+      className
+    )}>
       <div 
-        className={`${sizeClasses[size]} border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin`}
+        className={cn(
+          'animate-spin rounded-full border-2 border-gray-300 border-t-blue-600',
+          sizeClasses[size]
+        )}
         role="status"
         aria-label="Loading"
       />
-      {text && (
-        <p className="mt-2 text-sm text-gray-600" aria-live="polite">
+      {showText && (
+        <span className="text-sm text-gray-600 font-medium">
           {text}
-        </p>
+        </span>
       )}
     </div>
   );
 };
 
-LoadingSpinner.propTypes = {
-  size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl']),
-  className: PropTypes.string,
-  text: PropTypes.string
+/**
+ * FullPageLoader for page-level loading states
+ */
+export const FullPageLoader = ({ text = 'Loading page...' }) => {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <LoadingSpinner size="lg" text={text} />
+    </div>
+  );
+};
+
+/**
+ * InlineLoader for inline loading states
+ */
+export const InlineLoader = ({ text = 'Loading...', className = '' }) => {
+  return (
+    <div className={cn('flex items-center space-x-2', className)}>
+      <LoadingSpinner size="sm" showText={false} />
+      <span className="text-sm text-gray-600">{text}</span>
+    </div>
+  );
 };
 
 export default LoadingSpinner;
