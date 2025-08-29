@@ -230,8 +230,8 @@ const UserManagement = () => {
       users: roleStats[role] || 0,
       permissions: permissions.length
     }));
-  };  re
-turn (
+  };  
+  return (
     <div className="space-y-6">
       {/* Success/Error Messages */}
       {(successMessage || error) && (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Wifi, WifiOff, Cloud, CloudOff, Sync } from 'lucide-react';
+import { Wifi, WifiOff, Cloud, CloudOff, RefreshCw } from 'lucide-react';
 
 const OfflineIndicator = ({ 
   showWhenOnline = false, 
@@ -72,7 +72,7 @@ const OfflineIndicator = ({
           onClick={onSync}
           className="flex items-center space-x-1 px-2 py-1 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
         >
-          <Sync className="h-3 w-3" />
+          <RefreshCw className="h-3 w-3" />
           <span>Sync</span>
         </button>
       )}

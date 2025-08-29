@@ -1,19 +1,19 @@
 /**
  * MasterDataService
- * 
+ *
  * Service for handling master data import/export operations including
  * customer data, product data, and reference data management.
  */
 
-import { FileValidator } from '../utils/FileValidator.js';
-import { CsvParser } from '../utils/CsvParser.js';
+import { FileValidator } from "../utils/FileValidator.js";
+import { CsvParser } from "../utils/CsvParser.js";
 
 /**
  * Master Data Service class
  */
 export class MasterDataService {
   constructor() {
-    this.supportedDataTypes = ['customers', 'products', 'references'];
+    this.supportedDataTypes = ["customers", "products", "references"];
     this.importHistory = this.loadImportHistory();
     this.exportHistory = this.loadExportHistory();
   }
@@ -28,43 +28,46 @@ export class MasterDataService {
     try {
       // Basic file validation
       const fileValidation = FileValidator.validateFile(file);
-      
+
       if (!fileValidation.isValid) {
         return {
           isValid: false,
           errors: [fileValidation.error],
-          warnings: []
+          warnings: [],
         };
       }
 
       // Parse file to validate structure
       const parser = new CsvParser();
       const parseResult = await parser.parseFile(file);
-      
+
       if (!parseResult.success) {
         return {
           isValid: false,
           errors: parseResult.errors,
-          warnings: []
+          warnings: [],
         };
       }
 
       // Validate data structure based on type
-      const structureValidation = this.validateDataStructure(parseResult.records, dataType);
-      
+      const structureValidation = this.validateDataStructure(
+        parseResult.records,
+        dataType
+      );
+
       return {
         isValid: structureValidation.isValid,
         errors: structureValidation.errors,
         warnings: structureValidation.warnings,
         recordCount: parseResult.records.length,
         preview: parseResult.records.slice(0, 5), // First 5 records for preview
-        headers: parseResult.headers
+        headers: parseResult.headers,
       };
     } catch (error) {
       return {
         isValid: false,
         errors: [`Validation failed: ${error.message}`],
-        warnings: []
+        warnings: [],
       };
     }
   }
@@ -80,7 +83,7 @@ export class MasterDataService {
     const warnings = [];
 
     if (!records || records.length === 0) {
-      errors.push('No data records found in file');
+      errors.push("No data records found in file");
       return { isValid: false, errors, warnings };
     }
 
@@ -89,14 +92,14 @@ export class MasterDataService {
     const firstRecord = records[0];
 
     // Check required fields
-    requiredFields.forEach(field => {
+    requiredFields.forEach((field) => {
       if (!firstRecord.hasOwnProperty(field)) {
         errors.push(`Required field '${field}' is missing`);
       }
     });
 
     // Check for unknown fields
-    Object.keys(firstRecord).forEach(field => {
+    Object.keys(firstRecord).forEach((field) => {
       if (!requiredFields.includes(field) && !optionalFields.includes(field)) {
         warnings.push(`Unknown field '${field}' will be ignored`);
       }
@@ -111,7 +114,7 @@ export class MasterDataService {
     return {
       isValid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -122,9 +125,9 @@ export class MasterDataService {
    */
   getRequiredFields(dataType) {
     const fieldMappings = {
-      customers: ['customerCode', 'customerName', 'email'],
-      products: ['productCode', 'productName', 'unitPrice'],
-      references: ['referenceType', 'referenceCode', 'referenceValue']
+      customers: ["customerCode", "customerName", "email"],
+      products: ["productCode", "productName", "unitPrice"],
+      references: ["referenceType", "referenceCode", "referenceValue"],
     };
 
     return fieldMappings[dataType] || [];
@@ -137,9 +140,16 @@ export class MasterDataService {
    */
   getOptionalFields(dataType) {
     const fieldMappings = {
-      customers: ['phone', 'address', 'city', 'country', 'taxId', 'creditLimit'],
-      products: ['category', 'description', 'taxRate', 'isActive'],
-      references: ['description', 'isActive', 'sortOrder']
+      customers: [
+        "phone",
+        "address",
+        "city",
+        "country",
+        "taxId",
+        "creditLimit",
+      ],
+      products: ["category", "description", "taxRate", "isActive"],
+      references: ["description", "isActive", "sortOrder"],
     };
 
     return fieldMappings[dataType] || [];
@@ -156,7 +166,7 @@ export class MasterDataService {
     const errors = [];
 
     switch (dataType) {
-      case 'customers':
+      case "customers":
         if (record.email && !this.isValidEmail(record.email)) {
           errors.push(`Row ${rowNumber}: Invalid email format`);
         }
@@ -165,17 +175,24 @@ export class MasterDataService {
         }
         break;
 
-      case 'products':
+      case "products":
         if (record.unitPrice && isNaN(parseFloat(record.unitPrice))) {
           errors.push(`Row ${rowNumber}: Unit price must be a number`);
         }
-        if (record.taxRate && (isNaN(parseFloat(record.taxRate)) || parseFloat(record.taxRate) < 0 || parseFloat(record.taxRate) > 100)) {
-          errors.push(`Row ${rowNumber}: Tax rate must be a number between 0 and 100`);
+        if (
+          record.taxRate &&
+          (isNaN(parseFloat(record.taxRate)) ||
+            parseFloat(record.taxRate) < 0 ||
+            parseFloat(record.taxRate) > 100)
+        ) {
+          errors.push(
+            `Row ${rowNumber}: Tax rate must be a number between 0 and 100`
+          );
         }
         break;
 
-      case 'references':
-        if (!record.referenceType || record.referenceType.trim() === '') {
+      case "references":
+        if (!record.referenceType || record.referenceType.trim() === "") {
           errors.push(`Row ${rowNumber}: Reference type cannot be empty`);
         }
         break;
@@ -199,16 +216,24 @@ export class MasterDataService {
     try {
       // Validate file first
       if (progressCallback) {
-        progressCallback({ stage: 'validation', progress: 0, message: 'Validating file...' });
+        progressCallback({
+          stage: "validation",
+          progress: 0,
+          message: "Validating file...",
+        });
       }
 
       const validation = await this.validateImportFile(file, dataType);
       if (!validation.isValid) {
-        throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
+        throw new Error(`Validation failed: ${validation.errors.join(", ")}`);
       }
 
       if (progressCallback) {
-        progressCallback({ stage: 'parsing', progress: 20, message: 'Parsing file data...' });
+        progressCallback({
+          stage: "parsing",
+          progress: 20,
+          message: "Parsing file data...",
+        });
       }
 
       // Parse file
@@ -216,11 +241,15 @@ export class MasterDataService {
       const parseResult = await parser.parseFile(file);
 
       if (!parseResult.success) {
-        throw new Error(`Parsing failed: ${parseResult.errors.join(', ')}`);
+        throw new Error(`Parsing failed: ${parseResult.errors.join(", ")}`);
       }
 
       if (progressCallback) {
-        progressCallback({ stage: 'processing', progress: 40, message: 'Processing records...' });
+        progressCallback({
+          stage: "processing",
+          progress: 40,
+          message: "Processing records...",
+        });
       }
 
       // Process records
@@ -230,7 +259,7 @@ export class MasterDataService {
 
       for (let i = 0; i < parseResult.records.length; i++) {
         const record = parseResult.records[i];
-        
+
         try {
           const processedRecord = this.processRecord(record, dataType, options);
           processedRecords.push(processedRecord);
@@ -240,27 +269,38 @@ export class MasterDataService {
 
         // Update progress
         if (progressCallback && i % 10 === 0) {
-          const progress = 40 + Math.round((i / parseResult.records.length) * 40);
-          progressCallback({ 
-            stage: 'processing', 
-            progress, 
-            message: `Processing record ${i + 1} of ${parseResult.records.length}...` 
+          const progress =
+            40 + Math.round((i / parseResult.records.length) * 40);
+          progressCallback({
+            stage: "processing",
+            progress,
+            message: `Processing record ${i + 1} of ${
+              parseResult.records.length
+            }...`,
           });
         }
       }
 
       if (progressCallback) {
-        progressCallback({ stage: 'saving', progress: 80, message: 'Saving data...' });
+        progressCallback({
+          stage: "saving",
+          progress: 80,
+          message: "Saving data...",
+        });
       }
 
       // Save to storage (localStorage for now)
       const storageKey = `masterData_${dataType}`;
       const existingData = this.loadFromStorage(storageKey) || [];
-      
+
       if (options.replaceExisting) {
         localStorage.setItem(storageKey, JSON.stringify(processedRecords));
       } else {
-        const mergedData = this.mergeData(existingData, processedRecords, dataType);
+        const mergedData = this.mergeData(
+          existingData,
+          processedRecords,
+          dataType
+        );
         localStorage.setItem(storageKey, JSON.stringify(mergedData));
       }
 
@@ -273,11 +313,11 @@ export class MasterDataService {
         recordCount: processedRecords.length,
         errorCount: errors.length,
         warningCount: warnings.length,
-        startTime,
-        endTime,
+        startTime: startTime.toISOString(),
+        endTime: endTime.toISOString(),
         duration: endTime.getTime() - startTime.getTime(),
-        status: errors.length > 0 ? 'completed_with_errors' : 'completed',
-        options
+        status: errors.length > 0 ? "completed_with_errors" : "completed",
+        options,
       };
 
       // Save import history
@@ -285,7 +325,11 @@ export class MasterDataService {
       this.saveImportHistory();
 
       if (progressCallback) {
-        progressCallback({ stage: 'completed', progress: 100, message: 'Import completed successfully!' });
+        progressCallback({
+          stage: "completed",
+          progress: 100,
+          message: "Import completed successfully!",
+        });
       }
 
       return {
@@ -294,33 +338,36 @@ export class MasterDataService {
         recordsProcessed: processedRecords.length,
         errors,
         warnings,
-        importRecord
+        importRecord,
       };
-
     } catch (error) {
       const errorRecord = {
         id: importId,
         dataType,
         fileName: file.name,
         fileSize: file.size,
-        startTime,
-        endTime: new Date(),
-        status: 'failed',
+        startTime: startTime.toISOString(),
+        endTime: new Date().toISOString(),
+        status: "failed",
         error: error.message,
-        options
+        options,
       };
 
       this.importHistory.unshift(errorRecord);
       this.saveImportHistory();
 
       if (progressCallback) {
-        progressCallback({ stage: 'error', progress: 0, message: `Import failed: ${error.message}` });
+        progressCallback({
+          stage: "error",
+          progress: 0,
+          message: `Import failed: ${error.message}`,
+        });
       }
 
       return {
         success: false,
         error: error.message,
-        importRecord: errorRecord
+        importRecord: errorRecord,
       };
     }
   }
@@ -336,30 +383,34 @@ export class MasterDataService {
     const processed = {
       id: this.generateRecordId(),
       importedAt: new Date().toISOString(),
-      ...record
+      ...record,
     };
 
     switch (dataType) {
-      case 'customers':
+      case "customers":
         processed.customerCode = record.customerCode?.trim();
         processed.customerName = record.customerName?.trim();
         processed.email = record.email?.toLowerCase().trim();
-        processed.creditLimit = record.creditLimit ? parseFloat(record.creditLimit) : 0;
+        processed.creditLimit = record.creditLimit
+          ? parseFloat(record.creditLimit)
+          : 0;
         break;
 
-      case 'products':
+      case "products":
         processed.productCode = record.productCode?.trim();
         processed.productName = record.productName?.trim();
         processed.unitPrice = parseFloat(record.unitPrice);
         processed.taxRate = record.taxRate ? parseFloat(record.taxRate) : 0;
-        processed.isActive = record.isActive !== 'false' && record.isActive !== '0';
+        processed.isActive =
+          record.isActive !== "false" && record.isActive !== "0";
         break;
 
-      case 'references':
+      case "references":
         processed.referenceType = record.referenceType?.trim();
         processed.referenceCode = record.referenceCode?.trim();
         processed.referenceValue = record.referenceValue?.trim();
-        processed.isActive = record.isActive !== 'false' && record.isActive !== '0';
+        processed.isActive =
+          record.isActive !== "false" && record.isActive !== "0";
         processed.sortOrder = record.sortOrder ? parseInt(record.sortOrder) : 0;
         break;
     }
@@ -376,11 +427,15 @@ export class MasterDataService {
    */
   mergeData(existingData, newData, dataType) {
     const keyField = this.getKeyField(dataType);
-    const existingKeys = new Set(existingData.map(record => record[keyField]));
-    
+    const existingKeys = new Set(
+      existingData.map((record) => record[keyField])
+    );
+
     // Add new records that don't exist
-    const uniqueNewRecords = newData.filter(record => !existingKeys.has(record[keyField]));
-    
+    const uniqueNewRecords = newData.filter(
+      (record) => !existingKeys.has(record[keyField])
+    );
+
     return [...existingData, ...uniqueNewRecords];
   }
 
@@ -391,12 +446,12 @@ export class MasterDataService {
    */
   getKeyField(dataType) {
     const keyFields = {
-      customers: 'customerCode',
-      products: 'productCode',
-      references: 'referenceCode'
+      customers: "customerCode",
+      products: "productCode",
+      references: "referenceCode",
     };
 
-    return keyFields[dataType] || 'id';
+    return keyFields[dataType] || "id";
   }
 
   /**
@@ -406,31 +461,33 @@ export class MasterDataService {
    */
   async rollbackImport(importId) {
     try {
-      const importRecord = this.importHistory.find(record => record.id === importId);
-      
+      const importRecord = this.importHistory.find(
+        (record) => record.id === importId
+      );
+
       if (!importRecord) {
-        throw new Error('Import record not found');
+        throw new Error("Import record not found");
       }
 
-      if (importRecord.status === 'failed') {
-        throw new Error('Cannot rollback failed import');
+      if (importRecord.status === "failed") {
+        throw new Error("Cannot rollback failed import");
       }
 
       // For now, we'll mark as rolled back in history
       // In a real implementation, this would restore previous data state
-      importRecord.status = 'rolled_back';
+      importRecord.status = "rolled_back";
       importRecord.rolledBackAt = new Date().toISOString();
-      
+
       this.saveImportHistory();
 
       return {
         success: true,
-        message: 'Import rolled back successfully'
+        message: "Import rolled back successfully",
       };
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -440,7 +497,22 @@ export class MasterDataService {
    * @returns {Array} Import history records
    */
   getImportHistory() {
-    return this.importHistory;
+    // Sanitize any legacy Date objects to ISO strings
+    return this.importHistory.map((record) => ({
+      ...record,
+      startTime:
+        record.startTime instanceof Date
+          ? record.startTime.toISOString()
+          : record.startTime,
+      endTime:
+        record.endTime instanceof Date
+          ? record.endTime.toISOString()
+          : record.endTime,
+      rolledBackAt:
+        record.rolledBackAt instanceof Date
+          ? record.rolledBackAt.toISOString()
+          : record.rolledBackAt,
+    }));
   }
 
   /**
@@ -449,7 +521,7 @@ export class MasterDataService {
    */
   loadImportHistory() {
     try {
-      const history = localStorage.getItem('masterData_importHistory');
+      const history = localStorage.getItem("masterData_importHistory");
       return history ? JSON.parse(history) : [];
     } catch {
       return [];
@@ -461,9 +533,12 @@ export class MasterDataService {
    */
   saveImportHistory() {
     try {
-      localStorage.setItem('masterData_importHistory', JSON.stringify(this.importHistory));
+      localStorage.setItem(
+        "masterData_importHistory",
+        JSON.stringify(this.importHistory)
+      );
     } catch (error) {
-      console.error('Failed to save import history:', error);
+      console.error("Failed to save import history:", error);
     }
   }
 
@@ -476,13 +551,23 @@ export class MasterDataService {
    * @param {Function} progressCallback - Progress callback
    * @returns {Promise<Object>} Export result
    */
-  async exportData(dataType, filters = {}, format = 'csv', options = {}, progressCallback = null) {
+  async exportData(
+    dataType,
+    filters = {},
+    format = "csv",
+    options = {},
+    progressCallback = null
+  ) {
     const exportId = this.generateExportId();
     const startTime = new Date();
 
     try {
       if (progressCallback) {
-        progressCallback({ stage: 'loading', progress: 0, message: 'Loading data...' });
+        progressCallback({
+          stage: "loading",
+          progress: 0,
+          message: "Loading data...",
+        });
       }
 
       // Load data from storage
@@ -494,18 +579,26 @@ export class MasterDataService {
       }
 
       if (progressCallback) {
-        progressCallback({ stage: 'filtering', progress: 20, message: 'Applying filters...' });
+        progressCallback({
+          stage: "filtering",
+          progress: 20,
+          message: "Applying filters...",
+        });
       }
 
       // Apply filters
       const filteredData = this.applyExportFilters(allData, filters, dataType);
 
       if (filteredData.length === 0) {
-        throw new Error('No data matches the specified filters');
+        throw new Error("No data matches the specified filters");
       }
 
       if (progressCallback) {
-        progressCallback({ stage: 'formatting', progress: 40, message: 'Formatting data...' });
+        progressCallback({
+          stage: "formatting",
+          progress: 40,
+          message: "Formatting data...",
+        });
       }
 
       // Format data based on export format
@@ -514,31 +607,36 @@ export class MasterDataService {
       let fileExtension;
 
       switch (format.toLowerCase()) {
-        case 'csv':
+        case "csv":
           exportContent = this.formatAsCSV(filteredData, dataType);
-          mimeType = 'text/csv';
-          fileExtension = 'csv';
+          mimeType = "text/csv";
+          fileExtension = "csv";
           break;
-        case 'excel':
+        case "excel":
           exportContent = this.formatAsExcel(filteredData, dataType);
-          mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-          fileExtension = 'xlsx';
+          mimeType =
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+          fileExtension = "xlsx";
           break;
-        case 'json':
+        case "json":
           exportContent = this.formatAsJSON(filteredData, dataType);
-          mimeType = 'application/json';
-          fileExtension = 'json';
+          mimeType = "application/json";
+          fileExtension = "json";
           break;
         default:
           throw new Error(`Unsupported export format: ${format}`);
       }
 
       if (progressCallback) {
-        progressCallback({ stage: 'generating', progress: 80, message: 'Generating file...' });
+        progressCallback({
+          stage: "generating",
+          progress: 80,
+          message: "Generating file...",
+        });
       }
 
       // Generate filename
-      const timestamp = new Date().toISOString().split('T')[0];
+      const timestamp = new Date().toISOString().split("T")[0];
       const filename = `${dataType}_export_${timestamp}.${fileExtension}`;
 
       // Create download
@@ -546,7 +644,7 @@ export class MasterDataService {
       const url = URL.createObjectURL(blob);
 
       // Trigger download
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = filename;
       document.body.appendChild(link);
@@ -564,11 +662,11 @@ export class MasterDataService {
         totalRecords: allData.length,
         filters,
         options,
-        startTime,
-        endTime,
+        startTime: startTime.toISOString(),
+        endTime: endTime.toISOString(),
         duration: endTime.getTime() - startTime.getTime(),
-        status: 'completed',
-        fileSize: blob.size
+        status: "completed",
+        fileSize: blob.size,
       };
 
       // Save export history
@@ -576,7 +674,11 @@ export class MasterDataService {
       this.saveExportHistory();
 
       if (progressCallback) {
-        progressCallback({ stage: 'completed', progress: 100, message: 'Export completed successfully!' });
+        progressCallback({
+          stage: "completed",
+          progress: 100,
+          message: "Export completed successfully!",
+        });
       }
 
       return {
@@ -585,33 +687,36 @@ export class MasterDataService {
         filename,
         recordCount: filteredData.length,
         fileSize: blob.size,
-        exportRecord
+        exportRecord,
       };
-
     } catch (error) {
       const errorRecord = {
         id: exportId,
         dataType,
         format,
-        startTime,
-        endTime: new Date(),
-        status: 'failed',
+        startTime: startTime.toISOString(),
+        endTime: new Date().toISOString(),
+        status: "failed",
         error: error.message,
         filters,
-        options
+        options,
       };
 
       this.exportHistory.unshift(errorRecord);
       this.saveExportHistory();
 
       if (progressCallback) {
-        progressCallback({ stage: 'error', progress: 0, message: `Export failed: ${error.message}` });
+        progressCallback({
+          stage: "error",
+          progress: 0,
+          message: `Export failed: ${error.message}`,
+        });
       }
 
       return {
         success: false,
         error: error.message,
-        exportRecord: errorRecord
+        exportRecord: errorRecord,
       };
     }
   }
@@ -628,19 +733,21 @@ export class MasterDataService {
 
     // Date range filter
     if (filters.dateFrom || filters.dateTo) {
-      filteredData = filteredData.filter(record => {
+      filteredData = filteredData.filter((record) => {
         const recordDate = new Date(record.importedAt || record.createdAt);
-        if (filters.dateFrom && recordDate < new Date(filters.dateFrom)) return false;
-        if (filters.dateTo && recordDate > new Date(filters.dateTo)) return false;
+        if (filters.dateFrom && recordDate < new Date(filters.dateFrom))
+          return false;
+        if (filters.dateTo && recordDate > new Date(filters.dateTo))
+          return false;
         return true;
       });
     }
 
     // Status filter
-    if (filters.status && filters.status !== 'all') {
-      filteredData = filteredData.filter(record => {
-        if (filters.status === 'active') return record.isActive !== false;
-        if (filters.status === 'inactive') return record.isActive === false;
+    if (filters.status && filters.status !== "all") {
+      filteredData = filteredData.filter((record) => {
+        if (filters.status === "active") return record.isActive !== false;
+        if (filters.status === "inactive") return record.isActive === false;
         return true;
       });
     }
@@ -648,8 +755,8 @@ export class MasterDataService {
     // Search filter
     if (filters.search && filters.search.trim()) {
       const searchTerm = filters.search.toLowerCase().trim();
-      filteredData = filteredData.filter(record => {
-        return Object.values(record).some(value => 
+      filteredData = filteredData.filter((record) => {
+        return Object.values(record).some((value) =>
           String(value).toLowerCase().includes(searchTerm)
         );
       });
@@ -657,31 +764,35 @@ export class MasterDataService {
 
     // Data type specific filters
     switch (dataType) {
-      case 'customers':
+      case "customers":
         if (filters.country) {
-          filteredData = filteredData.filter(record => 
-            record.country?.toLowerCase() === filters.country.toLowerCase()
+          filteredData = filteredData.filter(
+            (record) =>
+              record.country?.toLowerCase() === filters.country.toLowerCase()
           );
         }
         break;
-      case 'products':
+      case "products":
         if (filters.category) {
-          filteredData = filteredData.filter(record => 
-            record.category?.toLowerCase() === filters.category.toLowerCase()
+          filteredData = filteredData.filter(
+            (record) =>
+              record.category?.toLowerCase() === filters.category.toLowerCase()
           );
         }
         if (filters.priceRange) {
           const { min, max } = filters.priceRange;
-          filteredData = filteredData.filter(record => {
+          filteredData = filteredData.filter((record) => {
             const price = parseFloat(record.unitPrice) || 0;
             return (!min || price >= min) && (!max || price <= max);
           });
         }
         break;
-      case 'references':
+      case "references":
         if (filters.referenceType) {
-          filteredData = filteredData.filter(record => 
-            record.referenceType?.toLowerCase() === filters.referenceType.toLowerCase()
+          filteredData = filteredData.filter(
+            (record) =>
+              record.referenceType?.toLowerCase() ===
+              filters.referenceType.toLowerCase()
           );
         }
         break;
@@ -697,27 +808,30 @@ export class MasterDataService {
    * @returns {string} CSV content
    */
   formatAsCSV(data, dataType) {
-    if (data.length === 0) return '';
+    if (data.length === 0) return "";
 
     // Get headers from first record
     const headers = Object.keys(data[0]);
-    
+
     // Create CSV content
-    const csvRows = [headers.join(',')];
-    
-    data.forEach(record => {
-      const values = headers.map(header => {
+    const csvRows = [headers.join(",")];
+
+    data.forEach((record) => {
+      const values = headers.map((header) => {
         const value = record[header];
         // Escape commas and quotes in values
-        if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+        if (
+          typeof value === "string" &&
+          (value.includes(",") || value.includes('"'))
+        ) {
           return `"${value.replace(/"/g, '""')}"`;
         }
-        return value || '';
+        return value || "";
       });
-      csvRows.push(values.join(','));
+      csvRows.push(values.join(","));
     });
 
-    return csvRows.join('\n');
+    return csvRows.join("\n");
   }
 
   /**
@@ -739,14 +853,18 @@ export class MasterDataService {
    * @returns {string} JSON content
    */
   formatAsJSON(data, dataType) {
-    return JSON.stringify({
-      exportInfo: {
-        dataType,
-        exportDate: new Date().toISOString(),
-        recordCount: data.length
+    return JSON.stringify(
+      {
+        exportInfo: {
+          dataType,
+          exportDate: new Date().toISOString(),
+          recordCount: data.length,
+        },
+        data,
       },
-      data
-    }, null, 2);
+      null,
+      2
+    );
   }
 
   /**
@@ -754,7 +872,22 @@ export class MasterDataService {
    * @returns {Array} Export history records
    */
   getExportHistory() {
-    return this.exportHistory;
+    // Sanitize any legacy Date objects to ISO strings
+    return this.exportHistory.map((record) => ({
+      ...record,
+      startTime:
+        record.startTime instanceof Date
+          ? record.startTime.toISOString()
+          : record.startTime,
+      endTime:
+        record.endTime instanceof Date
+          ? record.endTime.toISOString()
+          : record.endTime,
+      rolledBackAt:
+        record.rolledBackAt instanceof Date
+          ? record.rolledBackAt.toISOString()
+          : record.rolledBackAt,
+    }));
   }
 
   /**
@@ -763,7 +896,7 @@ export class MasterDataService {
    */
   loadExportHistory() {
     try {
-      const history = localStorage.getItem('masterData_exportHistory');
+      const history = localStorage.getItem("masterData_exportHistory");
       return history ? JSON.parse(history) : [];
     } catch {
       return [];
@@ -775,9 +908,12 @@ export class MasterDataService {
    */
   saveExportHistory() {
     try {
-      localStorage.setItem('masterData_exportHistory', JSON.stringify(this.exportHistory));
+      localStorage.setItem(
+        "masterData_exportHistory",
+        JSON.stringify(this.exportHistory)
+      );
     } catch (error) {
-      console.error('Failed to save export history:', error);
+      console.error("Failed to save export history:", error);
     }
   }
 
@@ -791,7 +927,7 @@ export class MasterDataService {
     // In a real implementation, this would integrate with a job scheduler
     return {
       success: false,
-      message: 'Export scheduling not yet implemented'
+      message: "Export scheduling not yet implemented",
     };
   }
 
@@ -801,9 +937,13 @@ export class MasterDataService {
    */
   getAvailableFormats() {
     return [
-      { value: 'csv', label: 'CSV', description: 'Comma-separated values' },
-      { value: 'excel', label: 'Excel', description: 'Microsoft Excel format' },
-      { value: 'json', label: 'JSON', description: 'JavaScript Object Notation' }
+      { value: "csv", label: "CSV", description: "Comma-separated values" },
+      { value: "excel", label: "Excel", description: "Microsoft Excel format" },
+      {
+        value: "json",
+        label: "JSON",
+        description: "JavaScript Object Notation",
+      },
     ];
   }
 
@@ -813,7 +953,7 @@ export class MasterDataService {
    */
   getExportStatistics() {
     const history = this.exportHistory;
-    const last30Days = history.filter(record => {
+    const last30Days = history.filter((record) => {
       const recordDate = new Date(record.startTime);
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -823,12 +963,21 @@ export class MasterDataService {
     return {
       totalExports: history.length,
       exportsLast30Days: last30Days.length,
-      totalRecordsExported: history.reduce((sum, record) => sum + (record.recordCount || 0), 0),
-      averageExportSize: history.length > 0 
-        ? Math.round(history.reduce((sum, record) => sum + (record.recordCount || 0), 0) / history.length)
-        : 0,
+      totalRecordsExported: history.reduce(
+        (sum, record) => sum + (record.recordCount || 0),
+        0
+      ),
+      averageExportSize:
+        history.length > 0
+          ? Math.round(
+              history.reduce(
+                (sum, record) => sum + (record.recordCount || 0),
+                0
+              ) / history.length
+            )
+          : 0,
       formatBreakdown: this.getFormatBreakdown(history),
-      dataTypeBreakdown: this.getDataTypeBreakdown(history)
+      dataTypeBreakdown: this.getDataTypeBreakdown(history),
     };
   }
 
@@ -839,8 +988,8 @@ export class MasterDataService {
    */
   getFormatBreakdown(history) {
     const breakdown = {};
-    history.forEach(record => {
-      const format = record.format || 'unknown';
+    history.forEach((record) => {
+      const format = record.format || "unknown";
       breakdown[format] = (breakdown[format] || 0) + 1;
     });
     return breakdown;
@@ -853,8 +1002,8 @@ export class MasterDataService {
    */
   getDataTypeBreakdown(history) {
     const breakdown = {};
-    history.forEach(record => {
-      const dataType = record.dataType || 'unknown';
+    history.forEach((record) => {
+      const dataType = record.dataType || "unknown";
       breakdown[dataType] = (breakdown[dataType] || 0) + 1;
     });
     return breakdown;
@@ -876,10 +1025,48 @@ export class MasterDataService {
   loadFromStorage(key) {
     try {
       const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : null;
+      const parsed = data ? JSON.parse(data) : null;
+
+      // Sanitize any Date objects to ISO strings for Redux compatibility
+      if (Array.isArray(parsed)) {
+        return parsed.map((record) => this.sanitizeDateFields(record));
+      }
+
+      return parsed;
     } catch {
       return null;
     }
+  }
+
+  /**
+   * Sanitize Date objects in a record to ISO strings
+   * @param {Object} record - Record to sanitize
+   * @returns {Object} Sanitized record
+   */
+  sanitizeDateFields(record) {
+    if (!record || typeof record !== "object") return record;
+
+    const sanitized = { ...record };
+
+    // Common date fields that might be Date objects
+    const dateFields = [
+      "importedAt",
+      "createdAt",
+      "updatedAt",
+      "startTime",
+      "endTime",
+      "validatedAt",
+      "validationStartTime",
+      "validationEndTime",
+    ];
+
+    dateFields.forEach((field) => {
+      if (sanitized[field] instanceof Date) {
+        sanitized[field] = sanitized[field].toISOString();
+      }
+    });
+
+    return sanitized;
   }
 
   /**

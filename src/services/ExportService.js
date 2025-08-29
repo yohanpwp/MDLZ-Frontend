@@ -55,7 +55,7 @@ class ExportService {
         ...exportOptions,
         exportMetadata: {
           exportId,
-          exportedAt: new Date(),
+          exportedAt: new Date().toISOString(),
           exportedBy: report.generatedBy || "System",
           originalReportId: report.id,
           appliedFilters: report.filters || {},
@@ -213,7 +213,7 @@ class ExportService {
       ...currentProgress,
       ...progressData,
       exportId,
-      lastUpdated: new Date(),
+      lastUpdated: new Date().toISOString(),
     };
 
     this.activeExports.set(exportId, updatedProgress);
@@ -869,7 +869,7 @@ class ExportService {
       status: "cancelled",
       progress: 0,
       currentStep: "Export cancelled by user",
-      cancelledAt: new Date(),
+      cancelledAt: new Date().toISOString(),
     });
 
     console.log(`Export ${exportId} cancelled`);

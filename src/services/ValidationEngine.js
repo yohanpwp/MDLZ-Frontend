@@ -94,7 +94,7 @@ export class ValidationEngine {
       this.summary = {
         ...createEmptyValidationSummary(),
         batchId,
-        validationStartTime: startTime,
+        validationStartTime: startTime.toISOString(),
         totalRecords: records.length
       };
 
@@ -157,7 +157,7 @@ export class ValidationEngine {
 
       // Finalize summary
       const endTime = new Date();
-      this.summary.validationEndTime = endTime;
+      this.summary.validationEndTime = endTime.toISOString();
       this.summary.processingTimeMs = endTime.getTime() - startTime.getTime();
       
       if (this.summary.totalDiscrepancies > 0) {

@@ -191,8 +191,8 @@ class ReportService {
       severityBreakdown,
       customerBreakdown,
       timeBreakdown,
-      validationStartTime: originalSummary?.validationStartTime || new Date(),
-      validationEndTime: originalSummary?.validationEndTime || new Date(),
+      validationStartTime: originalSummary?.validationStartTime || new Date().toISOString(),
+      validationEndTime: originalSummary?.validationEndTime || new Date().toISOString(),
       processingTimeMs: originalSummary?.processingTimeMs || 0,
       batchId: originalSummary?.batchId || 'unknown'
     };

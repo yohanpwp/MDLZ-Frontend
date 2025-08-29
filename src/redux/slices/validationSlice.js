@@ -144,8 +144,8 @@ export const generateValidationSummary = createAsyncThunk(
         mediumSeverityCount: results.filter(r => r.severity === SEVERITY_LEVELS.MEDIUM).length,
         lowSeverityCount: results.filter(r => r.severity === SEVERITY_LEVELS.LOW).length,
         totalDiscrepancyAmount: results.reduce((sum, r) => sum + (r.discrepancy || 0), 0),
-        validationStartTime: validation.lastValidationTime || new Date(),
-        validationEndTime: new Date(),
+        validationStartTime: validation.lastValidationTime || new Date().toISOString(),
+        validationEndTime: new Date().toISOString(),
         batchId: validation.currentBatchId || 'manual'
       };
 

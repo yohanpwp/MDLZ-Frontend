@@ -36,7 +36,7 @@ export const generateReport = createAsyncThunk(
         data: reportData,
         metadata: {
           version: '1.0',
-          generatedAt: new Date(),
+          generatedAt: new Date().toISOString(),
           generatedBy: getState().auth.user?.name || 'System',
           appliedFilters: filters,
           processingTimeMs: processingTime,
@@ -47,7 +47,7 @@ export const generateReport = createAsyncThunk(
           }
         },
         status: 'completed',
-        generatedAt: new Date(),
+        generatedAt: new Date().toISOString(),
         generatedBy: getState().auth.user?.name || 'System',
         recordCount: filteredResults.length
       };
@@ -84,7 +84,7 @@ export const exportReport = createAsyncThunk(
         processingTimeMs: exportResult.processingTimeMs,
         metadata: exportResult.metadata,
         status: 'completed',
-        completedAt: new Date()
+        completedAt: new Date().toISOString()
       };
     } catch (error) {
       return rejectWithValue(error.message);

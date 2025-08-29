@@ -195,7 +195,7 @@ export const createEmptyValidationResult = (recordId, field) => ({
   discrepancyPercentage: 0,
   severity: SEVERITY_LEVELS.LOW,
   message: '',
-  validatedAt: new Date(),
+  validatedAt: new Date().toISOString(),
   validatedBy: 'system'
 });
 
@@ -215,8 +215,8 @@ export const createEmptyValidationSummary = () => ({
   totalDiscrepancyAmount: 0,
   averageDiscrepancyAmount: 0,
   maxDiscrepancyAmount: 0,
-  validationStartTime: new Date(),
-  validationEndTime: new Date(),
+  validationStartTime: new Date().toISOString(),
+  validationEndTime: new Date().toISOString(),
   processingTimeMs: 0,
   batchId: ''
 });
