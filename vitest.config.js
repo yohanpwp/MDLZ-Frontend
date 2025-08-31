@@ -8,4 +8,10 @@ export default defineConfig({
     setupFiles: ['./src/setupTests.js'],
     globals: true,
   },
+  define: {
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    include: ['@testing-library/jest-dom']
+  }
 });

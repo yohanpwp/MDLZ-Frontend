@@ -5,6 +5,16 @@ export { default as LoadingState } from './LoadingState';
 export { default as ProgressIndicator } from './ProgressIndicator';
 export { default as FormInput } from './FormInput';
 export { default as OfflineIndicator } from './OfflineIndicator';
+export { default as Modal } from './Modal';
 export { LoadingSpinner, FullPageLoader, InlineLoader } from './LoadingSpinner';
 export { Badge } from './Badge';
 export { Alert, AlertDescription, AlertTitle } from './Alert';
+export { 
+  Form, 
+  FormField, 
+  FormInput as FormInputComponent, 
+  FormTextarea, 
+  FormSelect, 
+  FormCheckbox, 
+  FormActions 
+} from './Form';
