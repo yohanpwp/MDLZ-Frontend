@@ -53,14 +53,15 @@ const Layout = ({ children, className }) => {
         sidebarCollapsed={sidebarCollapsed}
       />
       
-      <div className="flex h-[calc(100vh-64px)]">
+      <div className="flex">
         {/* Sidebar */}
+        <div className="h-[calc(100vh-64px)] z-50">
         <Sidebar 
           isOpen={sidebarOpen || !isMobile} 
           onClose={closeSidebar}
           isCollapsed={!isMobile && sidebarCollapsed}
         />
-        
+        </div>
         {/* Main content */}
         <main className={cn(
           "flex-1 overflow-auto",

@@ -28,6 +28,7 @@ import {
   importMasterData,
   validateImportFile,
   clearError,
+  createCustomer,
 } from "../../redux/slices/masterDataSlice";
 
 const Customers = () => {
@@ -49,6 +50,19 @@ const Customers = () => {
   // Load customers on component mount
   useEffect(() => {
     dispatch(loadMasterData({ dataType: "customers" }));
+    //TODO: Delete it before integrate with database
+    dispatch(createCustomer({
+    customerCode: '124ABD',
+    customerName: 'Peerawith',
+    email: '1234@hotmail.com',
+    phone: '0954121124',
+    address: '124/52',
+    city: 'Bangkok',
+    country: 'Thailand',
+    taxId: '7754',
+    creditLimit: 0,
+    isActive: true
+    }))
   }, [dispatch]);
 
   // Filter and sort customers
@@ -117,6 +131,11 @@ const Customers = () => {
       render: (value) => value || "-",
     },
     {
+      key: "address",
+      header: "Address",
+      render: (value) => value || "-",
+    },
+    {
       key: "city",
       header: "Location",
       render: (value, customer) => (
@@ -127,15 +146,6 @@ const Customers = () => {
               {customer.country}
             </div>
           )}
-        </div>
-      ),
-    },
-    {
-      key: "creditLimit",
-      header: "Credit Limit",
-      render: (value) => (
-        <div className="text-right font-mono">
-          ${(value || 0).toLocaleString()}
         </div>
       ),
     },
@@ -228,6 +238,7 @@ const Customers = () => {
   const handleSaveCustomer = (customerData) => {
     // In a real app, this would dispatch save action
     console.log("Saving customer:", customerData);
+    dispatch(createCustomer(customerData))
     setShowCustomerModal(false);
     setSelectedCustomer(null);
   };

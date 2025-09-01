@@ -43,11 +43,11 @@ const Header = ({ onMenuToggle, onSidebarToggle, sidebarCollapsed, className }) 
         
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">IV</span>
+            <span className="text-white font-bold text-sm">MD</span>
           </div>
           <div className="hidden sm:block">
             <h1 className="text-lg font-semibold text-white">
-              Invoice Validation System
+              MLDZ - Frontend
             </h1>
           </div>
         </div>

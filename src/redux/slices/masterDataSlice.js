@@ -198,6 +198,11 @@ const masterDataSlice = createSlice({
       const data = MasterDataService.loadFromStorage(`masterData_${dataType}`) || [];
       state[dataType] = data;
     },
+
+    createCustomer: (state, action) => {
+      const newCustomer = action.payload;
+      state.customers.push(newCustomer);
+    },
     
     // Export actions
     setExportFilters: (state, action) => {
@@ -363,7 +368,8 @@ export const {
   loadExportHistory,
   loadMasterData,
   resetImportState,
-  resetExportState
+  resetExportState,
+  createCustomer
 } = masterDataSlice.actions;
 
 // Selectors
