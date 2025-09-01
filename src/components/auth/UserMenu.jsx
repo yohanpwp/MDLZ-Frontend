@@ -1,14 +1,19 @@
-import { useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { User, LogOut, Settings, ChevronDown } from 'lucide-react';
-import { logoutUser, selectUser, selectIsLoading } from '../../redux/slices/authSlice.js';
-import Button from '../ui/Button.jsx';
-import LoadingSpinner from '../ui/LoadingSpinner.jsx';
+import { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { User, LogOut, Settings, ChevronDown, Palette } from "lucide-react";
+import {
+  logoutUser,
+  selectUser,
+  selectIsLoading,
+} from "../../redux/slices/authSlice.js";
+import { useTheme } from "../../contexts/ThemeContext.jsx";
+import ThemeToggle from "../ui/ThemeToggle.jsx";
+import LoadingSpinner from "../ui/LoadingSpinner.jsx";
 
 /**
  * UserMenu Component
- * 
+ *
  * Displays user information and provides logout functionality
  * for the Invoice Validation System.
  */
@@ -17,7 +22,8 @@ const UserMenu = () => {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const isLoading = useSelector(selectIsLoading);
-  
+  const { theme, effectiveTheme, THEME_OPTIONS } = useTheme();
+
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -29,20 +35,20 @@ const UserMenu = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser()).unwrap();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
       // Force navigation even if logout fails
-      navigate('/login');
+      navigate("/login");
     }
   };
 
@@ -60,7 +66,9 @@ const UserMenu = () => {
   }
 
   const userDisplayName = `${user.firstName} ${user.lastName}`;
-  const userInitials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+  const userInitials = `${user.firstName.charAt(0)}${user.lastName.charAt(
+    0
+  )}`.toUpperCase();
 
   return (
     <div className="relative" ref={menuRef}>
@@ -75,22 +83,22 @@ const UserMenu = () => {
         <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
           {userInitials}
         </div>
-        
+
         {/* User Info */}
         <div className="hidden md:block text-left">
           <div className="text-sm font-medium text-white">
             {userDisplayName}
           </div>
           <div className="text-xs text-slate-300 capitalize">
-            {user.role.replace('_', ' ')}
+            {user.role.replace("_", " ")}
           </div>
         </div>
-        
+
         {/* Dropdown Arrow */}
-        <ChevronDown 
+        <ChevronDown
           className={`w-4 h-4 text-slate-300 transition-transform duration-200 ${
-            isOpen ? 'transform rotate-180' : ''
-          }`} 
+            isOpen ? "transform rotate-180" : ""
+          }`}
         />
       </button>
 
@@ -108,11 +116,9 @@ const UserMenu = () => {
                   <div className="text-sm font-medium text-gray-900">
                     {userDisplayName}
                   </div>
-                  <div className="text-sm text-gray-500">
-                    {user.email}
-                  </div>
+                  <div className="text-sm text-gray-500">{user.email}</div>
                   <div className="text-xs text-gray-400 capitalize">
-                    {user.role.replace('_', ' ')}
+                    {user.role.replace("_", " ")}
                   </div>
                 </div>
               </div>
@@ -121,20 +127,44 @@ const UserMenu = () => {
             {/* Menu Items */}
             <div className="py-1">
               <button
-                onClick={() => handleMenuItemClick(() => navigate('/profile'))}
+                onClick={() => handleMenuItemClick(() => navigate("/profile"))}
                 className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               >
                 <User className="w-4 h-4 mr-3" />
                 Profile Settings
               </button>
-              
+
               <button
-                onClick={() => handleMenuItemClick(() => navigate('/settings'))}
+                onClick={() => handleMenuItemClick(() => navigate("/settings"))}
                 className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               >
                 <Settings className="w-4 h-4 mr-3" />
                 Preferences
               </button>
+            </div>
+
+            {/* Theme Section */}
+            <div className="py-1 border-t border-gray-100">
+              <div className="px-4 py-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Palette className="w-4 h-4 mr-3 text-gray-500" />
+                    <span className="text-sm text-gray-700">Theme</span>
+                  </div>
+                  <ThemeToggle
+                    showLabel={true}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                  />
+                </div>
+                <div className="mt-1 ml-7 text-xs text-gray-500">
+                  Current:{" "}
+                  {theme === THEME_OPTIONS.SYSTEM
+                    ? `System (${effectiveTheme})`
+                    : theme}
+                </div>
+              </div>
             </div>
 
             {/* Logout Section */}
@@ -149,7 +179,7 @@ const UserMenu = () => {
                 ) : (
                   <LogOut className="w-4 h-4 mr-3" />
                 )}
-                {isLoading ? 'Signing out...' : 'Sign Out'}
+                {isLoading ? "Signing out..." : "Sign Out"}
               </button>
             </div>
           </div>

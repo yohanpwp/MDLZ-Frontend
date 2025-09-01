@@ -1,0 +1,123 @@
+{
+  "common": {
+    "loading": "กำลังโหลด...",
+    "error": "ข้อผิดพลาด",
+    "success": "สำเร็จ",
+    "cancel": "ยกเลิก",
+    "save": "บันทึก",
+    "delete": "ลบ",
+    "edit": "แก้ไข",
+    "add": "เพิ่ม",
+    "search": "ค้นหา",
+    "filter": "กรอง",
+    "export": "ส่งออก",
+    "import": "นำเข้า",
+    "back": "กลับ",
+    "next": "ถัดไป",
+    "previous": "ก่อนหน้า",
+    "submit": "ส่ง",
+    "reset": "รีเซ็ต",
+    "confirm": "ยืนยัน",
+    "close": "ปิด",
+    "status": "สถานะ",
+    "online": "ออนไลน์",
+    "actions": "การดำเนินการ",
+    "view": "ดู",
+    "history": "ประวัติ",
+    "of": "จาก"
+  },
+  "navigation": {
+    "dashboard": "แดชบอร์ด",
+    "invoices": "ใบแจ้งหนี้",
+    "customers": "ลูกค้า",
+    "reports": "รายงาน",
+    "settings": "การตั้งค่า",
+    "profile": "โปรไฟล์",
+    "logout": "ออกจากระบบ"
+  },
+  "auth": {
+    "login": "เข้าสู่ระบบ",
+    "register": "สมัครสมาชิก",
+    "email": "อีเมล",
+    "password": "รหัสผ่าน",
+    "confirmPassword": "ยืนยันรหัสผ่าน",
+    "forgotPassword": "ลืมรหัสผ่าน?",
+    "rememberMe": "จดจำฉัน",
+    "loginSuccess": "เข้าสู่ระบบสำเร็จ",
+    "loginError": "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+    "logoutSuccess": "ออกจากระบบสำเร็จ"
+  },
+  "invoice": {
+    "title": "ระบบตรวจสอบใบแจ้งหนี้",
+    "number": "หมายเลขใบแจ้งหนี้",
+    "date": "วันที่ใบแจ้งหนี้",
+    "dueDate": "วันครบกำหนด",
+    "amount": "จำนวนเงิน",
+    "status": "สถานะ",
+    "customer": "ลูกค้า",
+    "description": "รายละเอียด",
+    "validate": "ตรวจสอบ",
+    "approved": "อนุมัติ",
+    "rejected": "ปฏิเสธ",
+    "pending": "รอดำเนินการ",
+    "validationSuccess": "ตรวจสอบใบแจ้งหนี้สำเร็จ",
+    "validationError": "การตรวจสอบใบแจ้งหนี้ล้มเหลว"
+  },
+  "customer": {
+    "name": "ชื่อลูกค้า",
+    "email": "ที่อยู่อีเมล",
+    "phone": "หมายเลขโทรศัพท์",
+    "address": "ที่อยู่",
+    "company": "บริษัท",
+    "code": "รหัส",
+    "location": "ที่ตั้ง",
+    "active": "ใช้งาน",
+    "inactive": "ไม่ใช้งาน",
+    "allStatus": "สถานะทั้งหมด",
+    "searchPlaceholder": "ค้นหาลูกค้า...",
+    "description": "จัดการข้อมูลลูกค้าและการตั้งค่าการตรวจสอบ",
+    "addCustomer": "เพิ่มลูกค้า",
+    "editCustomer": "แก้ไขลูกค้า",
+    "deleteCustomer": "ลบลูกค้า",
+    "customerAdded": "เพิ่มลูกค้าสำเร็จ",
+    "customerUpdated": "อัปเดตลูกค้าสำเร็จ",
+    "customerDeleted": "ลบลูกค้าสำเร็จ"
+  },
+  "form": {
+    "required": "ฟิลด์นี้จำเป็นต้องกรอก",
+    "invalidEmail": "กรุณากรอกอีเมลที่ถูกต้อง",
+    "invalidPhone": "กรุณากรอกหมายเลขโทรศัพท์ที่ถูกต้อง",
+    "passwordTooShort": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร",
+    "passwordsNotMatch": "รหัสผ่านไม่ตรงกัน",
+    "invalidDate": "กรุณากรอกวันที่ที่ถูกต้อง",
+    "invalidAmount": "กรุณากรอกจำนวนเงินที่ถูกต้อง"
+  },
+  "theme": {
+    "light": "สว่าง",
+    "dark": "มืด",
+    "system": "ระบบ",
+    "themeSettings": "การตั้งค่าธีม",
+    "appearance": "รูปลักษณ์"
+  },
+  "language": {
+    "english": "English",
+    "thai": "ไทย",
+    "selectLanguage": "เลือกภาษา",
+    "languageChanged": "เปลี่ยนภาษาสำเร็จ"
+  },
+  "errors": {
+    "networkError": "ข้อผิดพลาดการเชื่อมต่อเครือข่าย",
+    "serverError": "เกิดข้อผิดพลาดของเซิร์ฟเวอร์",
+    "notFound": "ไม่พบหน้าที่ต้องการ",
+    "unauthorized": "ไม่ได้รับอนุญาตให้เข้าถึง",
+    "forbidden": "การเข้าถึงถูกห้าม",
+    "validationError": "ข้อผิดพลาดในการตรวจสอบ",
+    "unexpectedError": "เกิดข้อผิดพลาดที่ไม่คาดคิด"
+  },
+  "offline": {
+    "title": "คุณออฟไลน์อยู่",
+    "message": "บางฟีเจอร์อาจไม่สามารถใช้งานได้",
+    "pendingSync": "{{count}} การดำเนินการรอซิงค์",
+    "reconnected": "เชื่อมต่อกลับมาแล้ว"
+  }
+}

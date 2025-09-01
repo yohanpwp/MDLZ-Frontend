@@ -30,12 +30,16 @@ import {
   clearError,
   createCustomer,
 } from "../../redux/slices/masterDataSlice";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { useFormatters } from "../../hooks/useFormatters";
 
 const Customers = () => {
   const dispatch = useDispatch();
   const customers = useSelector((state) => state.masterData.customers);
   const isLoading = useSelector((state) => state.masterData.isImporting);
   const error = useSelector((state) => state.masterData.error);
+  const { t } = useLanguage();
+  const { formatNumber } = useFormatters();
 
   // Local state
   const [searchTerm, setSearchTerm] = useState("");
@@ -105,14 +109,14 @@ const Customers = () => {
   const columns = [
     {
       key: "customerCode",
-      header: "Code",
+      header: t('customer.code', 'Code'),
       render: (value, customer) => (
         <div className="font-medium text-primary">{value}</div>
       ),
     },
     {
       key: "customerName",
-      header: "Customer Name",
+      header: t('customer.name'),
       render: (value, customer) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
@@ -127,17 +131,17 @@ const Customers = () => {
     },
     {
       key: "phone",
-      header: "Phone",
+      header: t('customer.phone'),
       render: (value) => value || "-",
     },
     {
       key: "address",
-      header: "Address",
+      header: t('customer.address'),
       render: (value) => value || "-",
     },
     {
       key: "city",
-      header: "Location",
+      header: t('customer.location', 'Location'),
       render: (value, customer) => (
         <div>
           <div>{value || "-"}</div>
@@ -151,16 +155,16 @@ const Customers = () => {
     },
     {
       key: "isActive",
-      header: "Status",
+      header: t('common.status'),
       render: (value) => (
         <Badge variant={value ? "success" : "secondary"}>
-          {value ? "Active" : "Inactive"}
+          {value ? t('customer.active', 'Active') : t('customer.inactive', 'Inactive')}
         </Badge>
       ),
     },
     {
       key: "actions",
-      header: "Actions",
+      header: t('common.actions', 'Actions'),
       sortable: false,
       render: (_, customer) => (
         <div className="flex items-center gap-2">
@@ -168,6 +172,7 @@ const Customers = () => {
             variant="ghost"
             size="sm"
             onClick={() => handleViewCustomer(customer)}
+            title={t('common.view', 'View')}
           >
             <Eye className="h-4 w-4" />
           </Button>
@@ -175,6 +180,7 @@ const Customers = () => {
             variant="ghost"
             size="sm"
             onClick={() => handleEditCustomer(customer)}
+            title={t('common.edit')}
           >
             <Edit className="h-4 w-4" />
           </Button>
@@ -182,6 +188,7 @@ const Customers = () => {
             variant="ghost"
             size="sm"
             onClick={() => handleShowAudit(customer)}
+            title={t('common.history', 'History')}
           >
             <History className="h-4 w-4" />
           </Button>
@@ -189,6 +196,7 @@ const Customers = () => {
             variant="ghost"
             size="sm"
             onClick={() => handleDeleteCustomer(customer)}
+            title={t('common.delete')}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -290,23 +298,23 @@ const Customers = () => {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Customers</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t('navigation.customers')}</h1>
           <p className="text-muted-foreground">
-            Manage customer information and validation settings
+            {t('customer.description', 'Manage customer information and validation settings')}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleImport}>
             <Upload className="h-4 w-4 mr-2" />
-            Import
+            {t('common.import')}
           </Button>
           <Button variant="outline" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
-            Export
+            {t('common.export')}
           </Button>
           <Button onClick={handleAddCustomer}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Customer
+            {t('customer.addCustomer')}
           </Button>
         </div>
       </div>
@@ -317,7 +325,7 @@ const Customers = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search customers..."
+            placeholder={t('customer.searchPlaceholder', 'Search customers...')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -328,12 +336,12 @@ const Customers = () => {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         >
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
+          <option value="all">{t('customer.allStatus', 'All Status')}</option>
+          <option value="active">{t('customer.active', 'Active')}</option>
+          <option value="inactive">{t('customer.inactive', 'Inactive')}</option>
         </select>
         <div className="text-sm text-muted-foreground">
-          {filteredCustomers.length} of {customers.length} customers
+          {formatNumber(filteredCustomers.length)} {t('common.of', 'of')} {formatNumber(customers.length)} {t('navigation.customers').toLowerCase()}
         </div>
       </div>
 

@@ -170,11 +170,11 @@ const FileUploader = ({
         
         <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
         
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
-          {dragActive ? 'Drop files here' : 'Upload invoice files'}
+        <h3 className="text-lg font-medium mb-2">
+          {dragActive ? 'Drop files here' : 'Upload your files'}
         </h3>
         
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="text-sm mb-4 text-muted-foreground">
           Drag and drop your files here, or click to browse
         </p>
         

@@ -1,0 +1,123 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "close": "Close",
+    "status": "Status",
+    "online": "Online",
+    "actions": "Actions",
+    "view": "View",
+    "history": "History",
+    "of": "of"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "invoices": "Invoices",
+    "customers": "Customers",
+    "reports": "Reports",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember me",
+    "loginSuccess": "Login successful",
+    "loginError": "Invalid email or password",
+    "logoutSuccess": "Logged out successfully"
+  },
+  "invoice": {
+    "title": "Invoice Validation System",
+    "number": "Invoice Number",
+    "date": "Invoice Date",
+    "dueDate": "Due Date",
+    "amount": "Amount",
+    "status": "Status",
+    "customer": "Customer",
+    "description": "Description",
+    "validate": "Validate",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "pending": "Pending",
+    "validationSuccess": "Invoice validated successfully",
+    "validationError": "Invoice validation failed"
+  },
+  "customer": {
+    "name": "Customer Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "address": "Address",
+    "company": "Company",
+    "code": "Code",
+    "location": "Location",
+    "active": "Active",
+    "inactive": "Inactive",
+    "allStatus": "All Status",
+    "searchPlaceholder": "Search customers...",
+    "description": "Manage customer information and validation settings",
+    "addCustomer": "Add Customer",
+    "editCustomer": "Edit Customer",
+    "deleteCustomer": "Delete Customer",
+    "customerAdded": "Customer added successfully",
+    "customerUpdated": "Customer updated successfully",
+    "customerDeleted": "Customer deleted successfully"
+  },
+  "form": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidPhone": "Please enter a valid phone number",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordsNotMatch": "Passwords do not match",
+    "invalidDate": "Please enter a valid date",
+    "invalidAmount": "Please enter a valid amount"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "themeSettings": "Theme Settings",
+    "appearance": "Appearance"
+  },
+  "language": {
+    "english": "English",
+    "thai": "ไทย",
+    "selectLanguage": "Select Language",
+    "languageChanged": "Language changed successfully"
+  },
+  "errors": {
+    "networkError": "Network connection error",
+    "serverError": "Server error occurred",
+    "notFound": "Page not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden",
+    "validationError": "Validation error",
+    "unexpectedError": "An unexpected error occurred"
+  },
+  "offline": {
+    "title": "You're offline",
+    "message": "Some features may not be available",
+    "pendingSync": "{{count}} operations pending sync",
+    "reconnected": "Connection restored"
+  }
+}

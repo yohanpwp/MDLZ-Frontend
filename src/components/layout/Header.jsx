@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
 import { Menu, Bell, PanelLeftClose, PanelLeft } from 'lucide-react';
 import Button from '../ui/Button';
+import ThemeToggle from '../ui/ThemeToggle';
+import LanguageSwitcher from '../ui/LanguageSwitcher';
 import UserMenu from '../auth/UserMenu.jsx';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { cn } from '../../utils/cn';
 
 const Header = ({ onMenuToggle, onSidebarToggle, sidebarCollapsed, className }) => {
+  const { t } = useLanguage();
 
   return (
     <header className={cn(
@@ -21,7 +25,7 @@ const Header = ({ onMenuToggle, onSidebarToggle, sidebarCollapsed, className }) 
           size="icon"
           onClick={onMenuToggle}
           className="lg:hidden text-white hover:bg-slate-700"
-          aria-label="Toggle menu"
+          aria-label={t('navigation.menu', 'Toggle menu')}
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -32,7 +36,7 @@ const Header = ({ onMenuToggle, onSidebarToggle, sidebarCollapsed, className }) 
           size="icon"
           onClick={onSidebarToggle}
           className="hidden lg:flex text-white hover:bg-slate-700"
-          aria-label="Toggle sidebar"
+          aria-label={t('navigation.sidebar', 'Toggle sidebar')}
         >
           {sidebarCollapsed ? (
             <PanelLeft className="h-5 w-5" />
@@ -55,6 +59,19 @@ const Header = ({ onMenuToggle, onSidebarToggle, sidebarCollapsed, className }) 
 
       {/* Right section - User info and actions */}
       <div className="flex items-center gap-2">
+        {/* Language switcher */}
+        <LanguageSwitcher 
+          variant="header" 
+          size="sm"
+        />
+
+        {/* Theme toggle */}
+        <ThemeToggle 
+          className="text-white hover:bg-slate-700" 
+          variant="ghost" 
+          size="icon"
+        />
+
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="relative text-white hover:bg-slate-700">
           <Bell className="h-5 w-5" />
