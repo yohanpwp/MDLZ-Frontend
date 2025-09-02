@@ -5,6 +5,7 @@ import { initializeAuth } from "../redux/slices/authSlice.js";
 import { ProtectedRoute } from "../components/auth";
 import { Layout } from "../components/layout";
 import { LoadingSpinner } from "../components/ui";
+import Distributors from "../pages/References/Distributors.jsx";
 
 // Lazy load page components for code splitting
 const Dashboard = lazy(() => import("../pages/Dashboard.jsx"));
@@ -69,6 +70,17 @@ const AppRouter = () => {
               <ProtectedRoute requiredPermissions={["export_data"]}>
                 <Layout>
                   <ExportData />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/references/distributors"
+            element={
+              <ProtectedRoute requiredPermissions={["manage_master_data"]}>
+                <Layout>
+                  <Distributors />
                 </Layout>
               </ProtectedRoute>
             }

@@ -24,6 +24,7 @@ import Button from '../../components/ui/Button';
 import DataTable from '../../components/ui/DataTable';
 import { Alert, AlertDescription } from '../../components/ui/Alert';
 import { Badge } from '../../components/ui/Badge';
+import { InvoiceStatus, InvoiceType } from '../../types/prisma';
 
 const Invoices = () => {
   const dispatch = useDispatch();
@@ -31,74 +32,86 @@ const Invoices = () => {
   // Mock invoice data - in real app this would come from Redux store
   const [invoices] = useState([
     { 
-      id: 'INV-001', 
-      invoiceNumber: 'INV-001',
+      id: 1, 
+      invNo: 'INV-001',
       customer: 'ABC Corporation', 
       customerCode: 'CUST001',
-      amount: 1299.99, 
-      taxAmount: 169.99,
-      totalAmount: 1469.98,
-      date: '2024-01-15', 
-      dueDate: '2024-02-15',
-      status: 'Valid',
-      validationStatus: 'completed',
+      netAmount: 1299.99, 
+      vatTaxAmount: 169.99,
+      totalNetAmount: 1469.98,
+      invoiceDate: '2024-01-15', 
+      createDate: '2024-01-15',
+      status: InvoiceStatus.APPROVED,
+      productType: InvoiceType.SALE,
+      quantity: 10,
+      productCode: 'PROD001',
+      uomConvFactor: 1,
       discrepancies: 0,
       version: 1,
-      lastModified: '2024-01-15T10:30:00Z',
+      updatedAt: '2024-01-15T10:30:00Z',
       createdBy: 'System',
       workflow: 'approved'
     },
     { 
-      id: 'INV-002', 
-      invoiceNumber: 'INV-002',
+      id: 2, 
+      invNo: 'INV-002',
       customer: 'XYZ Industries', 
       customerCode: 'CUST002',
-      amount: 2450.00, 
-      taxAmount: 318.50,
-      totalAmount: 2768.50,
-      date: '2024-01-14', 
-      dueDate: '2024-02-14',
-      status: 'Discrepancy',
-      validationStatus: 'failed',
+      netAmount: 2450.00, 
+      vatTaxAmount: 318.50,
+      totalNetAmount: 2768.50,
+      invoiceDate: '2024-01-14', 
+      createDate: '2024-01-14',
+      status: InvoiceStatus.REJECTED,
+      productType: InvoiceType.SALE,
+      quantity: 25,
+      productCode: 'PROD002',
+      uomConvFactor: 1,
       discrepancies: 2,
       version: 2,
-      lastModified: '2024-01-14T15:45:00Z',
+      updatedAt: '2024-01-14T15:45:00Z',
       createdBy: 'John Doe',
       workflow: 'review_required'
     },
     { 
-      id: 'INV-003', 
-      invoiceNumber: 'INV-003',
+      id: 3, 
+      invNo: 'INV-003',
       customer: 'Tech Solutions Ltd', 
       customerCode: 'CUST003',
-      amount: 899.50, 
-      taxAmount: 116.94,
-      totalAmount: 1016.44,
-      date: '2024-01-13', 
-      dueDate: '2024-02-13',
-      status: 'Valid',
-      validationStatus: 'completed',
+      netAmount: 899.50, 
+      vatTaxAmount: 116.94,
+      totalNetAmount: 1016.44,
+      invoiceDate: '2024-01-13', 
+      createDate: '2024-01-13',
+      status: InvoiceStatus.APPROVED,
+      productType: InvoiceType.SALE,
+      quantity: 5,
+      productCode: 'PROD003',
+      uomConvFactor: 1,
       discrepancies: 0,
       version: 1,
-      lastModified: '2024-01-13T09:15:00Z',
+      updatedAt: '2024-01-13T09:15:00Z',
       createdBy: 'Jane Smith',
       workflow: 'approved'
     },
     { 
-      id: 'INV-004', 
-      invoiceNumber: 'INV-004',
+      id: 4, 
+      invNo: 'INV-004',
       customer: 'Global Enterprises', 
       customerCode: 'CUST004',
-      amount: 3200.00, 
-      taxAmount: 416.00,
-      totalAmount: 3616.00,
-      date: '2024-01-12', 
-      dueDate: '2024-02-12',
-      status: 'Pending',
-      validationStatus: 'pending',
+      netAmount: 3200.00, 
+      vatTaxAmount: 416.00,
+      totalNetAmount: 3616.00,
+      invoiceDate: '2024-01-12', 
+      createDate: '2024-01-12',
+      status: InvoiceStatus.PENDING,
+      productType: InvoiceType.SALE,
+      quantity: 40,
+      productCode: 'PROD004',
+      uomConvFactor: 1,
       discrepancies: 0,
       version: 1,
-      lastModified: '2024-01-12T14:20:00Z',
+      updatedAt: '2024-01-12T14:20:00Z',
       createdBy: 'System',
       workflow: 'pending_validation'
     }
@@ -122,15 +135,15 @@ const Invoices = () => {
   const filteredInvoices = useMemo(() => {
     let filtered = invoices.filter(invoice => {
       const matchesSearch = !searchTerm || 
-        invoice.invoiceNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        invoice.invNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         invoice.customer?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         invoice.customerCode?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesStatus = statusFilter === 'all' || 
         invoice.status.toLowerCase() === statusFilter.toLowerCase();
       
-      const matchesDateRange = (!dateRange.from || new Date(invoice.date) >= new Date(dateRange.from)) &&
-        (!dateRange.to || new Date(invoice.date) <= new Date(dateRange.to));
+      const matchesDateRange = (!dateRange.from || new Date(invoice.invoiceDate) >= new Date(dateRange.from)) &&
+        (!dateRange.to || new Date(invoice.invoiceDate) <= new Date(dateRange.to));
       
       return matchesSearch && matchesStatus && matchesDateRange;
     });
@@ -140,10 +153,10 @@ const Invoices = () => {
       let aValue = a[sortBy];
       let bValue = b[sortBy];
       
-      if (sortBy === 'date' || sortBy === 'dueDate') {
+      if (sortBy === 'invoiceDate' || sortBy === 'createDate') {
         aValue = new Date(aValue);
         bValue = new Date(bValue);
-      } else if (sortBy === 'amount' || sortBy === 'totalAmount') {
+      } else if (sortBy === 'netAmount' || sortBy === 'totalNetAmount') {
         aValue = parseFloat(aValue) || 0;
         bValue = parseFloat(bValue) || 0;
       }
@@ -160,12 +173,14 @@ const Invoices = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'Valid':
+      case InvoiceStatus.APPROVED:
         return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'Discrepancy':
+      case InvoiceStatus.REJECTED:
         return <AlertTriangle className="h-4 w-4 text-red-600" />;
-      case 'Pending':
+      case InvoiceStatus.PENDING:
         return <Clock className="h-4 w-4 text-yellow-600" />;
+      case InvoiceStatus.PROCESSED:
+        return <FileCheck className="h-4 w-4 text-blue-600" />;
       default:
         return <FileText className="h-4 w-4 text-gray-600" />;
     }
@@ -173,12 +188,14 @@ const Invoices = () => {
 
   const getStatusVariant = (status) => {
     switch (status) {
-      case 'Valid':
+      case InvoiceStatus.APPROVED:
         return 'success';
-      case 'Discrepancy':
+      case InvoiceStatus.REJECTED:
         return 'destructive';
-      case 'Pending':
+      case InvoiceStatus.PENDING:
         return 'warning';
+      case InvoiceStatus.PROCESSED:
+        return 'default';
       default:
         return 'secondary';
     }
@@ -200,7 +217,7 @@ const Invoices = () => {
   // Table columns configuration
   const columns = [
     {
-      key: 'invoiceNumber',
+      key: 'invNo',
       header: 'Invoice',
       render: (value, invoice) => (
         <div className="flex items-center gap-3">
@@ -215,6 +232,7 @@ const Invoices = () => {
               </p>
             )}
             <p className="text-xs text-muted-foreground">v{invoice.version}</p>
+            <p className="text-xs text-blue-600">{invoice.productType}</p>
           </div>
         </div>
       )
@@ -230,22 +248,23 @@ const Invoices = () => {
       )
     },
     {
-      key: 'totalAmount',
+      key: 'totalNetAmount',
       header: 'Total Amount',
       render: (value, invoice) => (
         <div className="text-right">
           <p className="font-mono font-medium">${value.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-          <p className="text-sm text-muted-foreground">Tax: ${invoice.taxAmount.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground">Tax: ${(invoice.vatTaxAmount || 0).toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">Qty: {invoice.quantity}</p>
         </div>
       )
     },
     {
-      key: 'date',
+      key: 'invoiceDate',
       header: 'Date',
       render: (value, invoice) => (
         <div>
           <p>{new Date(value).toLocaleDateString()}</p>
-          <p className="text-sm text-muted-foreground">Due: {new Date(invoice.dueDate).toLocaleDateString()}</p>
+          <p className="text-sm text-muted-foreground">Created: {new Date(invoice.createDate).toLocaleDateString()}</p>
         </div>
       )
     },
@@ -287,7 +306,7 @@ const Invoices = () => {
             variant="ghost" 
             size="sm"
             onClick={() => handleValidateInvoice(invoice)}
-            disabled={invoice.status === 'Valid'}
+            disabled={invoice.status === InvoiceStatus.APPROVED}
           >
             <RefreshCw className="h-4 w-4" />
           </Button>
@@ -326,13 +345,13 @@ const Invoices = () => {
     // Simulate validation process
     setTimeout(() => {
       setIsValidating(false);
-      alert(`Validation completed for ${invoice.invoiceNumber}`);
+      alert(`Validation completed for ${invoice.invNo}`);
     }, 2000);
   };
 
   const handleValidateAll = async () => {
     setIsValidating(true);
-    const pendingInvoices = invoices.filter(inv => inv.status === 'Pending');
+    const pendingInvoices = invoices.filter(inv => inv.status === InvoiceStatus.PENDING);
     // Simulate batch validation
     setTimeout(() => {
       setIsValidating(false);
@@ -410,9 +429,10 @@ const Invoices = () => {
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
           <option value="all">All Status</option>
-          <option value="valid">Valid</option>
-          <option value="discrepancy">Discrepancy</option>
-          <option value="pending">Pending</option>
+          <option value={InvoiceStatus.PENDING.toLowerCase()}>Pending</option>
+          <option value={InvoiceStatus.APPROVED.toLowerCase()}>Approved</option>
+          <option value={InvoiceStatus.REJECTED.toLowerCase()}>Rejected</option>
+          <option value={InvoiceStatus.PROCESSED.toLowerCase()}>Processed</option>
         </select>
         <div className="flex items-center gap-2">
           <input
@@ -448,19 +468,19 @@ const Invoices = () => {
         <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle className="h-4 w-4 text-green-600" />
-            <span className="text-sm font-medium">Valid</span>
+            <span className="text-sm font-medium">Approved</span>
           </div>
           <div className="text-2xl font-bold text-green-600">
-            {filteredInvoices.filter(inv => inv.status === 'Valid').length}
+            {filteredInvoices.filter(inv => inv.status === InvoiceStatus.APPROVED).length}
           </div>
         </div>
         <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="h-4 w-4 text-red-600" />
-            <span className="text-sm font-medium">Discrepancies</span>
+            <span className="text-sm font-medium">Rejected</span>
           </div>
           <div className="text-2xl font-bold text-red-600">
-            {filteredInvoices.filter(inv => inv.status === 'Discrepancy').length}
+            {filteredInvoices.filter(inv => inv.status === InvoiceStatus.REJECTED).length}
           </div>
         </div>
         <div className="bg-card border border-border rounded-lg p-4">
@@ -469,7 +489,7 @@ const Invoices = () => {
             <span className="text-sm font-medium">Total Value</span>
           </div>
           <div className="text-2xl font-bold">
-            ${filteredInvoices.reduce((sum, inv) => sum + inv.totalAmount, 0).toLocaleString()}
+            ${filteredInvoices.reduce((sum, inv) => sum + inv.totalNetAmount, 0).toLocaleString()}
           </div>
         </div>
       </div>
@@ -541,7 +561,7 @@ const Invoices = () => {
           <div className="bg-card border border-border rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">
-                Invoice Details - {selectedInvoice.invoiceNumber}
+                Invoice Details - {selectedInvoice.invNo}
               </h2>
               <Button 
                 variant="ghost" 
@@ -562,15 +582,23 @@ const Invoices = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Invoice Number:</span>
-                      <span className="font-medium">{selectedInvoice.invoiceNumber}</span>
+                      <span className="font-medium">{selectedInvoice.invNo}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Date:</span>
-                      <span>{new Date(selectedInvoice.date).toLocaleDateString()}</span>
+                      <span className="text-muted-foreground">Invoice Date:</span>
+                      <span>{new Date(selectedInvoice.invoiceDate).toLocaleDateString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Due Date:</span>
-                      <span>{new Date(selectedInvoice.dueDate).toLocaleDateString()}</span>
+                      <span className="text-muted-foreground">Created Date:</span>
+                      <span>{new Date(selectedInvoice.createDate).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Product Code:</span>
+                      <span>{selectedInvoice.productCode}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Quantity:</span>
+                      <span>{selectedInvoice.quantity}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Status:</span>
@@ -601,16 +629,20 @@ const Invoices = () => {
                   <h3 className="font-semibold mb-2">Financial Details</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Subtotal:</span>
-                      <span className="font-mono">${selectedInvoice.amount.toFixed(2)}</span>
+                      <span className="text-muted-foreground">Net Amount:</span>
+                      <span className="font-mono">${selectedInvoice.netAmount.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Tax Amount:</span>
-                      <span className="font-mono">${selectedInvoice.taxAmount.toFixed(2)}</span>
+                      <span className="text-muted-foreground">VAT Tax Amount:</span>
+                      <span className="font-mono">${(selectedInvoice.vatTaxAmount || 0).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Promo Discount:</span>
+                      <span className="font-mono">${(selectedInvoice.promoDiscount || 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between border-t pt-2">
-                      <span className="font-medium">Total Amount:</span>
-                      <span className="font-mono font-bold">${selectedInvoice.totalAmount.toFixed(2)}</span>
+                      <span className="font-medium">Total Net Amount:</span>
+                      <span className="font-mono font-bold">${selectedInvoice.totalNetAmount.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -625,8 +657,8 @@ const Invoices = () => {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Last Validated:</span>
-                      <span>{new Date(selectedInvoice.lastModified).toLocaleString()}</span>
+                      <span className="text-muted-foreground">Last Updated:</span>
+                      <span>{new Date(selectedInvoice.updatedAt).toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -660,7 +692,7 @@ const Invoices = () => {
           <div className="bg-card border border-border rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">
-                Version History - {selectedInvoice.invoiceNumber}
+                Version History - {selectedInvoice.invNo}
               </h2>
               <Button 
                 variant="ghost" 
@@ -683,7 +715,7 @@ const Invoices = () => {
                     <span className="font-medium">Version {selectedInvoice.version}</span>
                   </div>
                   <span className="text-sm text-muted-foreground">
-                    {new Date(selectedInvoice.lastModified).toLocaleString()}
+                    {new Date(selectedInvoice.updatedAt).toLocaleString()}
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -733,7 +765,7 @@ const Invoices = () => {
               {compareInvoices.map((invoice, index) => (
                 <div key={invoice.id} className="space-y-4">
                   <h3 className="font-semibold text-center">
-                    {invoice.invoiceNumber}
+                    {invoice.invNo}
                   </h3>
                   <div className="border border-border rounded-lg p-4 space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -742,11 +774,11 @@ const Invoices = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Amount:</span>
-                      <span className="font-mono">${invoice.totalAmount.toFixed(2)}</span>
+                      <span className="font-mono">${invoice.totalNetAmount.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Date:</span>
-                      <span>{new Date(invoice.date).toLocaleDateString()}</span>
+                      <span>{new Date(invoice.invoiceDate).toLocaleDateString()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Status:</span>

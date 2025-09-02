@@ -24,6 +24,7 @@ import Button from '../../components/ui/Button';
 import DataTable from '../../components/ui/DataTable';
 import { Alert, AlertDescription } from '../../components/ui/Alert';
 import { Badge } from '../../components/ui/Badge';
+import { CreditNoteStatus, CreditNoteType } from '../../types/prisma';
 
 const CreditNotes = () => {
   const dispatch = useDispatch();
@@ -31,81 +32,93 @@ const CreditNotes = () => {
   // Mock credit note data - in real app this would come from Redux store
   const [creditNotes] = useState([
     { 
-      id: 'CN-001', 
-      creditNoteNumber: 'CN-001',
+      id: 1, 
+      invNo: 'CN-001',
       customer: 'ABC Corporation', 
       customerCode: 'CUST001',
-      amount: 299.99, 
-      taxAmount: 39.00,
-      totalAmount: 338.99,
-      date: '2024-01-15', 
-      reason: 'Product Return',
-      reasonCode: 'RETURN',
-      status: 'Processed',
+      netAmount: 299.99, 
+      vatTaxAmount: 39.00,
+      totalNetAmount: 338.99,
+      invoiceDate: '2024-01-15',
+      createDate: '2024-01-15',
+      productType: CreditNoteType.RETURN,
+      productCode: 'PROD001',
+      quantity: 5,
+      uomConvFactor: 1,
+      status: CreditNoteStatus.PROCESSED,
       workflow: 'approved',
       relatedInvoice: 'INV-001',
       version: 1,
-      lastModified: '2024-01-15T10:30:00Z',
+      updatedAt: '2024-01-15T10:30:00Z',
       createdBy: 'John Doe',
       approvedBy: 'Jane Smith',
       approvedDate: '2024-01-15T14:20:00Z'
     },
     { 
-      id: 'CN-002', 
-      creditNoteNumber: 'CN-002',
+      id: 2, 
+      invNo: 'CN-002',
       customer: 'XYZ Industries', 
       customerCode: 'CUST002',
-      amount: 150.00, 
-      taxAmount: 19.50,
-      totalAmount: 169.50,
-      date: '2024-01-14', 
-      reason: 'Billing Error',
-      reasonCode: 'ERROR',
-      status: 'Pending',
+      netAmount: 150.00, 
+      vatTaxAmount: 19.50,
+      totalNetAmount: 169.50,
+      invoiceDate: '2024-01-14',
+      createDate: '2024-01-14',
+      productType: CreditNoteType.ADJUSTMENT,
+      productCode: 'PROD002',
+      quantity: 3,
+      uomConvFactor: 1,
+      status: CreditNoteStatus.PENDING,
       workflow: 'pending_approval',
       relatedInvoice: 'INV-002',
       version: 1,
-      lastModified: '2024-01-14T15:45:00Z',
+      updatedAt: '2024-01-14T15:45:00Z',
       createdBy: 'Jane Smith',
       approvedBy: null,
       approvedDate: null
     },
     { 
-      id: 'CN-003', 
-      creditNoteNumber: 'CN-003',
+      id: 3, 
+      invNo: 'CN-003',
       customer: 'Tech Solutions Ltd', 
       customerCode: 'CUST003',
-      amount: 89.50, 
-      taxAmount: 11.64,
-      totalAmount: 101.14,
-      date: '2024-01-13', 
-      reason: 'Discount Adjustment',
-      reasonCode: 'DISCOUNT',
-      status: 'Processed',
+      netAmount: 89.50, 
+      vatTaxAmount: 11.64,
+      totalNetAmount: 101.14,
+      invoiceDate: '2024-01-13',
+      createDate: '2024-01-13',
+      productType: CreditNoteType.DISCOUNT,
+      productCode: 'PROD003',
+      quantity: 2,
+      uomConvFactor: 1,
+      status: CreditNoteStatus.PROCESSED,
       workflow: 'approved',
       relatedInvoice: 'INV-003',
       version: 2,
-      lastModified: '2024-01-13T09:15:00Z',
+      updatedAt: '2024-01-13T09:15:00Z',
       createdBy: 'System',
       approvedBy: 'John Doe',
       approvedDate: '2024-01-13T11:30:00Z'
     },
     { 
-      id: 'CN-004', 
-      creditNoteNumber: 'CN-004',
+      id: 4, 
+      invNo: 'CN-004',
       customer: 'Global Enterprises', 
       customerCode: 'CUST004',
-      amount: 500.00, 
-      taxAmount: 65.00,
-      totalAmount: 565.00,
-      date: '2024-01-12', 
-      reason: 'Quality Issue',
-      reasonCode: 'QUALITY',
-      status: 'Draft',
+      netAmount: 500.00, 
+      vatTaxAmount: 65.00,
+      totalNetAmount: 565.00,
+      invoiceDate: '2024-01-12',
+      createDate: '2024-01-12',
+      productType: CreditNoteType.RETURN,
+      productCode: 'PROD004',
+      quantity: 10,
+      uomConvFactor: 1,
+      status: CreditNoteStatus.PENDING,
       workflow: 'draft',
       relatedInvoice: 'INV-004',
       version: 1,
-      lastModified: '2024-01-12T16:45:00Z',
+      updatedAt: '2024-01-12T16:45:00Z',
       createdBy: 'Jane Smith',
       approvedBy: null,
       approvedDate: null
@@ -123,33 +136,31 @@ const CreditNotes = () => {
   const [showVersionModal, setShowVersionModal] = useState(false);
   const [selectedCreditNote, setSelectedCreditNote] = useState(null);
   const [formData, setFormData] = useState({
-    creditNoteNumber: '',
+    invNo: '',
     customer: '',
     customerCode: '',
-    amount: 0,
-    taxAmount: 0,
-    reason: '',
-    reasonCode: '',
+    netAmount: 0,
+    vatTaxAmount: 0,
+    productType: CreditNoteType.RETURN,
+    productCode: '',
+    quantity: 1,
     relatedInvoice: ''
   });
   const [sortBy, setSortBy] = useState('date');
   const [sortOrder, setSortOrder] = useState('desc');
 
-  // Reason codes
-  const reasonCodes = [
-    { code: 'RETURN', label: 'Product Return' },
-    { code: 'ERROR', label: 'Billing Error' },
-    { code: 'DISCOUNT', label: 'Discount Adjustment' },
-    { code: 'QUALITY', label: 'Quality Issue' },
-    { code: 'DAMAGE', label: 'Damaged Goods' },
-    { code: 'OTHER', label: 'Other' }
+  // Credit note types
+  const creditNoteTypes = [
+    { code: CreditNoteType.RETURN, label: 'Product Return' },
+    { code: CreditNoteType.ADJUSTMENT, label: 'Billing Adjustment' },
+    { code: CreditNoteType.DISCOUNT, label: 'Discount Adjustment' }
   ];
 
   // Filter and sort credit notes
   const filteredCreditNotes = useMemo(() => {
     let filtered = creditNotes.filter(note => {
       const matchesSearch = !searchTerm || 
-        note.creditNoteNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        note.invNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         note.customer?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         note.relatedInvoice?.toLowerCase().includes(searchTerm.toLowerCase());
       
@@ -157,10 +168,10 @@ const CreditNotes = () => {
         note.status.toLowerCase() === statusFilter.toLowerCase();
       
       const matchesReason = reasonFilter === 'all' || 
-        note.reasonCode === reasonFilter;
+        note.productType === reasonFilter;
       
-      const matchesDateRange = (!dateRange.from || new Date(note.date) >= new Date(dateRange.from)) &&
-        (!dateRange.to || new Date(note.date) <= new Date(dateRange.to));
+      const matchesDateRange = (!dateRange.from || new Date(note.invoiceDate) >= new Date(dateRange.from)) &&
+        (!dateRange.to || new Date(note.invoiceDate) <= new Date(dateRange.to));
       
       return matchesSearch && matchesStatus && matchesReason && matchesDateRange;
     });
@@ -170,10 +181,10 @@ const CreditNotes = () => {
       let aValue = a[sortBy];
       let bValue = b[sortBy];
       
-      if (sortBy === 'date' || sortBy === 'approvedDate') {
+      if (sortBy === 'invoiceDate' || sortBy === 'approvedDate') {
         aValue = new Date(aValue);
         bValue = new Date(bValue);
-      } else if (sortBy === 'amount' || sortBy === 'totalAmount') {
+      } else if (sortBy === 'netAmount' || sortBy === 'totalNetAmount') {
         aValue = parseFloat(aValue) || 0;
         bValue = parseFloat(bValue) || 0;
       }
@@ -190,13 +201,13 @@ const CreditNotes = () => {
 
   const getStatusVariant = (status) => {
     switch (status) {
-      case 'Processed':
+      case CreditNoteStatus.PROCESSED:
         return 'success';
-      case 'Pending':
+      case CreditNoteStatus.PENDING:
         return 'warning';
-      case 'Draft':
-        return 'secondary';
-      case 'Rejected':
+      case CreditNoteStatus.APPROVED:
+        return 'default';
+      case CreditNoteStatus.REJECTED:
         return 'destructive';
       default:
         return 'secondary';
@@ -221,7 +232,7 @@ const CreditNotes = () => {
   // Table columns configuration
   const columns = [
     {
-      key: 'creditNoteNumber',
+      key: 'invNo',
       header: 'Credit Note',
       render: (value, note) => (
         <div className="flex items-center gap-3">
@@ -231,6 +242,7 @@ const CreditNotes = () => {
           <div>
             <p className="font-medium">{value}</p>
             <p className="text-xs text-muted-foreground">v{note.version}</p>
+            <p className="text-xs text-purple-600">{note.productType}</p>
             {note.relatedInvoice && (
               <p className="text-xs text-blue-600 flex items-center gap-1">
                 <Link className="h-3 w-3" />
@@ -252,33 +264,35 @@ const CreditNotes = () => {
       )
     },
     {
-      key: 'totalAmount',
+      key: 'totalNetAmount',
       header: 'Total Amount',
       render: (value, note) => (
         <div className="text-right">
           <p className="font-mono font-medium text-red-600">-${value.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-          <p className="text-sm text-muted-foreground">Tax: ${note.taxAmount.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground">Tax: ${(note.vatTaxAmount || 0).toFixed(2)}</p>
+          <p className="text-xs text-muted-foreground">Qty: {note.quantity}</p>
         </div>
       )
     },
     {
-      key: 'date',
+      key: 'invoiceDate',
       header: 'Date',
-      render: (value) => (
-        <div>
-          <p>{new Date(value).toLocaleDateString()}</p>
-        </div>
-      )
-    },
-    {
-      key: 'reason',
-      header: 'Reason',
       render: (value, note) => (
         <div>
-          <p className="font-medium">{value}</p>
+          <p>{new Date(value).toLocaleDateString()}</p>
+          <p className="text-sm text-muted-foreground">Created: {new Date(note.createDate).toLocaleDateString()}</p>
+        </div>
+      )
+    },
+    {
+      key: 'productType',
+      header: 'Type',
+      render: (value, note) => (
+        <div>
           <Badge variant="outline" className="text-xs">
-            {note.reasonCode}
+            {value}
           </Badge>
+          <p className="text-sm text-muted-foreground mt-1">{note.productCode}</p>
         </div>
       )
     },
@@ -317,7 +331,7 @@ const CreditNotes = () => {
             variant="ghost" 
             size="sm"
             onClick={() => handleEditCreditNote(note)}
-            disabled={note.status === 'Processed'}
+            disabled={note.status === CreditNoteStatus.PROCESSED}
           >
             <Edit className="h-4 w-4" />
           </Button>
@@ -332,7 +346,7 @@ const CreditNotes = () => {
             variant="ghost" 
             size="sm"
             onClick={() => handleDeleteCreditNote(note)}
-            disabled={note.status === 'Processed'}
+            disabled={note.status === CreditNoteStatus.PROCESSED}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -349,13 +363,14 @@ const CreditNotes = () => {
 
   const handleAddCreditNote = () => {
     setFormData({
-      creditNoteNumber: '',
+      invNo: '',
       customer: '',
       customerCode: '',
-      amount: 0,
-      taxAmount: 0,
-      reason: '',
-      reasonCode: '',
+      netAmount: 0,
+      vatTaxAmount: 0,
+      productType: CreditNoteType.RETURN,
+      productCode: '',
+      quantity: 1,
       relatedInvoice: ''
     });
     setShowAddModal(true);
@@ -373,9 +388,9 @@ const CreditNotes = () => {
   };
 
   const handleDeleteCreditNote = (note) => {
-    if (window.confirm(`Are you sure you want to delete ${note.creditNoteNumber}?`)) {
+    if (window.confirm(`Are you sure you want to delete ${note.invNo}?`)) {
       // In a real app, this would dispatch a delete action
-      alert(`Credit note ${note.creditNoteNumber} would be deleted`);
+      alert(`Credit note ${note.invNo} would be deleted`);
     }
   };
 
@@ -386,7 +401,7 @@ const CreditNotes = () => {
 
   const handleSaveCreditNote = () => {
     // Validate form data
-    if (!formData.creditNoteNumber || !formData.customer || !formData.amount) {
+    if (!formData.invNo || !formData.customer || !formData.netAmount) {
       alert('Please fill in all required fields');
       return;
     }
@@ -438,19 +453,19 @@ const CreditNotes = () => {
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
           <option value="all">All Status</option>
-          <option value="draft">Draft</option>
-          <option value="pending">Pending</option>
-          <option value="processed">Processed</option>
-          <option value="rejected">Rejected</option>
+          <option value={CreditNoteStatus.PENDING.toLowerCase()}>Pending</option>
+          <option value={CreditNoteStatus.APPROVED.toLowerCase()}>Approved</option>
+          <option value={CreditNoteStatus.PROCESSED.toLowerCase()}>Processed</option>
+          <option value={CreditNoteStatus.REJECTED.toLowerCase()}>Rejected</option>
         </select>
         <select
           value={reasonFilter}
           onChange={(e) => setReasonFilter(e.target.value)}
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
-          <option value="all">All Reasons</option>
-          {reasonCodes.map(reason => (
-            <option key={reason.code} value={reason.code}>{reason.label}</option>
+          <option value="all">All Types</option>
+          {creditNoteTypes.map(type => (
+            <option key={type.code} value={type.code}>{type.label}</option>
           ))}
         </select>
         <div className="flex items-center gap-2">
@@ -490,7 +505,7 @@ const CreditNotes = () => {
             <span className="text-sm font-medium">Processed</span>
           </div>
           <div className="text-2xl font-bold text-green-600">
-            {filteredCreditNotes.filter(note => note.status === 'Processed').length}
+            {filteredCreditNotes.filter(note => note.status === CreditNoteStatus.PROCESSED).length}
           </div>
         </div>
         <div className="bg-card border border-border rounded-lg p-4">
@@ -499,7 +514,7 @@ const CreditNotes = () => {
             <span className="text-sm font-medium">Pending</span>
           </div>
           <div className="text-2xl font-bold text-yellow-600">
-            {filteredCreditNotes.filter(note => note.status === 'Pending').length}
+            {filteredCreditNotes.filter(note => note.status === CreditNoteStatus.PENDING).length}
           </div>
         </div>
         <div className="bg-card border border-border rounded-lg p-4">
@@ -508,7 +523,7 @@ const CreditNotes = () => {
             <span className="text-sm font-medium">Total Value</span>
           </div>
           <div className="text-2xl font-bold text-red-600">
-            -${filteredCreditNotes.reduce((sum, note) => sum + note.totalAmount, 0).toLocaleString()}
+            -${filteredCreditNotes.reduce((sum, note) => sum + note.totalNetAmount, 0).toLocaleString()}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, cloneElement } from "react";
 import { cva } from "class-variance-authority";
 import PropTypes from "prop-types";
 import { cn } from "../../utils/cn";
@@ -33,13 +33,26 @@ export const buttonVariants = cva(
   }
 );
 
-const Button = forwardRef(({ className, variant, size, ...props }, ref) => {
+const Button = forwardRef(({ className, variant, size, asChild = false, children, ...props }, ref) => {
+  const classes = cn(buttonVariants({ variant, size, className }));
+  
+  if (asChild && children) {
+    return cloneElement(children, {
+      className: cn(classes, children.props?.className),
+      ref,
+      ...props,
+      ...children.props,
+    });
+  }
+  
   return (
     <button
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={classes}
       ref={ref}
       {...props}
-    />
+    >
+      {children}
+    </button>
   );
 });
 
@@ -56,6 +69,7 @@ Button.propTypes = {
     "link",
   ]),
   size: PropTypes.oneOf(["default", "sm", "md", "lg", "icon"]),
+  asChild: PropTypes.bool,
   children: PropTypes.node,
 };
 

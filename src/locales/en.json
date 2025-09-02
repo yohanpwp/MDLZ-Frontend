@@ -24,6 +24,7 @@
     "actions": "Actions",
     "view": "View",
     "history": "History",
+    "allStatus": "All Status",
     "of": "of"
   },
   "navigation": {
@@ -31,6 +32,7 @@
     "invoices": "Invoices",
     "creditNotes": "Credit Notes",
     "customers": "Customers",
+    "distributors": "Distributors",
     "products": "Products",
     "reports": "Reports",
     "settings": "Settings",
@@ -92,6 +94,18 @@
     "customerAdded": "Customer added successfully",
     "customerUpdated": "Customer updated successfully",
     "customerDeleted": "Customer deleted successfully"
+  },
+  "distributor":{
+    "description":"Manage distibutor information and validation settings",
+    "searchPlaceholder": "Search Distributors...",
+    "addDistributor": "Add Distributors",
+    "code": "Code",
+    "name": "Distributor Name",
+    "prefix": "Prefix",
+    "contact": "Contact",
+    "taxId": "Tax ID",
+    "address": "Address",
+    "empty": "No distributor found"
   },
   "form": {
     "required": "This field is required",

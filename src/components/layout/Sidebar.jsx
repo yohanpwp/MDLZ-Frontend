@@ -15,6 +15,7 @@ import {
   FileCheck,
   ChevronDown,
   ChevronRight,
+  Building
 } from "lucide-react";
 import { cn } from "../../utils/cn";
 import Tooltip from "../ui/Tooltip";
@@ -65,6 +66,11 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, className }) => {
       isSection: true,
       key: "references",
       children: [
+        {
+          title: t("navigation.distributors"),
+          icon: Building,
+          path: "/references/distributors",
+        },
         {
           title: t("navigation.customers"),
           icon: Users,
