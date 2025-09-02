@@ -9,6 +9,17 @@ export const developmentConfig = {
   fallbackSource: 'localStorage',
   offlineMode: true,
   syncEnabled: false, // Disable sync in development
+
+  api: {
+    baseUrl: process.env.REACT_APP_API_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+      // Authorization will be set dynamically
+    },
+    timeout: 30000,
+    retryAttempts: 3,
+    retryDelay: 1000
+  },
   
   file: {
     encoding: 'utf-8',
@@ -33,7 +44,7 @@ export const productionConfig = {
   syncEnabled: true,
   
   api: {
-    baseUrl: process.env.REACT_APP_API_BASE_URL || 'https://api.yourapp.com',
+    baseUrl: process.env.REACT_APP_API_BASE_URL,
     headers: {
       'Content-Type': 'application/json',
       // Authorization will be set dynamically

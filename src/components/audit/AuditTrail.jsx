@@ -229,7 +229,7 @@ const AuditTrail = () => {
                 value={filters.userId}
                 onChange={(e) => handleFilterChange('userId', e.target.value)}
                 placeholder="Filter by user ID..."
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             
@@ -238,7 +238,7 @@ const AuditTrail = () => {
               <select
                 value={filters.action}
                 onChange={(e) => handleFilterChange('action', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               >
                 <option value="">All Actions</option>
                 <option value="LOGIN">Login</option>
@@ -258,7 +258,7 @@ const AuditTrail = () => {
               <select
                 value={filters.module}
                 onChange={(e) => handleFilterChange('module', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               >
                 <option value="">All Modules</option>
                 <option value="authentication">Authentication</option>
@@ -274,7 +274,7 @@ const AuditTrail = () => {
               <select
                 value={filters.severity}
                 onChange={(e) => handleFilterChange('severity', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               >
                 <option value="">All Severities</option>
                 <option value="info">Info</option>
@@ -290,7 +290,7 @@ const AuditTrail = () => {
                 type="datetime-local"
                 value={dateRange.startDate}
                 onChange={(e) => handleDateRangeChange('startDate', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             
@@ -300,7 +300,7 @@ const AuditTrail = () => {
                 type="datetime-local"
                 value={dateRange.endDate}
                 onChange={(e) => handleDateRangeChange('endDate', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             

@@ -52,7 +52,7 @@ const ThemeSettings = () => {
               className={cn(
                 "relative flex items-center p-4 rounded-lg border-2 transition-all duration-200",
                 "hover:bg-gray-50 dark:hover:bg-gray-800",
-                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+                "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:ring-offset-2",
                 isSelected
                   ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
                   : "border-gray-200 dark:border-gray-700"

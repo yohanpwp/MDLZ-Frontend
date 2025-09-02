@@ -334,7 +334,7 @@ const ExportOptions = ({ report, onClose }) => {
               className={`
                 border rounded-lg p-4 cursor-pointer transition-all
                 ${exportOptions.format === format 
-                  ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
+                  ? 'border-primary bg-primary/5 ring-1 ring-primary/20' 
                   : 'border-border hover:border-primary/50'
                 }
               `}
@@ -365,7 +365,7 @@ const ExportOptions = ({ report, onClose }) => {
             value={exportOptions.filename}
             onChange={(e) => handleOptionChange('filename', e.target.value)}
             placeholder="Enter filename..."
-            className="flex-1 px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            className="flex-1 px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
           />
           <div className="px-3 py-2 bg-accent text-muted-foreground rounded-md">
             .{exportOptions.format}
@@ -434,7 +434,7 @@ const ExportOptions = ({ report, onClose }) => {
               <select
                 value={exportOptions.formatOptions.pageSize || 'a4'}
                 onChange={(e) => handleFormatOptionChange('pageSize', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
               >
                 <option value="a4">A4</option>
                 <option value="letter">Letter</option>
@@ -447,7 +447,7 @@ const ExportOptions = ({ report, onClose }) => {
               <select
                 value={exportOptions.formatOptions.orientation || 'portrait'}
                 onChange={(e) => handleFormatOptionChange('orientation', e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
               >
                 <option value="portrait">Portrait</option>
                 <option value="landscape">Landscape</option>

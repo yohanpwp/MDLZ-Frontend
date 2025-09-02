@@ -57,7 +57,7 @@ const FormInput = ({
       onChange={onChange}
       className={`
         w-full border rounded-md px-3 py-2 text-sm
-        focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent
+        focus:outline-none focus:ring-1 focus:ring-ring focus:border-transparent
         disabled:opacity-50 disabled:cursor-not-allowed
         ${error ? 'border-destructive' : 'border-border'}
         bg-background text-foreground placeholder:text-muted-foreground
@@ -85,7 +85,7 @@ const FormTextarea = ({
       rows={rows}
       className={`
         w-full border rounded-md px-3 py-2 text-sm resize-none
-        focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent
+        focus:outline-none focus:ring-1 focus:ring-ring focus:border-transparent
         disabled:opacity-50 disabled:cursor-not-allowed
         ${error ? 'border-destructive' : 'border-border'}
         bg-background text-foreground placeholder:text-muted-foreground
@@ -111,7 +111,7 @@ const FormSelect = ({
       onChange={onChange}
       className={`
         w-full border rounded-md px-3 py-2 text-sm
-        focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent
+        focus:outline-none focus:ring-1 focus:ring-ring focus:border-transparent
         disabled:opacity-50 disabled:cursor-not-allowed
         ${error ? 'border-destructive' : 'border-border'}
         bg-background text-foreground
@@ -148,12 +148,12 @@ const FormCheckbox = ({
         checked={checked}
         onChange={onChange}
         className={`
-          rounded border-border text-primary focus:ring-2 focus:ring-ring
+          rounded border-border text-primary focus:ring-offset-0 focus:ring-ring
           ${error ? 'border-destructive' : ''}
         `}
         {...props}
       />
-      <span className="text-sm font-medium text-foreground">{label}</span>
+      <span className="text-sm font-medium text-foreground ml-2">{label}</span>
     </label>
   );
 };

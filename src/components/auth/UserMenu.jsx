@@ -75,7 +75,7 @@ const UserMenu = () => {
       {/* User Menu Trigger */}
       <button
         onClick={toggleMenu}
-        className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-white hover:text-gray-100 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-white hover:text-gray-100 hover:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:ring-offset-2"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >

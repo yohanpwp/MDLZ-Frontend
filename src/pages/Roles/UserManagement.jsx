@@ -309,13 +309,13 @@ const UserManagement = () => {
                 placeholder="Search users..."
                 value={filters.search}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="pl-10 pr-4 py-2 w-full border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             <select
               value={filters.role}
               onChange={(e) => handleRoleFilter(e.target.value)}
-              className="px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             >
               <option value="">All Roles</option>
               {Object.keys(ROLE_PERMISSIONS).map(role => (
@@ -327,7 +327,7 @@ const UserManagement = () => {
             <select
               value={filters.status}
               onChange={(e) => handleStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             >
               <option value="">All Status</option>
               <option value="active">Active</option>
@@ -564,7 +564,7 @@ const UserManagement = () => {
                   type="text"
                   value={newUser.username}
                   onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
               <div>
@@ -573,7 +573,7 @@ const UserManagement = () => {
                   type="email"
                   value={newUser.email}
                   onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -583,7 +583,7 @@ const UserManagement = () => {
                     type="text"
                     value={newUser.firstName}
                     onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
                 <div>
@@ -592,7 +592,7 @@ const UserManagement = () => {
                     type="text"
                     value={newUser.lastName}
                     onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
               </div>
@@ -601,7 +601,7 @@ const UserManagement = () => {
                 <select
                   value={newUser.role}
                   onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                 >
                   {Object.keys(ROLE_PERMISSIONS).map(role => (
                     <option key={role} value={role}>
@@ -647,7 +647,7 @@ const UserManagement = () => {
                   type="text"
                   value={editingUser.username}
                   onChange={(e) => setEditingUser({ ...editingUser, username: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
               <div>
@@ -656,7 +656,7 @@ const UserManagement = () => {
                   type="email"
                   value={editingUser.email}
                   onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -666,7 +666,7 @@ const UserManagement = () => {
                     type="text"
                     value={editingUser.firstName}
                     onChange={(e) => setEditingUser({ ...editingUser, firstName: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
                 <div>
@@ -675,7 +675,7 @@ const UserManagement = () => {
                     type="text"
                     value={editingUser.lastName}
                     onChange={(e) => setEditingUser({ ...editingUser, lastName: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
               </div>
@@ -684,7 +684,7 @@ const UserManagement = () => {
                 <select
                   value={editingUser.role}
                   onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                 >
                   {Object.keys(ROLE_PERMISSIONS).map(role => (
                     <option key={role} value={role}>

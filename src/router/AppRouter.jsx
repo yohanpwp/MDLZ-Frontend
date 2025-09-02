@@ -10,17 +10,18 @@ import { LoadingSpinner } from "../components/ui";
 const Dashboard = lazy(() => import("../pages/Dashboard.jsx"));
 const ImportData = lazy(() => import("../pages/MasterData/ImportData.jsx"));
 const ExportData = lazy(() => import("../pages/MasterData/ExportData.jsx"));
-const Customers = lazy(() => import("../pages/Components/Customers.jsx"));
-const Products = lazy(() => import("../pages/Components/Products.jsx"));
-const Invoices = lazy(() => import("../pages/Components/Invoices.jsx"));
-const CreditNotes = lazy(() => import("../pages/Components/CreditNotes.jsx"));
-const Reports = lazy(() => import("../pages/Components/Reports.jsx"));
+const Customers = lazy(() => import("../pages/References/Customers.jsx"));
+const Products = lazy(() => import("../pages/References/Products.jsx"));
+const Invoices = lazy(() => import("../pages/Transactions/Invoices.jsx"));
+const CreditNotes = lazy(() => import("../pages/Transactions/CreditNotes.jsx"));
+const Reports = lazy(() => import("../pages/Reports/Reports.jsx"));
 const UserManagement = lazy(() => import("../pages/Roles/UserManagement.jsx"));
 const TermsConditions = lazy(() =>
   import("../pages/Settings/TermsConditions.jsx")
 );
 const Login = lazy(() => import("../pages/Login.jsx"));
 const AccessDenied = lazy(() => import("../pages/AccessDenied.jsx"));
+const NotFound = lazy(() => import("../pages/NotFound.jsx"));
 
 const AppRouter = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,8 @@ const AppRouter = () => {
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/access-denied" element={<AccessDenied />} />
-
+          {/* 404 Not Found Route */}
+          <Route path="*" element={<NotFound />} />
           {/* Protected Routes */}
           <Route
             path="/"
@@ -73,7 +75,7 @@ const AppRouter = () => {
           />
 
           <Route
-            path="/components/customers"
+            path="/references/customers"
             element={
               <ProtectedRoute requiredPermissions={["manage_master_data"]}>
                 <Layout>
@@ -84,7 +86,7 @@ const AppRouter = () => {
           />
 
           <Route
-            path="/components/products"
+            path="/references/products"
             element={
               <ProtectedRoute requiredPermissions={["manage_master_data"]}>
                 <Layout>
@@ -95,7 +97,7 @@ const AppRouter = () => {
           />
 
           <Route
-            path="/components/invoices"
+            path="/transactions/invoices"
             element={
               <ProtectedRoute requiredPermissions={["read_invoices"]}>
                 <Layout>
@@ -106,7 +108,7 @@ const AppRouter = () => {
           />
 
           <Route
-            path="/components/credit-notes"
+            path="/transactions/credit-notes"
             element={
               <ProtectedRoute requiredPermissions={["read_invoices"]}>
                 <Layout>
@@ -117,7 +119,7 @@ const AppRouter = () => {
           />
 
           <Route
-            path="/components/reports"
+            path="/reports"
             element={
               <ProtectedRoute requiredPermissions={["generate_reports"]}>
                 <Layout>

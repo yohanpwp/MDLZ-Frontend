@@ -401,13 +401,13 @@ const Invoices = () => {
             placeholder="Search invoices..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
           <option value="all">All Status</option>
           <option value="valid">Valid</option>
@@ -419,14 +419,14 @@ const Invoices = () => {
             type="date"
             value={dateRange.from}
             onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
-            className="flex-1 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            className="flex-1 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <span className="text-muted-foreground">-</span>
           <input
             type="date"
             value={dateRange.to}
             onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
-            className="flex-1 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            className="flex-1 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           {(dateRange.from || dateRange.to) && (
             <Button variant="ghost" size="sm" onClick={clearDateFilter}>
@@ -510,7 +510,7 @@ const Invoices = () => {
                   type="file"
                   multiple
                   accept=".csv,.txt,.pdf"
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
               

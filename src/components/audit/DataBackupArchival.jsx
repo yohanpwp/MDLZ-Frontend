@@ -323,7 +323,7 @@ const DataBackupArchival = () => {
               
               <div>
                 <label className="block text-sm font-medium mb-1">Backup Type</label>
-                <select className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                <select className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring">
                   <option value="full">Full Backup</option>
                   <option value="incremental">Incremental Backup</option>
                 </select>
@@ -352,7 +352,7 @@ const DataBackupArchival = () => {
             <select
               value={archivalSettings.autoBackup ? 'enabled' : 'disabled'}
               onChange={(e) => handleSettingsChange('autoBackup', e.target.value === 'enabled')}
-              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             >
               <option value="enabled">Enabled</option>
               <option value="disabled">Disabled</option>
@@ -364,7 +364,7 @@ const DataBackupArchival = () => {
             <select
               value={archivalSettings.backupFrequency}
               onChange={(e) => handleSettingsChange('backupFrequency', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             >
               <option value="hourly">Hourly</option>
               <option value="daily">Daily</option>
@@ -379,7 +379,7 @@ const DataBackupArchival = () => {
               type="number"
               value={archivalSettings.retentionPeriod}
               onChange={(e) => handleSettingsChange('retentionPeriod', parseInt(e.target.value))}
-              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               min="1"
               max="365"
             />

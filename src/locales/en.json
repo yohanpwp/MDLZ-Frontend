@@ -29,11 +29,21 @@
   "navigation": {
     "dashboard": "Dashboard",
     "invoices": "Invoices",
+    "creditNotes": "Credit Notes",
     "customers": "Customers",
+    "products": "Products",
     "reports": "Reports",
     "settings": "Settings",
     "profile": "Profile",
-    "logout": "Logout"
+    "logout": "Logout",
+    "sidebar": "Sidebar",
+    "menu": "Menu",
+    "masterData": "Master Data",
+    "importData": "Import Data",
+    "exportData": "Export Data",
+    "references": "References",
+    "transactions": "Transactions",
+    "userManagement": "User Management"
   },
   "auth": {
     "login": "Login",

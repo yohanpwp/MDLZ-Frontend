@@ -272,7 +272,7 @@ const ComplianceReporting = () => {
               <select
                 value={selectedReportType}
                 onChange={(e) => setSelectedReportType(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               >
                 <option value="">Select report type...</option>
                 {reportTypes.map((type) => (
@@ -333,7 +333,7 @@ const ComplianceReporting = () => {
                       startDate: e.target.value,
                     }))
                   }
-                  className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
               <div>
@@ -349,7 +349,7 @@ const ComplianceReporting = () => {
                       endDate: e.target.value,
                     }))
                   }
-                  className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
             </div>

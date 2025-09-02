@@ -18,12 +18,14 @@ import {
 } from "lucide-react";
 import { cn } from "../../utils/cn";
 import Tooltip from "../ui/Tooltip";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 const Sidebar = ({ isOpen, onClose, isCollapsed, className }) => {
   const [expandedSections, setExpandedSections] = useState({
     masterData: false,
     components: false,
   });
+  const { t } = useLanguage();
 
   const toggleSection = (section) => {
     setExpandedSections((prev) => ({
@@ -34,67 +36,75 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, className }) => {
 
   const navigationItems = [
     {
-      title: "Dashboard",
+      title: t("navigation.dashboard"),
       icon: LayoutDashboard,
       path: "/",
       exact: true,
     },
     {
-      title: "Master Data",
+      title: t("navigation.masterData"),
       icon: Database,
       isSection: true,
       key: "masterData",
       children: [
         {
-          title: "Import Data",
+          title: t("navigation.importData"),
           icon: Upload,
           path: "/master-data/import",
         },
         {
-          title: "Export Data",
+          title: t("navigation.exportData"),
           icon: Download,
           path: "/master-data/export",
         },
       ],
     },
     {
-      title: "Components",
+      title: t("navigation.references"),
       icon: Package,
       isSection: true,
-      key: "components",
+      key: "references",
       children: [
         {
-          title: "Customers",
+          title: t("navigation.customers"),
           icon: Users,
-          path: "/components/customers",
+          path: "/references/customers",
         },
         {
-          title: "Products",
+          title: t("navigation.products"),
           icon: Package,
-          path: "/components/products",
-        },
-        {
-          title: "Invoices",
-          icon: FileText,
-          path: "/components/invoices",
-        },
-        {
-          title: "Credit Notes",
-          icon: CreditCard,
-          path: "/components/credit-notes",
+          path: "/references/products",
         },
       ],
     },
     {
-      title: "Reports",
+      title: t("navigation.transactions"),
+      icon: Package,
+      isSection: true,
+      key: "transactions",
+      children: [
+        {
+          title: t("navigation.invoices"),
+          icon: FileText,
+          path: "/transactions/invoices",
+        },
+        {
+          title: t("navigation.creditNotes"),
+          icon: CreditCard,
+          path: "/transactions/credit-notes",
+        },
+      ],
+    },
+    {
+      title: t("navigation.reports"),
       icon: BarChart3,
       path: "/components/reports",
     },
     {
-      title: "User Management",
+      title: t("navigation.userManagement"),
       icon: UserCog,
       path: "/roles/user-management",
-    }
+    },
   ];
 
   const NavItem = ({ item, isChild = false }) => {
@@ -237,8 +247,12 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, className }) => {
           {/* Sidebar footer */}
           {!isCollapsed && (
             <div className="p-4 border-t border-border">
-              <div className="text-xs text-muted-foreground">2025 @Verismart
-                <NavLink to="/settings/terms-conditions">{" "} Terms & Conditions</NavLink>
+              <div className="text-xs text-muted-foreground">
+                2025 @Verismart
+                <NavLink to="/settings/terms-conditions">
+                  {" "}
+                  Terms & Conditions
+                </NavLink>
               </div>
             </div>
           )}

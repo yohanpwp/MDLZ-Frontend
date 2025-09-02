@@ -65,7 +65,7 @@ const ReportGenerator = () => {
               className={`
                 border rounded-lg p-4 cursor-pointer transition-all
                 ${selectedTemplate?.id === template.id 
-                  ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
+                  ? 'border-primary bg-primary/5 ring-1 ring-primary/20' 
                   : 'border-border hover:border-primary/50 hover:bg-accent/50'
                 }
               `}
@@ -108,7 +108,7 @@ const ReportGenerator = () => {
               value={reportName}
               onChange={(e) => setReportName(e.target.value)}
               placeholder="Enter report name..."
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
             />
           </div>
 

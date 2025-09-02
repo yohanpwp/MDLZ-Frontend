@@ -59,7 +59,7 @@ const LanguageSwitcher = ({
   };
 
   const buttonClasses = cn(
-    'inline-flex items-center justify-between rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none',
+    'inline-flex items-center justify-between rounded-md font-medium transition-colors focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none',
     variants[variant],
     sizes[size],
     className

@@ -68,7 +68,7 @@ const Modal = ({
             {showCloseButton && (
               <Button 
                 variant="ghost" 
-                size="sm"
+                size="md"
                 onClick={onClose}
                 className="h-8 w-8 p-0 hover:bg-muted"
               >

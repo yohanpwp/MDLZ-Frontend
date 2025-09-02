@@ -29,11 +29,21 @@
   "navigation": {
     "dashboard": "แดชบอร์ด",
     "invoices": "ใบแจ้งหนี้",
+    "creditNotes": "ใบลดหนี้",
     "customers": "ลูกค้า",
+    "products": "สินค้า",
     "reports": "รายงาน",
     "settings": "การตั้งค่า",
     "profile": "โปรไฟล์",
-    "logout": "ออกจากระบบ"
+    "logout": "ออกจากระบบ",
+    "sidebar": "แถบด้านข้าง",
+    "menu": "เมนู",
+    "masterData": "ข้อมูลหลัก",
+    "importData": "นำเข้าข้อมูล",
+    "exportData": "ส่งออกข้อมูล",
+    "references": "ข้อมูลอ้างอิง",
+    "transactions": "งานประจำวัน",
+    "userManagement": "การจัดการผู้ใช้"
   },
   "auth": {
     "login": "เข้าสู่ระบบ",

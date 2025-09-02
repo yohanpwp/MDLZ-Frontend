@@ -82,7 +82,7 @@ const ReportFilters = () => {
               type="date"
               value={filters.startDate}
               onChange={(e) => handleFilterChange('startDate', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
             />
           </div>
           <div>
@@ -91,7 +91,7 @@ const ReportFilters = () => {
               type="date"
               value={filters.endDate}
               onChange={(e) => handleFilterChange('endDate', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
             />
           </div>
         </div>
@@ -129,7 +129,7 @@ const ReportFilters = () => {
               value={filters.minDiscrepancyAmount}
               onChange={(e) => handleFilterChange('minDiscrepancyAmount', parseFloat(e.target.value) || 0)}
               placeholder="0.00"
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
             />
           </div>
           <div>
@@ -141,7 +141,7 @@ const ReportFilters = () => {
               value={filters.maxDiscrepancyAmount || ''}
               onChange={(e) => handleFilterChange('maxDiscrepancyAmount', e.target.value ? parseFloat(e.target.value) : null)}
               placeholder="No limit"
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
             />
           </div>
         </div>
@@ -226,7 +226,7 @@ const ReportFilters = () => {
             <select
               value={filters.sortBy}
               onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
             >
               <option value="validatedAt">Date</option>
               <option value="discrepancy">Discrepancy Amount</option>
@@ -240,7 +240,7 @@ const ReportFilters = () => {
             <select
               value={filters.sortOrder}
               onChange={(e) => handleFilterChange('sortOrder', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary"
             >
               <option value="desc">Descending</option>
               <option value="asc">Ascending</option>

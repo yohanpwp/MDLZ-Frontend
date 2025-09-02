@@ -429,13 +429,13 @@ const CreditNotes = () => {
             placeholder="Search credit notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
           <option value="all">All Status</option>
           <option value="draft">Draft</option>
@@ -446,7 +446,7 @@ const CreditNotes = () => {
         <select
           value={reasonFilter}
           onChange={(e) => setReasonFilter(e.target.value)}
-          className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
           <option value="all">All Reasons</option>
           {reasonCodes.map(reason => (
@@ -458,14 +458,14 @@ const CreditNotes = () => {
             type="date"
             value={dateRange.from}
             onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
-            className="flex-1 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            className="flex-1 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           <span className="text-muted-foreground">-</span>
           <input
             type="date"
             value={dateRange.to}
             onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
-            className="flex-1 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            className="flex-1 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           {(dateRange.from || dateRange.to) && (
             <Button variant="ghost" size="sm" onClick={clearDateFilter}>
@@ -555,7 +555,7 @@ const CreditNotes = () => {
                   type="text"
                   value={formData.creditNoteNumber}
                   onChange={(e) => setFormData({ ...formData, creditNoteNumber: e.target.value })}
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                   placeholder="Enter credit note number"
                 />
               </div>
@@ -567,7 +567,7 @@ const CreditNotes = () => {
                   type="text"
                   value={formData.relatedInvoice}
                   onChange={(e) => setFormData({ ...formData, relatedInvoice: e.target.value })}
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                   placeholder="Enter invoice number"
                 />
               </div>
@@ -579,7 +579,7 @@ const CreditNotes = () => {
                   type="text"
                   value={formData.customer}
                   onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                   placeholder="Enter customer name"
                 />
               </div>
@@ -591,7 +591,7 @@ const CreditNotes = () => {
                   type="text"
                   value={formData.customerCode}
                   onChange={(e) => setFormData({ ...formData, customerCode: e.target.value })}
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                   placeholder="Enter customer code"
                 />
               </div>
@@ -605,7 +605,7 @@ const CreditNotes = () => {
                   min="0"
                   value={formData.amount}
                   onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                   placeholder="0.00"
                 />
               </div>
@@ -619,7 +619,7 @@ const CreditNotes = () => {
                   min="0"
                   value={formData.taxAmount}
                   onChange={(e) => setFormData({ ...formData, taxAmount: parseFloat(e.target.value) || 0 })}
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                   placeholder="0.00"
                 />
               </div>
@@ -637,7 +637,7 @@ const CreditNotes = () => {
                       reason: selectedReason ? selectedReason.label : ''
                     });
                   }}
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                 >
                   <option value="">Select reason</option>
                   {reasonCodes.map(reason => (
@@ -653,7 +653,7 @@ const CreditNotes = () => {
                   type="text"
                   value={formData.reason}
                   onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-ring"
                   placeholder="Enter custom reason"
                 />
               </div>

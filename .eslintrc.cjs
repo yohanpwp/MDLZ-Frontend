@@ -6,6 +6,8 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
+    "stylelint-config-standard", 
+    "stylelint-config-tailwindcss"
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
@@ -17,5 +19,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
     'react/prop-types': 'error',
+    "at-rule-no-unknown": null,
+    "scss/at-rule-no-unknown": true
   },
 }
