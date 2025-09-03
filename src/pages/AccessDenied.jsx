@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { ShieldX, ArrowLeft, Home } from 'lucide-react';
 import { selectUser } from '../redux/slices/authSlice.js';
 import Button from '../components/ui/Button.jsx';
+import { useLanguage } from '../contexts/LanguageContext';
 
 /**
  * AccessDenied Page Component
@@ -13,6 +14,7 @@ import Button from '../components/ui/Button.jsx';
 const AccessDenied = () => {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
+  const { t } = useLanguage();
 
   const handleGoBack = () => {
     navigate(-1);
@@ -33,28 +35,28 @@ const AccessDenied = () => {
 
           {/* Title */}
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Access Denied
+            {t('accessDenied.title')}
           </h1>
 
           {/* Message */}
           <div className="mb-6">
             <p className="text-gray-600 mb-4">
-              You don't have permission to access this resource.
+              {t('accessDenied.message')}
             </p>
             
             {user && (
               <div className="bg-gray-50 rounded-md p-4 text-left">
                 <p className="text-sm text-gray-700">
-                  <span className="font-medium">Current User:</span> {user.firstname} {user.lastname}
+                  <span className="font-medium">{t('accessDenied.currentUser')}:</span> {user.firstname} {user.lastname}
                 </p>
                 <p className="text-sm text-gray-700">
-                  <span className="font-medium">Role:</span> {user.role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  <span className="font-medium">{t('accessDenied.role')}:</span> {user.role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </p>
               </div>
             )}
             
             <p className="text-sm text-gray-500 mt-4">
-              If you believe this is an error, please contact your system administrator.
+              {t('accessDenied.contactAdmin')}
             </p>
           </div>
 
@@ -65,7 +67,7 @@ const AccessDenied = () => {
               className="w-full"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Go Back
+              {t('accessDenied.goBack')}
             </Button>
           
           </div>
@@ -75,10 +77,10 @@ const AccessDenied = () => {
       {/* Footer */}
       <div className="mt-8 text-center">
         <p className="text-sm text-gray-600">
-          Invoice Validation System
+          {t('accessDenied.systemTitle')}
         </p>
         <p className="text-xs text-gray-500 mt-1">
-          Contact your administrator for access requests
+          {t('accessDenied.contactForAccess')}
         </p>
       </div>
     </div>

@@ -6,6 +6,7 @@ import {
   Filter, Download, RefreshCw, Clock, MapPin, Smartphone
 } from 'lucide-react';
 import Button from '../../components/ui/Button';
+import { useLanguage } from '../../contexts/LanguageContext';
 import {
   fetchUsers,
   createUser,
@@ -35,6 +36,7 @@ import { ROLE_PERMISSIONS, PERMISSIONS } from '../../types/auth.js';
 import AuditTrail from '../../components/audit/AuditTrail.jsx';
 
 const UserManagement = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   
   // Redux state
@@ -253,9 +255,9 @@ const UserManagement = () => {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">User Management</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t('navigation.userManagement')}</h1>
           <p className="text-muted-foreground">
-            Manage user accounts, roles, permissions, and security
+            {t('userManagement.description')}
           </p>
         </div>
         <div className="flex gap-2">
@@ -268,7 +270,7 @@ const UserManagement = () => {
           </Button>
           <Button onClick={() => setShowCreateModal(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add User
+            {t('userManagement.addUser')}
           </Button>
         </div>
       </div>
@@ -306,7 +308,7 @@ const UserManagement = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
-                placeholder="Search users..."
+                placeholder={t('userManagement.searchPlaceholder')}
                 value={filters.search}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="pl-10 pr-4 py-2 w-full border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
@@ -349,11 +351,11 @@ const UserManagement = () => {
               <table className="w-full">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="text-left p-4 font-medium text-muted-foreground">User</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Role</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Last Login</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Actions</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground">{t('auth.username')}</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground">{t('userManagement.role')}</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground">{t('common.status')}</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground">{t('userManagement.lastLogin')}</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground">{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -377,7 +379,7 @@ const UserManagement = () => {
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.isActive)}`}>
-                          {user.isActive ? 'Active' : 'Inactive'}
+                          {user.isActive ? t('common.active') : t('common.inactive')}
                         </span>
                       </td>
                       <td className="p-4 text-muted-foreground text-sm">
@@ -394,7 +396,7 @@ const UserManagement = () => {
                             }}
                           >
                             <Edit className="h-3 w-3 mr-1" />
-                            Edit
+                            {t('common.edit')}
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -406,7 +408,7 @@ const UserManagement = () => {
                             }}
                           >
                             <Settings className="h-3 w-3 mr-1" />
-                            Permissions
+                            {t('userManagement.permissions')}
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -414,7 +416,7 @@ const UserManagement = () => {
                             onClick={() => handleViewActivity(user)}
                           >
                             <Activity className="h-3 w-3 mr-1" />
-                            Activity
+                            {t('dashboard.recentActivity')}
                           </Button>
                           <Button 
                             variant="ghost" 

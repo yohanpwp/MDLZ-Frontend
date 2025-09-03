@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
-import { Home, ArrowLeft, Search } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import ThemeToggle from '../components/ui/ThemeToggle';
-import LanguageSwitcher from '../components/ui/LanguageSwitcher';
-import Button from '../components/ui/Button';
+import { Link } from "react-router-dom";
+import { Home, ArrowLeft, Search } from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
+import ThemeToggle from "../components/ui/ThemeToggle";
+import LanguageSwitcher from "../components/ui/LanguageSwitcher";
+import Button from "../components/ui/Button";
 
 const NotFound = () => {
   const { t } = useLanguage();
@@ -33,7 +33,7 @@ const NotFound = () => {
         {/* Error message */}
         <div className="max-w-md space-y-4 mb-8">
           <h1 className="text-3xl font-bold text-foreground">
-            {t('errors.notFound') || 'Page Not Found'}
+            {t("errors.notFound") || "Page Not Found"}
           </h1>
           <p className="text-lg text-muted-foreground">
             Sorry, the page you are looking for doesn't exist or has been moved.
@@ -45,17 +45,17 @@ const NotFound = () => {
           <Button asChild className="flex-1">
             <Link to="/" className="flex items-center justify-center gap-2">
               <Home className="w-4 h-4" />
-              {t('navigation.dashboard') || 'Dashboard'}
+              {t("navigation.dashboard") || "Dashboard"}
             </Link>
           </Button>
-          
-          <Button 
-            variant="outline" 
-            onClick={() => window.history.back()} 
+
+          <Button
+            variant="outline"
+            onClick={() => window.history.back()}
             className="flex-1 flex items-center justify-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            {t('common.back') || 'Go Back'}
+            {t("common.back") || "Go Back"}
           </Button>
         </div>
 
@@ -74,4 +74,3 @@ const NotFound = () => {
 };
 
 export default NotFound;
-

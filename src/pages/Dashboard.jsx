@@ -1,13 +1,16 @@
-import { BarChart3, FileText, AlertTriangle, CheckCircle } from 'lucide-react';
-import Button from '../components/ui/Button';
+import { BarChart3, FileText, AlertTriangle, CheckCircle } from "lucide-react";
+import Button from "../components/ui/Button";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Dashboard = () => {
+  const { t } = useLanguage();
+
   // Mock data - will be replaced with Redux state later
   const stats = {
     totalInvoices: 1247,
     validatedToday: 89,
     discrepanciesFound: 12,
-    successRate: 94.2
+    successRate: 94.2,
   };
 
   const StatCard = ({ title, value, icon: Icon, trend, color = "primary" }) => (
@@ -17,8 +20,13 @@ const Dashboard = () => {
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
           <p className="text-2xl font-bold text-foreground">{value}</p>
           {trend && (
-            <p className={`text-sm ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {trend > 0 ? '+' : ''}{trend}% from last month
+            <p
+              className={`text-sm ${
+                trend > 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {trend > 0 ? "+" : ""}
+              {trend}% from last month
             </p>
           )}
         </div>
@@ -34,41 +42,41 @@ const Dashboard = () => {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            {t("dashboard.title")}
+          </h1>
           <p className="text-muted-foreground">
-            Welcome to the Invoice Validation System
+            {t("dashboard.welcome")} {t("accessDenied.systemTitle")}
           </p>
         </div>
-        <Button>
-          Upload New File
-        </Button>
+        <Button>{t("common.import")}</Button>
       </div>
 
       {/* Stats grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title="Total Invoices"
+          title={t("dashboard.totalInvoices")}
           value={stats.totalInvoices.toLocaleString()}
           icon={FileText}
           trend={8.2}
           color="primary"
         />
         <StatCard
-          title="Validated Today"
+          title={t("dashboard.pendingApproval")}
           value={stats.validatedToday}
           icon={CheckCircle}
           trend={12.5}
           color="green-600"
         />
         <StatCard
-          title="Discrepancies Found"
+          title={t("dashboard.totalCustomers")}
           value={stats.discrepanciesFound}
           icon={AlertTriangle}
           trend={-3.1}
           color="yellow-600"
         />
         <StatCard
-          title="Success Rate"
+          title={t("dashboard.totalRevenue")}
           value={`${stats.successRate}%`}
           icon={BarChart3}
           trend={1.8}
@@ -79,23 +87,34 @@ const Dashboard = () => {
       {/* Recent activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-card border border-border rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">Recent Validations</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            {t("dashboard.recentActivity")}
+          </h3>
           <div className="space-y-3">
             {[1, 2, 3, 4].map((item) => (
-              <div key={item} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+              <div
+                key={item}
+                className="flex items-center justify-between py-2 border-b border-border last:border-0"
+              >
                 <div>
                   <p className="font-medium">Invoice #{1000 + item}</p>
-                  <p className="text-sm text-muted-foreground">Customer ABC Corp</p>
+                  <p className="text-sm text-muted-foreground">
+                    Customer ABC Corp
+                  </p>
                 </div>
                 <div className="text-right">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                    item % 3 === 0 
-                      ? 'bg-red-100 text-red-800' 
-                      : 'bg-green-100 text-green-800'
-                  }`}>
-                    {item % 3 === 0 ? 'Discrepancy' : 'Valid'}
+                  <span
+                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      item % 3 === 0
+                        ? "bg-red-100 text-red-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {item % 3 === 0 ? "Discrepancy" : "Valid"}
                   </span>
-                  <p className="text-sm text-muted-foreground mt-1">2 min ago</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    2 min ago
+                  </p>
                 </div>
               </div>
             ))}
@@ -103,19 +122,21 @@ const Dashboard = () => {
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            {t("dashboard.quickActions")}
+          </h3>
           <div className="space-y-3">
             <Button variant="outline" className="w-full justify-start">
               <FileText className="h-4 w-4 mr-2" />
-              Upload Invoice File
+              {t("common.import")}
             </Button>
             <Button variant="outline" className="w-full justify-start">
               <BarChart3 className="h-4 w-4 mr-2" />
-              Generate Report
+              {t("report.generate")}
             </Button>
             <Button variant="outline" className="w-full justify-start">
               <AlertTriangle className="h-4 w-4 mr-2" />
-              View Discrepancies
+              {t("dashboard.viewAll")}
             </Button>
           </div>
         </div>

@@ -4,8 +4,10 @@ import { BarChart3, Download, Calendar, FileText, Plus, Eye } from 'lucide-react
 import Button from '../../components/ui/Button';
 import ReportGenerator from '../../components/reports/ReportGenerator';
 import ReportViewer from '../../components/reports/ReportViewer';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const Reports = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('generate');
   const [selectedReport, setSelectedReport] = useState(null);
   const { generated: recentReports, templates } = useSelector(state => state.reports);
@@ -22,9 +24,9 @@ const Reports = () => {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Reports</h1>
+        <h1 className="text-3xl font-bold text-foreground">{t('navigation.reports')}</h1>
         <p className="text-muted-foreground">
-          Generate and manage validation reports and analytics
+          {t('report.description')}
         </p>
       </div>
 
@@ -41,7 +43,7 @@ const Reports = () => {
           >
             <div className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Generate Report
+              {t('report.generate')}
             </div>
           </button>
           <button
@@ -54,7 +56,7 @@ const Reports = () => {
           >
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
-              Recent Reports ({recentReports.length})
+              {t('dashboard.recentActivity')} ({recentReports.length})
             </div>
           </button>
           <button
@@ -81,13 +83,13 @@ const Reports = () => {
       {activeTab === 'recent' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Recent Reports</h2>
+            <h2 className="text-xl font-semibold">{t('dashboard.recentActivity')}</h2>
             <Button
               onClick={() => setActiveTab('generate')}
               className="flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
-              Generate New Report
+              {t('report.generate')}
             </Button>
           </div>
 
@@ -128,12 +130,12 @@ const Reports = () => {
           ) : (
             <div className="text-center py-12 bg-card border border-border rounded-lg">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No reports generated yet</h3>
+              <h3 className="text-lg font-medium mb-2">{t('report.noData')}</h3>
               <p className="text-muted-foreground mb-4">
-                Generate your first report to see it here
+                {t('report.generate')}
               </p>
               <Button onClick={() => setActiveTab('generate')}>
-                Generate Report
+                {t('report.generate')}
               </Button>
             </div>
           )}

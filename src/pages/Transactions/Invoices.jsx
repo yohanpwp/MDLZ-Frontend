@@ -25,8 +25,10 @@ import DataTable from '../../components/ui/DataTable';
 import { Alert, AlertDescription } from '../../components/ui/Alert';
 import { Badge } from '../../components/ui/Badge';
 import { InvoiceStatus, InvoiceType } from '../../types/prisma';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const Invoices = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   
   // Mock invoice data - in real app this would come from Redux store
@@ -386,9 +388,9 @@ const Invoices = () => {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Invoices</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t('navigation.invoices')}</h1>
           <p className="text-muted-foreground">
-            View and validate invoice documents with workflow management
+            {t('invoice.description', 'View and validate invoice documents with workflow management')}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -402,11 +404,11 @@ const Invoices = () => {
             ) : (
               <FileCheck className="h-4 w-4 mr-2" />
             )}
-            Validate All
+            {t('invoice.validate')}
           </Button>
           <Button onClick={() => setShowUploadModal(true)}>
             <Upload className="h-4 w-4 mr-2" />
-            Upload Invoices
+            {t('common.import')}
           </Button>
         </div>
       </div>

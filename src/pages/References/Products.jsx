@@ -139,14 +139,14 @@ const Products = () => {
   const columns = [
     {
       key: "productCode",
-      header: t("customer.code", "Code"),
+      header: t("product.code"),
       render: (value, product) => (
         <div className="font-medium text-primary">{value}</div>
       ),
     },
     {
       key: "productName",
-      header: "Product Name",
+      header: t("product.name"),
       render: (value, product) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
@@ -155,7 +155,7 @@ const Products = () => {
           <div>
             <p className="font-medium">{value}</p>
             <p className="text-sm text-muted-foreground">
-              {product.description || "No description"}
+              {product.description || t("product.description")}
             </p>
           </div>
         </div>
@@ -163,14 +163,14 @@ const Products = () => {
     },
     {
       key: "category",
-      header: "Category",
+      header: t("product.category"),
       render: (value) => (
-        <Badge variant="outline">{value || "Uncategorized"}</Badge>
+        <Badge variant="outline">{value || t("product.category")}</Badge>
       ),
     },
     {
       key: "unitPrice",
-      header: "Unit Price",
+      header: t("product.price"),
       render: (value) => (
         <div className="text-right font-mono">
           ${(value || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
@@ -186,16 +186,16 @@ const Products = () => {
     },
     {
       key: "isActive",
-      header: "Status",
+      header: t("common.status"),
       render: (value) => (
         <Badge variant={value ? "success" : "secondary"}>
-          {value ? "Active" : "Inactive"}
+          {value ? t("common.active") : t("common.inactive")}
         </Badge>
       ),
     },
     {
       key: "actions",
-      header: "Actions",
+      header: t("common.actions"),
       sortable: false,
       render: (_, product) => (
         <div className="flex items-center gap-2">
@@ -358,23 +358,23 @@ const Products = () => {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Products</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t('navigation.products')}</h1>
           <p className="text-muted-foreground">
-            Manage product catalog and pricing information
+            {t('product.description', 'Manage product catalog and pricing information')}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleImport}>
             <Upload className="h-4 w-4 mr-2" />
-            Import
+            {t('common.import')}
           </Button>
           <Button variant="outline" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
-            Export
+            {t('common.export')}
           </Button>
           <Button onClick={handleAddProduct}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Product
+            {t('product.addProduct')}
           </Button>
         </div>
       </div>
@@ -385,7 +385,7 @@ const Products = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder={t('product.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
@@ -396,7 +396,7 @@ const Products = () => {
           onChange={(e) => setCategoryFilter(e.target.value)}
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
-          <option value="all">All Categories</option>
+          <option value="all">{t('product.category')}</option>
           {categories.map((category) => (
             <option key={category} value={category}>
               {category}
@@ -408,9 +408,9 @@ const Products = () => {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
+          <option value="all">{t('common.allStatus')}</option>
+          <option value="active">{t('common.active')}</option>
+          <option value="inactive">{t('common.inactive')}</option>
         </select>
         <div className="flex items-center gap-2">
           <input
@@ -443,7 +443,7 @@ const Products = () => {
       {/* Results summary */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
-          {filteredProducts.length} of {products.length} products
+          {filteredProducts.length} {t('common.of')} {products.length} {t('navigation.products').toLowerCase()}
         </span>
         <div className="flex items-center gap-4">
           <span>
@@ -468,7 +468,7 @@ const Products = () => {
         sortOrder={sortOrder}
         onSort={handleSort}
         searchable={false} // We handle search externally
-        emptyMessage="No products found"
+        emptyMessage={t('product.empty')}
       />
 
       {/* Add/Edit Product Modal */}

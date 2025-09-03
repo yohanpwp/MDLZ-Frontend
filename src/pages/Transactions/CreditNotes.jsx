@@ -25,8 +25,10 @@ import DataTable from '../../components/ui/DataTable';
 import { Alert, AlertDescription } from '../../components/ui/Alert';
 import { Badge } from '../../components/ui/Badge';
 import { CreditNoteStatus, CreditNoteType } from '../../types/prisma';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const CreditNotes = () => {
+  const { t } = useLanguage();
   const dispatch = useDispatch();
   
   // Mock credit note data - in real app this would come from Redux store
@@ -422,15 +424,15 @@ const CreditNotes = () => {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Credit Notes</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t('navigation.creditNotes')}</h1>
           <p className="text-muted-foreground">
-            Manage credit notes and refund processing with workflow management
+            {t('creditNote.title', 'Manage credit notes and refund processing with workflow management')}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button onClick={handleAddCreditNote}>
             <Plus className="h-4 w-4 mr-2" />
-            Create Credit Note
+            {t('creditNote.addCreditNote')}
           </Button>
         </div>
       </div>
@@ -441,7 +443,7 @@ const CreditNotes = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search credit notes..."
+            placeholder={t('creditNote.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
