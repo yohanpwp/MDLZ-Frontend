@@ -25,6 +25,11 @@
     "view": "ดู",
     "history": "ประวัติ",
     "allStatus": "สถานะทั้งหมด",
+    "active": "ใช้งาน",
+    "inactive": "ไม่ใช้งาน",
+    "yes": "ใช่",
+    "no": "ไม่ใช่",
+    "ok": "ตกลง",
     "of": "จาก"
   },
   "navigation": {
@@ -50,6 +55,7 @@
   "auth": {
     "login": "เข้าสู่ระบบ",
     "register": "สมัครสมาชิก",
+    "username": "ชื่อผู้ใช้",
     "email": "อีเมล",
     "password": "รหัสผ่าน",
     "confirmPassword": "ยืนยันรหัสผ่าน",

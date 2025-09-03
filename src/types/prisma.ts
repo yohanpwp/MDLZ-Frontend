@@ -2,8 +2,9 @@
 
 export enum UserRole {
   HQ = 'HQ',
-  DISTRIBUTOR = 'DISTRIBUTOR',
-  ADMIN = 'ADMIN'
+  DISTRIBUTOR = 'DIST',
+  ADMIN = 'ADMIN',
+  USER = 'USER'
 }
 
 export enum CustomerStatus {
@@ -44,8 +45,8 @@ export interface User {
   email?: string
   username?: string
   password: string
-  firstName?: string
-  lastName?: string
+  firstname?: string
+  lastname?: string
   role: UserRole
   isActive: boolean
   createdAt: Date

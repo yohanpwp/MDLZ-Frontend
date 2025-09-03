@@ -12,7 +12,7 @@ const Header = ({ onMenuToggle, onSidebarToggle, sidebarCollapsed, className }) 
 
   return (
     <header className={cn(
-      "bg-slate-800 border-b border-slate-700 shadow-lg",
+      "bg-slate-800 border-b border-slate-700 shadow-lg", // z-30 to be under the sidebar overlay
       "flex items-center justify-between px-4 py-3",
       "min-h-[64px]",
       className

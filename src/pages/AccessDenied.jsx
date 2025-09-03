@@ -45,7 +45,7 @@ const AccessDenied = () => {
             {user && (
               <div className="bg-gray-50 rounded-md p-4 text-left">
                 <p className="text-sm text-gray-700">
-                  <span className="font-medium">Current User:</span> {user.firstName} {user.lastName}
+                  <span className="font-medium">Current User:</span> {user.firstname} {user.lastname}
                 </p>
                 <p className="text-sm text-gray-700">
                   <span className="font-medium">Role:</span> {user.role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -62,20 +62,12 @@ const AccessDenied = () => {
           <div className="space-y-3">
             <Button
               onClick={handleGoBack}
-              variant="outline"
               className="w-full"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Go Back
             </Button>
-            
-            <Button
-              onClick={handleGoHome}
-              className="w-full"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Go to Dashboard
-            </Button>
+          
           </div>
         </div>
       </div>

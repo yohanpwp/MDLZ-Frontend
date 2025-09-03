@@ -43,41 +43,9 @@ const Login = () => {
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
-          {/* Logo and title section */}
-          <div className="text-center">
-            <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-primary/10 mb-6">
-              <div className="relative">
-                <FileText className="h-8 w-8 text-primary" />
-                <Shield className="h-4 w-4 text-primary absolute -top-1 -right-1" />
-              </div>
-            </div>
-            
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              {t('invoice.title') || 'Invoice Validation System'}
-            </h1>
-            
-            <p className="text-muted-foreground">
-              {t('auth.login') || 'Sign in to your account'}
-            </p>
-          </div>
-
           {/* Login form */}
-          <div className="bg-card border border-border rounded-lg shadow-lg p-8">
+          <div className="bg-secondary/50 border border-border rounded-lg shadow-lg p-8">
             <LoginForm onSuccess={handleLoginSuccess} />
-          </div>
-
-          {/* Features highlight */}
-          <div className="text-center space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center justify-center gap-2">
-                <Shield className="h-4 w-4 text-primary" />
-                <span>Secure Authentication</span>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <FileText className="h-4 w-4 text-primary" />
-                <span>Document Validation</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -86,11 +54,11 @@ const Login = () => {
       <footer className="p-6 text-center border-t border-border bg-card/50">
         <div className="space-y-2">
           <p className="text-sm font-medium text-foreground">
-            Invoice Validation System v1.0
+            MLDZ Frontend v1.0
           </p>
-          <p className="text-xs text-muted-foreground">
-            Secure financial document validation and compliance
-          </p>
+          <span className="text-xs text-muted-foreground">
+            Verismart 2025
+          </span>
         </div>
       </footer>
     </div>

@@ -30,8 +30,8 @@ class UserManagementService {
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
         users = users.filter(user => 
-          user.firstName.toLowerCase().includes(searchTerm) ||
-          user.lastName.toLowerCase().includes(searchTerm) ||
+          user.firstname.toLowerCase().includes(searchTerm) ||
+          user.lastname.toLowerCase().includes(searchTerm) ||
           user.email.toLowerCase().includes(searchTerm) ||
           user.username.toLowerCase().includes(searchTerm)
         );
@@ -47,7 +47,7 @@ class UserManagementService {
       }
 
       // Apply sorting
-      const sortBy = filters.sortBy || 'firstName';
+      const sortBy = filters.sortBy || 'firstname';
       const sortOrder = filters.sortOrder || 'asc';
       
       users.sort((a, b) => {
@@ -55,8 +55,8 @@ class UserManagementService {
         let bValue = b[sortBy];
         
         if (sortBy === 'name') {
-          aValue = `${a.firstName} ${a.lastName}`;
-          bValue = `${b.firstName} ${b.lastName}`;
+          aValue = `${a.firstname} ${a.lastname}`;
+          bValue = `${b.firstname} ${b.lastname}`;
         }
         
         if (typeof aValue === 'string') {
@@ -448,7 +448,7 @@ class UserManagementService {
    * @private
    */
   validateUserData(userData, isUpdate = false) {
-    const requiredFields = isUpdate ? [] : ['username', 'email', 'firstName', 'lastName', 'role'];
+    const requiredFields = isUpdate ? [] : ['username', 'email', 'firstname', 'lastname', 'role'];
     
     for (const field of requiredFields) {
       if (!userData[field]) {
@@ -544,8 +544,8 @@ class UserManagementService {
         username: 'admin',
         email: 'admin@company.com',
         password: 'admin123',
-        firstName: 'System',
-        lastName: 'Administrator',
+        firstname: 'System',
+        lastname: 'Administrator',
         role: 'admin',
         permissions: [],
         isActive: true,
@@ -558,8 +558,8 @@ class UserManagementService {
         username: 'fin_admin',
         email: 'finadmin@company.com',
         password: 'finadmin123',
-        firstName: 'Jane',
-        lastName: 'Smith',
+        firstname: 'Jane',
+        lastname: 'Smith',
         role: 'financial_administrator',
         permissions: ['generate_reports'],
         isActive: true,
@@ -572,8 +572,8 @@ class UserManagementService {
         username: 'auditor',
         email: 'auditor@company.com',
         password: 'auditor123',
-        firstName: 'John',
-        lastName: 'Doe',
+        firstname: 'John',
+        lastname: 'Doe',
         role: 'financial_auditor',
         permissions: [],
         isActive: true,
@@ -586,8 +586,8 @@ class UserManagementService {
         username: 'manager',
         email: 'manager@company.com',
         password: 'manager123',
-        firstName: 'Sarah',
-        lastName: 'Johnson',
+        firstname: 'Sarah',
+        lastname: 'Johnson',
         role: 'finance_manager',
         permissions: ['manage_master_data'],
         isActive: true,
@@ -600,8 +600,8 @@ class UserManagementService {
         username: 'analyst',
         email: 'analyst@company.com',
         password: 'analyst123',
-        firstName: 'Mike',
-        lastName: 'Wilson',
+        firstname: 'Mike',
+        lastname: 'Wilson',
         role: 'financial_analyst',
         permissions: [],
         isActive: false,

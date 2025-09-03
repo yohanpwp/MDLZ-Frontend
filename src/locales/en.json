@@ -25,6 +25,11 @@
     "view": "View",
     "history": "History",
     "allStatus": "All Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
     "of": "of"
   },
   "navigation": {
@@ -50,6 +55,7 @@
   "auth": {
     "login": "Login",
     "register": "Register",
+    "username": "Username",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm Password",

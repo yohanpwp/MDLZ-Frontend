@@ -59,8 +59,8 @@ const UserManagement = () => {
   const [newUser, setNewUser] = useState({
     username: '',
     email: '',
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     role: 'business_user',
     isActive: true
   });
@@ -96,8 +96,8 @@ const UserManagement = () => {
       setNewUser({
         username: '',
         email: '',
-        firstName: '',
-        lastName: '',
+        firstname: '',
+        lastname: '',
         role: 'business_user',
         isActive: true
       });
@@ -365,7 +365,7 @@ const UserManagement = () => {
                             <UserCog className="h-4 w-4 text-primary" />
                           </div>
                           <div>
-                            <p className="font-medium">{user.firstName} {user.lastName}</p>
+                            <p className="font-medium">{user.firstname} {user.lastname}</p>
                             <p className="text-sm text-muted-foreground">{user.email}</p>
                           </div>
                         </div>
@@ -581,8 +581,8 @@ const UserManagement = () => {
                   <label className="block text-sm font-medium mb-1">First Name</label>
                   <input
                     type="text"
-                    value={newUser.firstName}
-                    onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
+                    value={newUser.firstname}
+                    onChange={(e) => setNewUser({ ...newUser, firstname: e.target.value })}
                     className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
@@ -590,8 +590,8 @@ const UserManagement = () => {
                   <label className="block text-sm font-medium mb-1">Last Name</label>
                   <input
                     type="text"
-                    value={newUser.lastName}
-                    onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
+                    value={newUser.lastname}
+                    onChange={(e) => setNewUser({ ...newUser, lastname: e.target.value })}
                     className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
@@ -664,8 +664,8 @@ const UserManagement = () => {
                   <label className="block text-sm font-medium mb-1">First Name</label>
                   <input
                     type="text"
-                    value={editingUser.firstName}
-                    onChange={(e) => setEditingUser({ ...editingUser, firstName: e.target.value })}
+                    value={editingUser.firstname}
+                    onChange={(e) => setEditingUser({ ...editingUser, firstname: e.target.value })}
                     className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
@@ -673,8 +673,8 @@ const UserManagement = () => {
                   <label className="block text-sm font-medium mb-1">Last Name</label>
                   <input
                     type="text"
-                    value={editingUser.lastName}
-                    onChange={(e) => setEditingUser({ ...editingUser, lastName: e.target.value })}
+                    value={editingUser.lastname}
+                    onChange={(e) => setEditingUser({ ...editingUser, lastname: e.target.value })}
                     className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
@@ -724,7 +724,7 @@ const UserManagement = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">
-                Manage Permissions - {selectedUser.firstName} {selectedUser.lastName}
+                Manage Permissions - {selectedUser.firstname} {selectedUser.lastname}
               </h3>
               <Button 
                 variant="outline"
@@ -804,7 +804,7 @@ const UserManagement = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg">
             <h3 className="text-lg font-semibold mb-4">
-              Test Permissions - {selectedUser.firstName} {selectedUser.lastName}
+              Test Permissions - {selectedUser.firstname} {selectedUser.lastname}
             </h3>
             
             <div className="space-y-3 mb-4">
@@ -878,7 +878,7 @@ const UserManagement = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">
-              User Activity - {selectedUser.firstName} {selectedUser.lastName}
+              User Activity - {selectedUser.firstname} {selectedUser.lastname}
             </h3>
             
             <div className="overflow-x-auto">

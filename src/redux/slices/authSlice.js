@@ -1,24 +1,40 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import AuthService from '../../services/AuthService.js';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import AuthService from "../../services/AuthService.js";
 
 /**
  * Auth Redux Slice
- * 
+ *
  * Manages authentication state including user login, logout, and permission checking
  * for the Invoice Validation System.
  */
 
 // Async thunks for authentication actions
+const postMethodOptions = (data) => ({
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(data),
+});
+
+const getMethodOptions = (params) => ({
+  method: "GET",
+  params: params,
+});
 
 /**
  * Login user with credentials
  */
 export const loginUser = createAsyncThunk(
-  'auth/loginUser',
+  "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await AuthService.login(credentials);
-      return response;
+      const response = await fetch(
+        "/api/users/login", postMethodOptions(credentials)
+      );
+      const data = await response.json();
+      const userData = await AuthService.login({...data, rememberMe: credentials.rememberMe})
+      return userData;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -29,7 +45,7 @@ export const loginUser = createAsyncThunk(
  * Logout current user
  */
 export const logoutUser = createAsyncThunk(
-  'auth/logoutUser',
+  "auth/logoutUser",
   async (_, { rejectWithValue }) => {
     try {
       await AuthService.logout();
@@ -44,7 +60,7 @@ export const logoutUser = createAsyncThunk(
  * Initialize auth state from stored data
  */
 export const initializeAuth = createAsyncThunk(
-  'auth/initializeAuth',
+  "auth/initializeAuth",
   async (_, { rejectWithValue }) => {
     try {
       const user = AuthService.getCurrentUser();
@@ -63,7 +79,7 @@ export const initializeAuth = createAsyncThunk(
  * Refresh user permissions
  */
 export const refreshPermissions = createAsyncThunk(
-  'auth/refreshPermissions',
+  "auth/refreshPermissions",
   async (_, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
@@ -87,19 +103,19 @@ const initialState = {
   error: null,
   token: null,
   tokenExpiry: null,
-  isInitialized: false
+  isInitialized: false,
 };
 
 // Auth slice
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     // Clear auth error
     clearError: (state) => {
       state.error = null;
     },
-    
+
     // Clear auth state (for manual logout)
     clearAuth: (state) => {
       state.user = null;
@@ -109,21 +125,21 @@ const authSlice = createSlice({
       state.tokenExpiry = null;
       state.error = null;
     },
-    
+
     // Update user preferences
     updateUserPreferences: (state, action) => {
       if (state.user) {
         state.user.preferences = {
           ...state.user.preferences,
-          ...action.payload
+          ...action.payload,
         };
       }
     },
-    
+
     // Set loading state
     setLoading: (state, action) => {
       state.isLoading = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -153,7 +169,7 @@ const authSlice = createSlice({
         state.permissions = [];
         state.isAuthenticated = false;
       })
-      
+
       // Login user
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
@@ -165,7 +181,7 @@ const authSlice = createSlice({
         state.permissions = action.payload.permissions;
         state.isAuthenticated = true;
         state.token = action.payload.token;
-        state.tokenExpiry = Date.now() + (action.payload.expiresIn * 1000);
+        state.tokenExpiry = Date.now() + action.payload.expiresIn * 1000;
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -177,7 +193,7 @@ const authSlice = createSlice({
         state.token = null;
         state.tokenExpiry = null;
       })
-      
+
       // Logout user
       .addCase(logoutUser.pending, (state) => {
         state.isLoading = true;
@@ -201,7 +217,7 @@ const authSlice = createSlice({
         state.token = null;
         state.tokenExpiry = null;
       })
-      
+
       // Refresh permissions
       .addCase(refreshPermissions.fulfilled, (state, action) => {
         state.permissions = action.payload;
@@ -209,16 +225,12 @@ const authSlice = createSlice({
       .addCase(refreshPermissions.rejected, (state, action) => {
         state.error = action.payload;
       });
-  }
+  },
 });
 
 // Export actions
-export const { 
-  clearError, 
-  clearAuth, 
-  updateUserPreferences, 
-  setLoading 
-} = authSlice.actions;
+export const { clearError, clearAuth, updateUserPreferences, setLoading } =
+  authSlice.actions;
 
 // Selectors
 export const selectAuth = (state) => state.auth;

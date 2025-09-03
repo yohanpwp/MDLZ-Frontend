@@ -65,8 +65,8 @@ const UserMenu = () => {
     return null;
   }
 
-  const userDisplayName = `${user.firstName} ${user.lastName}`;
-  const userInitials = `${user.firstName.charAt(0)}${user.lastName.charAt(
+  const userDisplayName = `${user.firstname} ${user.lastname}`;
+  const userInitials = `${user.firstname.charAt(0)}${user.lastname.charAt(
     0
   )}`.toUpperCase();
 

@@ -5,6 +5,16 @@ import { fileURLToPath, URL } from 'node:url'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: {
+      "/api": {
+        target: import.meta.env.VITE_BASE_API_URL, // ที่อยู่ API จริง
+        changeOrigin: true,
+        secure: false,
+        rewrite: (p) => p.replace(/^\/api/, "")
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

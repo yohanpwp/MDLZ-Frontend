@@ -15,7 +15,7 @@ import {
   FileCheck,
   ChevronDown,
   ChevronRight,
-  Building
+  Building,
 } from "lucide-react";
 import { cn } from "../../utils/cn";
 import Tooltip from "../ui/Tooltip";
@@ -104,7 +104,7 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, className }) => {
     {
       title: t("navigation.reports"),
       icon: BarChart3,
-      path: "/components/reports",
+      path: "/reports",
     },
     {
       title: t("navigation.userManagement"),
@@ -197,7 +197,10 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, className }) => {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className={cn(
+            "fixed inset-0 z-40 bg-black/40 transition-opacity lg:hidden",
+            isOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          )}
           onClick={onClose}
         />
       )}
@@ -205,11 +208,12 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, className }) => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 h-full bg-card border-r border-border",
-          "transform transition-all duration-300 ease-in-out",
-          "lg:relative lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 bg-card border-r border-border",
           isOpen ? "translate-x-0" : "-translate-x-full",
           isCollapsed ? "w-16" : "w-64",
+          "transition-transform duration-300 ease-in-out",
+          "h-svh",
+          "lg:relative lg:translate-x-0 lg:h-full",
           className
         )}
       >

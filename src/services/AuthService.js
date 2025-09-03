@@ -20,46 +20,24 @@ class AuthService {
   async login(credentials) {
     try {
       // Simulate API call delay
+      const user = credentials.user
+      const token = credentials.token
       await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Mock authentication - in real implementation, this would call an API
-      const mockUsers = this.getMockUsers();
-      const user = mockUsers.find(u => 
-        (u.username === credentials.username || u.email === credentials.username) &&
-        this.validatePassword(credentials.password, u.password)
-      );
-
-      if (!user) {
-        throw new Error('Invalid username or password');
-      }
-
-      if (!user.isActive) {
-        throw new Error('Account is deactivated. Please contact your administrator.');
-      }
-
-      // Generate mock token
-      const token = this.generateMockToken(user);
-      const expiresIn = 8 * 60 * 60; // 8 hours
-
-      // Get user permissions
       const permissions = this.getUserPermissions(user);
-
-      // Update last login
-      user.lastLoginAt = new Date().toISOString();
 
       // Store authentication data
       if (credentials.rememberMe) {
-        this.storeAuthData({ user, token, expiresIn: Date.now() + (expiresIn * 1000) });
+        this.storeAuthData({ user, token, expiresIn: Date.now() + (expiresIn * 3600000) }); // expires in 1 hour
       }
 
       return {
         user: this.sanitizeUser(user),
         token,
-        expiresIn,
+        expiresIn: Math.floor(Date.now() / 1000) + (20 * 60), // expires in 20 minutes
         permissions
       };
     } catch (error) {
-      throw new Error(`Authentication failed: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   }
 
@@ -122,8 +100,8 @@ class AuthService {
    */
   getUserPermissions(user) {
     const rolePermissions = ROLE_PERMISSIONS[user.role] || [];
-    const allPermissions = [...new Set([...rolePermissions, ...user.permissions])];
-    
+    // ADDIF : If the system want to add permisson in each users
+    const allPermissions = [...new Set([...rolePermissions])];
     return allPermissions.map(permType => PERMISSIONS[permType]).filter(Boolean);
   }
 
@@ -272,8 +250,8 @@ class AuthService {
         username: 'admin',
         email: 'admin@company.com',
         password: 'admin123', // In real app, this would be hashed
-        firstName: 'System',
-        lastName: 'Administrator',
+        firstname: 'System',
+        lastname: 'Administrator',
         role: 'admin',
         permissions: [],
         isActive: true,
@@ -289,8 +267,8 @@ class AuthService {
         username: 'fin_admin',
         email: 'finadmin@company.com',
         password: 'finadmin123',
-        firstName: 'Jane',
-        lastName: 'Smith',
+        firstname: 'Jane',
+        lastname: 'Smith',
         role: 'financial_administrator',
         permissions: [],
         isActive: true,
@@ -306,8 +284,8 @@ class AuthService {
         username: 'auditor',
         email: 'auditor@company.com',
         password: 'auditor123',
-        firstName: 'John',
-        lastName: 'Doe',
+        firstname: 'John',
+        lastname: 'Doe',
         role: 'financial_auditor',
         permissions: [],
         isActive: true,
@@ -323,8 +301,8 @@ class AuthService {
         username: 'manager',
         email: 'manager@company.com',
         password: 'manager123',
-        firstName: 'Sarah',
-        lastName: 'Johnson',
+        firstname: 'Sarah',
+        lastname: 'Johnson',
         role: 'finance_manager',
         permissions: [],
         isActive: true,

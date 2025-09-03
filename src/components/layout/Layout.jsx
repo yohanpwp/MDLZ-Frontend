@@ -15,11 +15,6 @@ const Layout = ({ children, className }) => {
       const mobile = window.innerWidth < 1024; // lg breakpoint
       setIsMobile(mobile);
       
-      // Auto-close sidebar on mobile when screen size changes
-      if (mobile && sidebarOpen) {
-        setSidebarOpen(false);
-      }
-      
       // Reset collapsed state on mobile
       if (mobile) {
         setSidebarCollapsed(false);
@@ -57,7 +52,7 @@ const Layout = ({ children, className }) => {
         {/* Sidebar */}
         <div className="h-[calc(100vh-64px)] z-50">
         <Sidebar 
-          isOpen={sidebarOpen || !isMobile} 
+          isOpen={sidebarOpen} 
           onClose={closeSidebar}
           isCollapsed={!isMobile && sidebarCollapsed}
         />

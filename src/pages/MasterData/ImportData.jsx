@@ -10,7 +10,8 @@ import {
   RotateCcw,
   X,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Download
 } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import { Alert } from '../../components/ui/Alert';
@@ -106,6 +107,24 @@ const ImportData = () => {
     dispatch(clearError());
   };
 
+  const handleDownloadTemplate = () => {
+    if (!selectedDataType) return;
+
+    const config = dataTypeConfigs[selectedDataType];
+    const csvContent = config.sampleData;
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // TODO : Change this into selected template from server later
+    const link = document.createElement('a');
+    if (link.href) {
+      URL.revokeObjectURL(link.href);
+    }
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute('download', `${selectedDataType}_template.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const handleFileSelect = (fileData) => {
     setSelectedFile(fileData);
     dispatch(clearValidationResult());
@@ -281,6 +300,15 @@ const ImportData = () => {
             disabled={isImporting || isValidating}
             className="mb-4"
           />
+          <div className="text-sm text-muted-foreground text-center">
+            Need a starting point?{' '}
+            <Button
+              variant="link"
+              className="p-0 h-auto"
+              onClick={handleDownloadTemplate}>
+              Download the template file.
+            </Button>
+          </div>
 
           {/* Import options */}
           {selectedFile && (

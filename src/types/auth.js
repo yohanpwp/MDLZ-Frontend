@@ -7,7 +7,7 @@
 
 /**
  * User role enumeration
- * @typedef {'admin' | 'financial_administrator' | 'financial_auditor' | 'finance_manager' | 'system_administrator' | 'business_user' | 'compliance_officer' | 'financial_analyst'} UserRole
+ * @typedef { 'HQ' | 'ADMIN' | 'DIST' | 'USER' } UserRole
  */
 
 /**
@@ -21,8 +21,8 @@
  * @property {string} id - Unique user identifier
  * @property {string} username - User's login username
  * @property {string} email - User's email address
- * @property {string} firstName - User's first name
- * @property {string} lastName - User's last name
+ * @property {string} firstname - User's first name
+ * @property {string} lastname - User's last name
  * @property {UserRole} role - User's primary role
  * @property {PermissionType[]} permissions - Array of specific permissions
  * @property {boolean} isActive - Whether the user account is active
@@ -58,8 +58,8 @@
 /**
  * Login credentials interface
  * @typedef {Object} LoginCredentials
- * @property {string} username - Username or email
- * @property {string} password - User password
+ * @property {User} user - Currently authenticated user
+ * @property {string} token - Authentication token (if using token-based auth)
  * @property {boolean} [rememberMe] - Whether to persist login
  */
 
@@ -83,32 +83,20 @@
 
 // Default permissions for each role
 export const ROLE_PERMISSIONS = {
-  admin: [
+  'HQ': [
     'read_invoices', 'write_invoices', 'delete_invoices', 'validate_invoices',
     'generate_reports', 'export_data', 'import_data', 'manage_users',
     'manage_roles', 'view_audit_logs', 'manage_master_data', 'configure_system'
   ],
-  financial_administrator: [
-    'read_invoices', 'write_invoices', 'validate_invoices', 'import_data',
-    'export_data', 'manage_master_data'
+  'DIST': [
+    'read_invoices', 'write_invoices', 'delete_invoices', 'validate_invoices',
+    'generate_reports', 'export_data', 'import_data', 'manage_users',
+    'manage_roles', 'view_audit_logs', 'manage_master_data', 'configure_system'
   ],
-  financial_auditor: [
-    'read_invoices', 'validate_invoices', 'generate_reports', 'view_audit_logs'
+  'ADMIN': [
+    'manage_users', 'manage_roles', 'view_audit_logs', 'configure_system', 'read_invoices', 'validate_invoices', 'generate_reports', 'export_data',
   ],
-  finance_manager: [
-    'read_invoices', 'validate_invoices', 'generate_reports', 'export_data',
-    'view_audit_logs'
-  ],
-  system_administrator: [
-    'manage_users', 'manage_roles', 'view_audit_logs', 'configure_system'
-  ],
-  business_user: [
-    'read_invoices', 'validate_invoices'
-  ],
-  compliance_officer: [
-    'read_invoices', 'generate_reports', 'view_audit_logs', 'export_data'
-  ],
-  financial_analyst: [
+  'USER': [
     'read_invoices', 'validate_invoices', 'generate_reports', 'export_data'
   ]
 };
