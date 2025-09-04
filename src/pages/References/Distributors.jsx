@@ -220,20 +220,6 @@ const Distributors = () => {
           <h1 className="text-3xl font-bold text-foreground">{t('navigation.distributors', 'Distributors')}</h1>
           <p className="text-muted-foreground">{t('distributor.description', 'Manage distributors and settings')}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleImport}>
-            <Upload className="h-4 w-4 mr-2" />
-            {t('common.import', 'Import')}
-          </Button>
-          <Button variant="outline" onClick={handleExport}>
-            <Download className="h-4 w-4 mr-2" />
-            {t('common.export', 'Export')}
-          </Button>
-          <Button disabled>
-            <Plus className="h-4 w-4 mr-2" />
-            {t('distributor.addDistributor', 'Add Distributor')}
-          </Button>
-        </div>
       </div>
 
       {/* Search and filters */}
@@ -272,19 +258,6 @@ const Distributors = () => {
         onSort={handleSort}
         searchable={false}
         emptyMessage={t('distributor.empty', 'No distributors found')}
-      />
-
-      {/* Import Modal */}
-      <ImportModal
-        isOpen={showImportModal}
-        onClose={() => setShowImportModal(false)}
-        onImport={handleImportFile}
-        dataType="distributors"
-        acceptedFormats={[".csv"]}
-        requiredColumns={["code", "name", "prefix"]}
-        optionalColumns={["email", "contactName", "contactAdmin", "taxId", "address", "isActive"]}
-        isLoading={isLoading}
-        error={error}
       />
 
       {/* Audit Modal */}

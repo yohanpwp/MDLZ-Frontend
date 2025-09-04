@@ -99,7 +99,8 @@
     "deleteCustomer": "Delete Customer",
     "customerAdded": "Customer added successfully",
     "customerUpdated": "Customer updated successfully",
-    "customerDeleted": "Customer deleted successfully"
+    "customerDeleted": "Customer deleted successfully",
+    "empty": "No customer found"
   },
   "distributor":{
     "description":"Manage distibutor information and validation settings",

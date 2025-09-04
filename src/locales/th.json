@@ -99,7 +99,8 @@
     "deleteCustomer": "ลบลูกค้า",
     "customerAdded": "เพิ่มลูกค้าสำเร็จ",
     "customerUpdated": "อัปเดตลูกค้าสำเร็จ",
-    "customerDeleted": "ลบลูกค้าสำเร็จ"
+    "customerDeleted": "ลบลูกค้าสำเร็จ",
+    "empty": "ไม่พบข้อมูลลูกค้า"
   },
     "distributor":{
       "description": "จัดการข้อมูลศูนย์กระจายสินค้าและการตั้งค่าการตรวจสอบ",

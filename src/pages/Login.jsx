@@ -2,11 +2,9 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { selectIsAuthenticated } from '../redux/slices/authSlice.js';
-import { useLanguage } from '../contexts/LanguageContext';
 import LoginForm from '../components/auth/LoginForm.jsx';
 import ThemeToggle from '../components/ui/ThemeToggle';
 import LanguageSwitcher from '../components/ui/LanguageSwitcher';
-import { Shield, FileText } from 'lucide-react';
 
 /**
  * Login Page Component
@@ -18,7 +16,6 @@ const Login = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
 
   // Redirect authenticated users
   useEffect(() => {

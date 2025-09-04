@@ -33,7 +33,7 @@ export const loginUser = createAsyncThunk(
         "/api/users/login", postMethodOptions(credentials)
       );
       const data = await response.json();
-      const userData = await AuthService.login({...data, rememberMe: credentials.rememberMe})
+      const userData = await AuthService.login({...data})
       return userData;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -181,7 +181,7 @@ const authSlice = createSlice({
         state.permissions = action.payload.permissions;
         state.isAuthenticated = true;
         state.token = action.payload.token;
-        state.tokenExpiry = Date.now() + action.payload.expiresIn * 1000;
+        state.tokenExpiry = action.payload.expiresIn;
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {

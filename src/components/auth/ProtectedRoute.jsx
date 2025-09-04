@@ -24,6 +24,8 @@ const ProtectedRoute = ({
   const isInitialized = useSelector(selectIsInitialized);
   const location = useLocation();
 
+  // TODO: Maybe add check isAuthenticated when app started
+
   // Show loading while auth is initializing
   if (!isInitialized) {
     return <LoadingSpinner />;

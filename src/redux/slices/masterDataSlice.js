@@ -192,7 +192,7 @@ const masterDataSlice = createSlice({
     loadImportHistory: (state) => {
       state.importHistory = MasterDataService.getImportHistory();
     },
-    
+    // TODO: Delete it later
     loadMasterData: (state, action) => {
       const { dataType } = action.payload;
       const data = MasterDataService.loadFromStorage(`masterData_${dataType}`) || [];

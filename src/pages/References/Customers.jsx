@@ -54,19 +54,6 @@ const Customers = () => {
   // Load customers on component mount
   useEffect(() => {
     dispatch(loadMasterData({ dataType: "customers" }));
-    //TODO: Delete it before integrate with database
-    dispatch(createCustomer({
-    customerCode: '124ABD',
-    customerName: 'Peerawith',
-    email: '1234@hotmail.com',
-    phone: '0954121124',
-    address: '124/52',
-    city: 'Bangkok',
-    country: 'Thailand',
-    taxId: '7754',
-    creditLimit: 0,
-    isActive: true
-    }))
   }, [dispatch]);
 
   // Filter and sort customers
@@ -354,7 +341,7 @@ const Customers = () => {
         sortOrder={sortOrder}
         onSort={handleSort}
         searchable={false} // We handle search externally
-        emptyMessage="No customers found"
+        emptyMessage={t('customer.empty')}
       />
 
       {/* Customer Modal */}
