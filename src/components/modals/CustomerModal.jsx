@@ -42,6 +42,7 @@ const CustomerModal = ({
   onSave,
   customer = null,
   isLoading = false,
+  edit = true,
 }) => {
   const [formData, setFormData] = useState(initialFormData);
 
@@ -104,7 +105,13 @@ const CustomerModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={customer ? t("customer.editCustomer") : t("customer.addCustomer")}
+      title={
+        customer
+          ? edit
+            ? t("customer.editCustomer")
+            : formData.code
+          : t("customer.addCustomer")
+      }
       size="md"
     >
       <div className="p-6">
@@ -119,8 +126,9 @@ const CustomerModal = ({
               <FormInput
                 value={formData.code}
                 onChange={(e) => handleInputChange("code", e.target.value)}
-                placeholder={t("customer.enterCustomerCode")}
+                placeholder={edit ? t("customer.enterCustomerCode") : ""}
                 error={errors.code}
+                disabled={!edit}
               />
             </FormField>
             <FormField
@@ -129,17 +137,30 @@ const CustomerModal = ({
               error={errors.distCode}
               className="col-span-2"
             >
-              <FormSelect
-                value={formData.distCode}
-                onChange={(e) => handleInputChange("distCode", e.target.value)}
-                error={errors.distCode}
-                options={distributors.map((dist) => {
-                  return {
-                    value: dist.code,
-                    label: `${dist.name} (${dist.code})`,
-                  };
-                })}
-              ></FormSelect>
+              {edit ? (
+                <FormSelect
+                  value={formData.distCode}
+                  onChange={(e) =>
+                    handleInputChange("distCode", e.target.value)
+                  }
+                  error={errors.distCode}
+                  options={distributors.map((dist) => {
+                    return {
+                      value: dist.code,
+                      label: `${dist.name} (${dist.code})`,
+                    };
+                  })}
+                />
+              ) : (
+                <FormInput
+                  value={formData.distCode}
+                  onChange={(e) =>
+                    handleInputChange("distCode", e.target.value)
+                  }
+                  error={errors.distCode}
+                  disabled={!edit}
+                />
+              )}
             </FormField>
 
             <FormField
@@ -151,8 +172,9 @@ const CustomerModal = ({
               <FormInput
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                placeholder={t("customer.enterCustomerName")}
+                placeholder={edit ? t("customer.enterCustomerName") : ""}
                 error={errors.name}
+                disabled={!edit}
               />
             </FormField>
 
@@ -173,13 +195,17 @@ const CustomerModal = ({
               ></FormSelect>
             </FormField> */}
 
-            <FormField label={t("customer.contactPerson")} className="col-span-2">
+            <FormField
+              label={t("customer.contactPerson")}
+              className="col-span-2"
+            >
               <FormInput
                 value={formData.contactPerson}
                 onChange={(e) =>
                   handleInputChange("contactPerson", e.target.value)
                 }
-                placeholder={t("customer.enterContactPerson")}
+                placeholder={edit ? t("customer.enterContactPerson") : ""}
+                disabled={!edit}
               />
             </FormField>
 
@@ -187,36 +213,53 @@ const CustomerModal = ({
               <FormInput
                 value={formData.contactNo}
                 onChange={(e) => handleInputChange("contactNo", e.target.value)}
-                placeholder={t("customer.enterContactNo")}
+                placeholder={edit ? t("customer.enterContactNo") : ""}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField label={t("customer.addressLine1")} className="col-span-3">
+            <FormField
+              label={t("customer.addressLine1")}
+              className="col-span-3"
+            >
               <FormInput
                 value={formData.addr1}
                 onChange={(e) => handleInputChange("addr1", e.target.value)}
-                placeholder={t("customer.enterAddress")}
-                              />
+                placeholder={edit ? t("customer.enterAddress") : ""}
+                disabled={!edit}
+              />
             </FormField>
 
-            <FormField label={t("customer.addressLine2")} className="col-span-3">
+            <FormField
+              label={t("customer.addressLine2")}
+              className="col-span-3"
+            >
               <FormInput
                 value={formData.addr2}
                 onChange={(e) => handleInputChange("addr2", e.target.value)}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField label={t("customer.addressLine3")} className="col-span-1">
+            <FormField
+              label={t("customer.addressLine3")}
+              className="col-span-1"
+            >
               <FormInput
                 value={formData.addr3}
                 onChange={(e) => handleInputChange("addr3", e.target.value)}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField label={t("customer.addressLine4")} className="col-span-1">
+            <FormField
+              label={t("customer.addressLine4")}
+              className="col-span-1"
+            >
               <FormInput
                 value={formData.addr4}
                 onChange={(e) => handleInputChange("addr4", e.target.value)}
+                disabled={!edit}
               />
             </FormField>
 
@@ -224,6 +267,7 @@ const CustomerModal = ({
               <FormInput
                 value={formData.addr5}
                 onChange={(e) => handleInputChange("addr5", e.target.value)}
+                disabled={!edit}
                 className="col-span-1"
               />
             </FormField>
@@ -234,7 +278,8 @@ const CustomerModal = ({
                 onChange={(e) =>
                   handleInputChange("postalCode", e.target.value)
                 }
-                placeholder={t("customer.enterPostalCode")}
+                placeholder={edit ? t("customer.enterPostalCode") : ""}
+                disabled={!edit}
               />
             </FormField>
 
@@ -242,7 +287,8 @@ const CustomerModal = ({
               <FormInput
                 value={formData.mobileNo}
                 onChange={(e) => handleInputChange("mobileNo", e.target.value)}
-                placeholder={t("customer.enterMobileNo")}
+                placeholder={edit ? t("customer.enterMobileNo") : ""}
+                disabled={!edit}
               />
             </FormField>
 
@@ -252,7 +298,8 @@ const CustomerModal = ({
                 onChange={(e) =>
                   handleInputChange("customerHier3", e.target.value)
                 }
-                placeholder={t("customer.enterCustomerHier3")}
+                placeholder={edit ? t("customer.enterCustomerHier3") : ""}
+                disabled={!edit}
               />
             </FormField>
 
@@ -262,7 +309,8 @@ const CustomerModal = ({
                 onChange={(e) =>
                   handleInputChange("invTermCode", e.target.value)
                 }
-                placeholder={t("customer.enterInvTermCode")}
+                placeholder={edit ? t("customer.enterInvTermCode") : ""}
+                disabled={!edit}
               />
             </FormField>
 
@@ -278,8 +326,9 @@ const CustomerModal = ({
                 onChange={(e) =>
                   handleInputChange("creditLimit", e.target.value)
                 }
-                placeholder={t("customer.enterCreditLimit")}
+                placeholder={edit ? t("customer.enterCreditLimit") : ""}
                 error={errors.creditLimit}
+                disabled={!edit}
               />
             </FormField>
 
@@ -287,7 +336,8 @@ const CustomerModal = ({
               <FormInput
                 value={formData.taxRegNo}
                 onChange={(e) => handleInputChange("taxRegNo", e.target.value)}
-                placeholder={t("customer.enterTaxRegNo")}
+                placeholder={edit ? t("customer.enterTaxRegNo") : ""}
+                disabled={!edit}
               />
             </FormField>
 
@@ -295,7 +345,8 @@ const CustomerModal = ({
               <FormInput
                 value={formData.nodeDesc}
                 onChange={(e) => handleInputChange("nodeDesc", e.target.value)}
-                placeholder={t("customer.enterNodeDesc")}
+                placeholder={edit ? t("customer.enterNodeDesc") : ""}
+                disabled={!edit}
               />
             </FormField>
 
@@ -305,38 +356,47 @@ const CustomerModal = ({
                 onChange={(e) =>
                   handleInputChange("branchCode", e.target.value)
                 }
-                placeholder={t("customer.enterBranchCode")}
+                placeholder={edit ? t("customer.enterBranchCode") : ""}
+                disabled={!edit}
               />
             </FormField>
 
-            <div className="col-span-1 md:col-span-3">
-              <FormCheckbox
-                label={t("customer.active")}
-                checked={formData.isActive}
-                onChange={(e) => {
-                  handleInputChange("isActive", e.target.checked);
-                  handleInputChange(
-                    "status",
-                    e.target.checked ? "Active" : "Inactive"
-                  );
-                }}
-              />
-            </div>
+            {edit && (
+              <div className="col-span-1 md:col-span-3">
+                <FormCheckbox
+                  label={t("customer.active")}
+                  checked={formData.isActive}
+                  onChange={(e) => {
+                    handleInputChange("isActive", e.target.checked);
+                    handleInputChange(
+                      "status",
+                      e.target.checked ? "Active" : "Inactive"
+                    );
+                  }}
+                />
+              </div>
+            )}
           </div>
-
           <FormActions>
-            <Button
-              variant="outline"
-              type="button"
-              onClick={onClose}
-              disabled={isLoading}
-            >
-              {t("common.cancel")}
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              <Save className="h-4 w-4 mr-2" />
-              {isLoading ? t("common.loading") : t("common.save")}
-            </Button>
+            {edit ? (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={onClose}
+                  disabled={isLoading}
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button onClick={handleSubmit} disabled={isLoading}>
+                  <Save className="h-4 w-4 mr-2" />
+                  {isLoading ? t("common.saving") : t("common.save")}
+                </Button>
+              </>
+            ) : (
+              <Button variant="outline" onClick={onClose}>
+                {t("common.close")}
+              </Button>
+            )}
           </FormActions>
         </Form>
       </div>

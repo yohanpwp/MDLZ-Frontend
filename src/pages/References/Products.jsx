@@ -33,6 +33,7 @@ import {
   clearError,
 } from "../../redux/slices/masterDataSlice";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { useFormatters } from "../../hooks/useFormatters";
 import { ProductModal, ImportModal } from "../../components/modals";
 import { useGetProductsQuery } from "../../redux/api/product";
 
@@ -42,11 +43,13 @@ const Products = () => {
   // const isLoading = useSelector((state) => state.masterData.isImporting);
   // const error = useSelector((state) => state.masterData.error);
   const { t } = useLanguage();
+  const { formatCurrency } = useFormatters();
   // Local state
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
+  const [editable, setEditable] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -63,11 +66,14 @@ const Products = () => {
   });
   const [sortBy, setSortBy] = useState("productName");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const {
     data: products,
     isLoading: isLoading,
+    isError: isError,
     error: error,
-  } = useGetProductsQuery();
+  } = useGetProductsQuery({ page: currentPage, pageSize: itemsPerPage });
 
   // Product categories
   const categories = [
@@ -81,9 +87,9 @@ const Products = () => {
   ];
 
   // Load products on component mount
-  useEffect(() => {
-    dispatch(loadMasterData({ dataType: "products" }));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(loadMasterData({ dataType: "products" }));
+  // }, [dispatch]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -147,10 +153,10 @@ const Products = () => {
   // Table columns configuration
   const columns = [
     {
-      key: "productCode",
+      key: "code",
       header: t("product.code"),
       render: (value, product) => (
-        <div className="font-medium text-primary">{value}</div>
+        <div className="font-medium text-primary">{value || "-"}</div>
       ),
     },
     {
@@ -170,27 +176,40 @@ const Products = () => {
         </div>
       ),
     },
+    // {
+    //   key: "category",
+    //   header: t("product.category"),
+    //   render: (value) => (
+    //     <Badge variant="outline">{value || t("product.category")}</Badge>
+    //   ),
+    // },
     {
-      key: "category",
-      header: t("product.category"),
-      render: (value) => (
-        <Badge variant="outline">{value || t("product.category")}</Badge>
-      ),
+      key: "sizeCode",
+      header: t("product.sizeCode"),
+      render: (value) => value || "-"
+    },
+        {
+      key: "uomSmall",
+      header: t("product.uomSmall"),
+      render: (value) => value || "-"
     },
     {
-      key: "unitPrice",
+      key: "uomBig",
+      header: t("product.uomBig"),
+      render: (value) => value || "-"
+    },
+    {
+      key: "convFactor",
+      header: t("product.convFactor"),
+      render: (value) => value || "-"
+    },
+    {
+      key: "listPrice",
       header: t("product.price"),
       render: (value) => (
         <div className="text-right font-mono">
-          ${(value || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+          {formatCurrency(value)}
         </div>
-      ),
-    },
-    {
-      key: "taxRate",
-      header: "Tax Rate",
-      render: (value) => (
-        <div className="text-right font-mono">{(value || 0).toFixed(1)}%</div>
       ),
     },
     {
@@ -222,13 +241,13 @@ const Products = () => {
           >
             <Edit className="h-4 w-4" />
           </Button>
-          <Button
+          {/* <Button
             variant="ghost"
             size="sm"
             onClick={() => handleShowUsage(product)}
           >
             <BarChart3 className="h-4 w-4" />
-          </Button>
+          </Button> */}
           <Button
             variant="ghost"
             size="sm"
@@ -248,29 +267,22 @@ const Products = () => {
   };
 
   const handleAddProduct = () => {
-    setFormData({
-      productCode: "",
-      productName: "",
-      category: "",
-      description: "",
-      unitPrice: 0,
-      taxRate: 0,
-      isActive: true,
-    });
     setSelectedProduct(null);
     setShowAddModal(true);
+    setEditable(true)
   };
 
   const handleEditProduct = (product) => {
     setSelectedProduct(product);
     setFormData({ ...product });
     setShowEditModal(true);
+    setEditable(true)
   };
 
   const handleViewProduct = (product) => {
     setSelectedProduct(product);
     // In a real app, this would navigate to a detailed view
-    alert(`Viewing product: ${product.productName}`);
+    setShowEditModal(true);
   };
 
   const handleDeleteProduct = (product) => {
@@ -349,20 +361,40 @@ const Products = () => {
     setPriceRange({ min: "", max: "" });
   };
 
+  const customPagination = useMemo(() => {
+    const totalItems = products ? products.meta?.total : 0;
+    const totalPages = products ? products.meta?.totalPages : 1;
+    const handlePageChange = (page) => {
+      setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+    };
+    const handleItemsPerPageChange = (itemsPerPage) => {
+      setItemsPerPage(itemsPerPage);
+      setCurrentPage(1);
+    };
+    return {
+      currentPage: currentPage,
+      totalPages: totalPages,
+      totalItems: totalItems,
+      itemsPerPage: itemsPerPage,
+      onPageChange: handlePageChange,
+      onItemsPerPageChange: handleItemsPerPageChange,
+    };
+  }, [currentPage, itemsPerPage, products]);
+
   return (
     <div className="space-y-6">
       {/* Error Alert */}
-      {error && (
+      {/* {isError && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
-            <span>{error}</span>
+            <span>{error.data.error}</span>
             <Button variant="ghost" size="sm" onClick={clearErrorMessage}>
               <X className="h-4 w-4" />
             </Button>
           </AlertDescription>
         </Alert>
-      )}
+      )} */}
 
       {/* Page header */}
       <div className="flex items-center justify-between">
@@ -457,10 +489,10 @@ const Products = () => {
       {/* Results summary */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
-          {filteredProducts.length} {t("common.of")} {products.length}{" "}
+          {filteredProducts?.length || 0} {t("common.of")} {products?.meta?.total || 0}{" "}
           {t("navigation.products").toLowerCase()}
         </span>
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           <span>
             Avg Price: $
             {products.length > 0
@@ -471,7 +503,7 @@ const Products = () => {
               : "0.00"}
           </span>
           <span>Active: {products.filter((p) => p.isActive).length}</span>
-        </div>
+        </div> */}
       </div>
 
       {/* Products table */}
@@ -479,11 +511,13 @@ const Products = () => {
         data={filteredProducts}
         columns={columns}
         loading={isLoading}
+        error={error?.data?.error}
         sortBy={sortBy}
         sortOrder={sortOrder}
         onSort={handleSort}
         searchable={false} // We handle search externally
         emptyMessage={t("product.empty")}
+        customPagination={customPagination}
       />
 
       {/* Add/Edit Product Modal */}
@@ -495,9 +529,11 @@ const Products = () => {
             setShowAddModal(false);
             setShowEditModal(false);
             setSelectedProduct(null);
+            setEditable(false)
           }}
           onSave={handleSaveProduct}
           product={selectedProduct}
+          edit={editable}
         />
       )}
 
@@ -512,7 +548,6 @@ const Products = () => {
           requiredColumns={["productCode", "productName", "unitPrice"]}
           optionalColumns={["category", "description", "taxRate"]}
           isLoading={isLoading}
-          error={error}
         />
       )}
 

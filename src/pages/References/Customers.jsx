@@ -47,6 +47,7 @@ const Customers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [editable, setEditable] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showAuditModal, setShowAuditModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -221,11 +222,13 @@ const Customers = () => {
   const handleAddCustomer = () => {
     setSelectedCustomer(null);
     setShowCustomerModal(true);
+    setEditable(true)
   };
 
   const handleEditCustomer = (customer) => {
     setSelectedCustomer(customer);
     setShowCustomerModal(true);
+    setEditable(true)
   };
 
   const handleViewCustomer = (customer) => {
@@ -309,7 +312,7 @@ const Customers = () => {
   return (
     <div className="space-y-6">
       {/* Error Alert */}
-      {error && (
+      {/* {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
@@ -319,7 +322,7 @@ const Customers = () => {
             </Button>
           </AlertDescription>
         </Alert>
-      )}
+      )} */}
 
       {/* Page header */}
       <div className="flex items-center justify-between">
@@ -383,6 +386,7 @@ const Customers = () => {
         data={filteredCustomers}
         columns={columns}
         loading={isLoading}
+        error={error?.data?.error}
         sortBy={sortBy}
         sortOrder={sortOrder}
         onSort={handleSort}
@@ -397,10 +401,12 @@ const Customers = () => {
         onClose={() => {
           setShowCustomerModal(false);
           setSelectedCustomer(null);
+          setEditable(false)
         }}
         onSave={handleSaveCustomer}
         customer={selectedCustomer}
         isLoading={isLoading}
+        edit={editable}
       />
 
       {/* Import Modal */}
@@ -420,7 +426,7 @@ const Customers = () => {
           "creditLimit",
         ]}
         isLoading={isLoading}
-        error={error}
+        error={error?.data?.error}
       />
 
       {/* Audit Modal */}
