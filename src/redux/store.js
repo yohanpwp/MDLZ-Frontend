@@ -6,6 +6,7 @@ import reportsReducer from './slices/reportsSlice.js';
 import masterDataReducer from './slices/masterDataSlice.js';
 import userManagementReducer from './slices/userManagementSlice.js';
 import auditReducer from './slices/auditSlice.js';
+import { authMiddleware, apiResponseMiddleware } from './middleware/authMiddleware.js';
 
 // Import slices here as they are created
 // import invoiceSlice from './slices/invoiceSlice';
@@ -27,7 +28,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],
       },
-    }),
+    }).concat(authMiddleware, apiResponseMiddleware),
 });
 
 // Export types for use with useSelector and useDispatch hooks

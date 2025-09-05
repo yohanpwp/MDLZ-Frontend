@@ -140,6 +140,16 @@ const authSlice = createSlice({
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+
+    // Handle token expiration
+    handleTokenExpiration: (state) => {
+      state.user = null;
+      state.permissions = [];
+      state.isAuthenticated = false;
+      state.token = null;
+      state.tokenExpiry = null;
+      state.error = 'Session expired. Please login again.';
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -229,7 +239,7 @@ const authSlice = createSlice({
 });
 
 // Export actions
-export const { clearError, clearAuth, updateUserPreferences, setLoading } =
+export const { clearError, clearAuth, updateUserPreferences, setLoading, handleTokenExpiration } =
   authSlice.actions;
 
 // Selectors

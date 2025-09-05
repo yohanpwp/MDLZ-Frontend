@@ -48,16 +48,14 @@ class AuthService {
   async logout() {
     try {
       // Clear stored authentication data
-      localStorage.removeItem(this.storageKey);
-      localStorage.removeItem(this.tokenKey);
+      this.clearAuthData();
       
       // In real implementation, would call API to invalidate token
       await new Promise(resolve => setTimeout(resolve, 500));
     } catch (error) {
       console.error('Logout error:', error);
       // Still clear local data even if API call fails
-      localStorage.removeItem(this.storageKey);
-      localStorage.removeItem(this.tokenKey);
+      this.clearAuthData();
     }
   }
 
@@ -74,15 +72,63 @@ class AuthService {
       
       // Check if token is expired
       if (expiresIn && Date.now() > expiresIn) {
-        this.logout();
+        console.log('Token expired, clearing auth data');
+        this.clearAuthData();
         return null;
       }
 
       return user;
     } catch (error) {
       console.error('Error getting current user:', error);
+      this.clearAuthData(); // Clear corrupted data
       return null;
     }
+  }
+
+  /**
+   * Check if token is expired
+   * @returns {boolean}
+   */
+  isTokenExpired() {
+    try {
+      const authData = localStorage.getItem(this.storageKey);
+      if (!authData) return true;
+
+      const { expiresIn } = JSON.parse(authData);
+      return expiresIn && Date.now() > expiresIn;
+    } catch (error) {
+      console.error('Error checking token expiration:', error);
+      return true;
+    }
+  }
+
+  /**
+   * Get time until token expires (in milliseconds)
+   * @returns {number} - Milliseconds until expiration, 0 if expired or no token
+   */
+  getTimeUntilExpiry() {
+    try {
+      const authData = localStorage.getItem(this.storageKey);
+      if (!authData) return 0;
+
+      const { expiresIn } = JSON.parse(authData);
+      if (!expiresIn) return 0;
+
+      const timeUntil = expiresIn - Date.now();
+      return Math.max(0, timeUntil);
+    } catch (error) {
+      console.error('Error getting time until expiry:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Clear authentication data from storage
+   * @private
+   */
+  clearAuthData() {
+    localStorage.removeItem(this.storageKey);
+    localStorage.removeItem(this.tokenKey);
   }
 
   /**

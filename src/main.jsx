@@ -7,6 +7,7 @@ import { LanguageProvider } from "./contexts/LanguageContext.jsx";
 import AppRouter from "./router/AppRouter.jsx";
 import { performanceMonitoringService } from "./services/PerformanceMonitoringService.js";
 import { accessibilityService } from "./services/AccessibilityService.js";
+import "./utils/authTestUtils.js"; // Import for development testing
 import "./index.css";
 
 // Initialize performance monitoring

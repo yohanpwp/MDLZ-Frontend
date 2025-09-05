@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { selectUser, selectIsAuthenticated, selectIsInitialized } from '../../redux/slices/authSlice.js';
 import AuthService from '../../services/AuthService.js';
 import LoadingSpinner from '../ui/LoadingSpinner.jsx';
+import { useAuthGuard, useTokenExpirationMonitor } from '../../hooks/useAuthGuard.js';
 
 /**
  * ProtectedRoute Component
@@ -23,6 +24,10 @@ const ProtectedRoute = ({
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isInitialized = useSelector(selectIsInitialized);
   const location = useLocation();
+
+  // Use auth guard to monitor token expiration and handle redirects
+  useAuthGuard();
+  useTokenExpirationMonitor();
 
   // Show loading while auth is initializing
   if (!isInitialized) {

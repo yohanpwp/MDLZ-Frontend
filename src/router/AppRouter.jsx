@@ -2,7 +2,7 @@ import { useEffect, Suspense, lazy } from "react";
 import { useDispatch } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { initializeAuth } from "../redux/slices/authSlice.js";
-import { ProtectedRoute } from "../components/auth";
+import { ProtectedRoute, AuthGuard } from "../components/auth";
 import { Layout } from "../components/layout";
 import { LoadingSpinner } from "../components/ui";
 import Distributors from "../pages/References/Distributors.jsx";
@@ -34,8 +34,9 @@ const AppRouter = () => {
 
   return (
     <Router>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Routes>
+      <AuthGuard>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/access-denied" element={<AccessDenied />} />
@@ -162,8 +163,9 @@ const AppRouter = () => {
               </ProtectedRoute>
             }
           />
-        </Routes>
-      </Suspense>
+          </Routes>
+        </Suspense>
+      </AuthGuard>
     </Router>
   );
 };

@@ -32,6 +32,9 @@ const Login = () => {
     console.log('Login successful:', result.user.username);
   };
 
+  // Check if user was redirected due to token expiration
+  const isTokenExpired = location.state?.reason === 'token_expired';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/10 flex flex-col">
       {/* Header with theme and language controls */}
@@ -43,6 +46,23 @@ const Login = () => {
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
+          {/* Token expiration message */}
+          {isTokenExpired && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="flex items-center">
+                <Shield className="h-5 w-5 text-yellow-600 mr-2" />
+                <div>
+                  <h3 className="text-sm font-medium text-yellow-800">
+                    Session Expired
+                  </h3>
+                  <p className="text-sm text-yellow-700 mt-1">
+                    Your session has expired. Please login again to continue.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Login form */}
           <div className="bg-secondary/50 border border-border rounded-lg shadow-lg p-8">
             <LoginForm onSuccess={handleLoginSuccess} />
