@@ -65,8 +65,8 @@ export const initializeAuth = createAsyncThunk(
     try {
       const user = AuthService.getCurrentUser();
       if (user) {
-        const permissions = AuthService.getUserPermissions(user);
-        return { user, permissions };
+        const permissions = AuthService.getUserPermissions(user.user);
+        return { user: user.user, permissions, token: user.token, expiresIn: user.expiresIn };
       }
       return null;
     } catch (error) {
@@ -155,6 +155,9 @@ const authSlice = createSlice({
           state.user = action.payload.user;
           state.permissions = action.payload.permissions;
           state.isAuthenticated = true;
+          state.token = action.payload.token;
+          state.tokenExpiry = action.payload.expiresIn;
+          state.error = null;
         } else {
           state.user = null;
           state.permissions = [];

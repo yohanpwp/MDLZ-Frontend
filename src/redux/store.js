@@ -6,6 +6,7 @@ import reportsReducer from './slices/reportsSlice.js';
 import masterDataReducer from './slices/masterDataSlice.js';
 import userManagementReducer from './slices/userManagementSlice.js';
 import auditReducer from './slices/auditSlice.js';
+import { api } from './api/baseApi.js';
 
 // Import slices here as they are created
 // import invoiceSlice from './slices/invoiceSlice';
@@ -19,6 +20,7 @@ export const store = configureStore({
     masterData: masterDataReducer,
     userManagement: userManagementReducer,
     audit: auditReducer,
+    [api.reducerPath]: api.reducer
     // Add other reducers here as they are created
     // invoices: invoiceSlice,
   },
@@ -27,7 +29,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],
       },
-    }),
+    }).concat(api.middleware),
 });
 
 // Export types for use with useSelector and useDispatch hooks

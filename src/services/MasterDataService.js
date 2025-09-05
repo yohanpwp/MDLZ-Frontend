@@ -918,6 +918,20 @@ export class MasterDataService {
   }
 
   /**
+   * Save data to storage
+   */
+  saveMasterDataToStorage(dataType, data) {
+    try {
+      localStorage.setItem(
+        dataType,
+        JSON.stringify(data)
+      );
+    } catch (error) {
+      console.error("Failed to save masterData:", error);
+    }
+  }
+
+  /**
    * Schedule export (placeholder for future implementation)
    * @param {Object} scheduleConfig - Schedule configuration
    * @returns {Object} Schedule result

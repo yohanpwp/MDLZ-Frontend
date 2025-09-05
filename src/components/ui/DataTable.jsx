@@ -1,27 +1,27 @@
 /**
  * DataTable Component
- * 
+ *
  * Reusable data table component with sorting, filtering, and pagination support.
  * Optimized for displaying validation results and other tabular data.
  */
 
-import React, { useState, useMemo } from 'react';
-import { ChevronUp, ChevronDown, Search, Filter } from 'lucide-react';
-import Button from './Button';
-import { Badge } from './Badge';
-import { cn } from '../../utils/cn';
+import React, { useState, useMemo } from "react";
+import { ChevronUp, ChevronDown, Search, Filter } from "lucide-react";
+import Button from "./Button";
+import { Badge } from "./Badge";
+import { cn } from "../../utils/cn";
 
 /**
  * Table header cell with sorting capability
  */
 const TableHeader = ({ column, sortBy, sortOrder, onSort, className }) => {
   const isSorted = sortBy === column.key;
-  const isAscending = isSorted && sortOrder === 'asc';
-  const isDescending = isSorted && sortOrder === 'desc';
+  const isAscending = isSorted && sortOrder === "asc";
+  const isDescending = isSorted && sortOrder === "desc";
 
   const handleSort = () => {
     if (column.sortable !== false) {
-      const newOrder = isSorted && sortOrder === 'asc' ? 'desc' : 'asc';
+      const newOrder = isSorted && sortOrder === "asc" ? "desc" : "asc";
       onSort(column.key, newOrder);
     }
   };
@@ -30,7 +30,8 @@ const TableHeader = ({ column, sortBy, sortOrder, onSort, className }) => {
     <th
       className={cn(
         "px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider",
-        column.sortable !== false && "cursor-pointer hover:bg-muted/70 select-none",
+        column.sortable !== false &&
+          "cursor-pointer hover:bg-muted/70 select-none",
         className
       )}
       onClick={handleSort}
@@ -39,24 +40,24 @@ const TableHeader = ({ column, sortBy, sortOrder, onSort, className }) => {
         <span>{column.header}</span>
         {column.sortable !== false && (
           <div className="flex flex-col">
-            <ChevronUp 
+            <ChevronUp
               className={cn(
                 "h-3 w-3 -mb-1",
                 isAscending ? "text-primary" : "text-muted-foreground/50"
-              )} 
+              )}
             />
-            <ChevronDown 
+            <ChevronDown
               className={cn(
                 "h-3 w-3",
                 isDescending ? "text-primary" : "text-muted-foreground/50"
-              )} 
+              )}
             />
           </div>
         )}
       </div>
     </th>
   );
-};/**
+}; /**
  * Ta
 ble row component with hover effects
  */
@@ -72,7 +73,9 @@ const TableRow = ({ item, columns, onRowClick, className }) => {
     >
       {columns.map((column) => (
         <td key={column.key} className="px-4 py-3 text-sm">
-          {column.render ? column.render(item[column.key], item) : item[column.key]}
+          {column.render
+            ? column.render(item[column.key], item)
+            : item[column.key]}
         </td>
       ))}
     </tr>
@@ -82,13 +85,13 @@ const TableRow = ({ item, columns, onRowClick, className }) => {
 /**
  * Pagination component
  */
-const Pagination = ({ 
-  currentPage, 
-  totalPages, 
-  totalItems, 
-  itemsPerPage, 
+const Pagination = ({
+  currentPage,
+  totalPages,
+  totalItems,
+  itemsPerPage,
   onPageChange,
-  onItemsPerPageChange 
+  onItemsPerPageChange,
 }) => {
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
@@ -109,12 +112,24 @@ const Pagination = ({
         </select>
         <span>of {totalItems} results</span>
       </div>
-      
+
       <div className="flex items-center space-x-2">
+        <span className="text-sm text-muted-foreground">Select Pages</span>
+        <select
+          value={currentPage}
+          onChange={(e) => onPageChange(Number(e.target.value))}
+          className="border border-border rounded px-2 py-1 text-sm"
+        >
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <option key={page} value={page}>
+              {page}
+            </option>
+          ))}
+        </select>
         <span className="text-sm text-muted-foreground">
           {startItem}-{endItem} of {totalItems}
         </span>
-        
+
         <div className="flex items-center space-x-1">
           <Button
             variant="outline"
@@ -124,32 +139,78 @@ const Pagination = ({
           >
             Previous
           </Button>
-          
+
           {/* Page numbers */}
-          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-            let pageNum;
+          {(() => {
+            const pageButtons = [];
             if (totalPages <= 5) {
-              pageNum = i + 1;
-            } else if (currentPage <= 3) {
-              pageNum = i + 1;
-            } else if (currentPage >= totalPages - 2) {
-              pageNum = totalPages - 4 + i;
+              for (let i = 1; i <= totalPages; i++) {
+                pageButtons.push(
+                  <Button
+                    key={i}
+                    variant={currentPage === i ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => onPageChange(i)}
+                  >
+                    {i}
+                  </Button>
+                );
+              }
             } else {
-              pageNum = currentPage - 2 + i;
+              if (currentPage < totalPages - 4) {
+                // Show first 3 pages
+                for (let i = currentPage; i <= currentPage + 2; i++) {
+                  pageButtons.push(
+                    <Button
+                      key={i}
+                      variant={currentPage === i ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => onPageChange(i)}
+                    >
+                      {i}
+                    </Button>
+                  );
+                }
+                pageButtons.push(
+                  <span
+                    key="ellipsis-start"
+                    className="px-2 text-sm text-muted-foreground"
+                  >
+                    ...
+                  </span>
+                );
+                // Show last 2 pages
+                for (let i = totalPages - 1; i <= totalPages; i++) {
+                  pageButtons.push(
+                    <Button
+                      key={i}
+                      variant={currentPage === i ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => onPageChange(i)}
+                    >
+                      {i}
+                    </Button>
+                  );
+                }
+              } else {
+                // Show last 5 pages
+                for (let i = totalPages - 4; i <= totalPages; i++) {
+                  pageButtons.push(
+                    <Button
+                      key={i}
+                      variant={currentPage === i ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => onPageChange(i)}
+                    >
+                      {i}
+                    </Button>
+                  );
+                }
+              }
             }
-            
-            return (
-              <Button
-                key={pageNum}
-                variant={currentPage === pageNum ? "default" : "outline"}
-                size="sm"
-                onClick={() => onPageChange(pageNum)}
-              >
-                {pageNum}
-              </Button>
-            );
-          })}
-          
+            return pageButtons;
+          })()}
+
           <Button
             variant="outline"
             size="sm"
@@ -162,7 +223,7 @@ const Pagination = ({
       </div>
     </div>
   );
-};/**
+}; /**
  *
  Main DataTable component
  */
@@ -172,7 +233,7 @@ const DataTable = ({
   loading = false,
   error = null,
   sortBy = null,
-  sortOrder = 'asc',
+  sortOrder = "asc",
   onSort = () => {},
   onRowClick = null,
   pagination = true,
@@ -180,18 +241,18 @@ const DataTable = ({
   searchable = false,
   searchPlaceholder = "Search...",
   emptyMessage = "No data available",
-  className = ""
+  customPagination = null,
+  className = "",
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentItemsPerPage, setCurrentItemsPerPage] = useState(itemsPerPage);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Filter data based on search term
   const filteredData = useMemo(() => {
     if (!searchTerm || !searchable) return data;
-    
-    return data.filter(item =>
-      columns.some(column => {
+    return data.filter((item) =>
+      columns.some((column) => {
         const value = item[column.key];
         if (value == null) return false;
         return String(value).toLowerCase().includes(searchTerm.toLowerCase());
@@ -204,7 +265,9 @@ const DataTable = ({
   const totalPages = Math.ceil(totalItems / currentItemsPerPage);
   const startIndex = (currentPage - 1) * currentItemsPerPage;
   const endIndex = startIndex + currentItemsPerPage;
-  const paginatedData = pagination ? filteredData.slice(startIndex, endIndex) : filteredData;
+  const paginatedData = pagination
+    ? filteredData.slice(startIndex, endIndex)
+    : filteredData;
 
   // Reset to first page when search changes
   React.useEffect(() => {
@@ -230,7 +293,12 @@ const DataTable = ({
   }
 
   return (
-    <div className={cn("bg-card border border-border rounded-lg overflow-hidden", className)}>
+    <div
+      className={cn(
+        "bg-card border border-border rounded-lg overflow-hidden",
+        className
+      )}
+    >
       {/* Search bar */}
       {searchable && (
         <div className="p-4 border-b border-border">
@@ -275,7 +343,10 @@ const DataTable = ({
               </tr>
             ) : paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-8 text-center text-muted-foreground">
+                <td
+                  colSpan={columns.length}
+                  className="px-4 py-8 text-center text-muted-foreground"
+                >
                   {emptyMessage}
                 </td>
               </tr>
@@ -296,12 +367,28 @@ const DataTable = ({
       {/* Pagination */}
       {pagination && totalItems > 0 && (
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          itemsPerPage={currentItemsPerPage}
-          onPageChange={handlePageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
+          currentPage={
+            customPagination ? customPagination.currentPage : currentPage
+          }
+          totalPages={
+            customPagination ? customPagination.totalPages : totalPages
+          }
+          totalItems={
+            customPagination ? customPagination.totalItems : totalItems
+          }
+          itemsPerPage={
+            customPagination
+              ? customPagination.itemsPerPage
+              : currentItemsPerPage
+          }
+          onPageChange={
+            customPagination ? customPagination.onPageChange : handlePageChange
+          }
+          onItemsPerPageChange={
+            customPagination
+              ? customPagination.onItemsPerPageChange
+              : handleItemsPerPageChange
+          }
         />
       )}
     </div>

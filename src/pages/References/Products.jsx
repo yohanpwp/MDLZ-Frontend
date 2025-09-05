@@ -34,12 +34,13 @@ import {
 } from "../../redux/slices/masterDataSlice";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { ProductModal, ImportModal } from "../../components/modals";
+import { useGetProductsQuery } from "../../redux/api/product";
 
 const Products = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.masterData.products);
-  const isLoading = useSelector((state) => state.masterData.isImporting);
-  const error = useSelector((state) => state.masterData.error);
+  // const products = useSelector((state) => state.masterData.products);
+  // const isLoading = useSelector((state) => state.masterData.isImporting);
+  // const error = useSelector((state) => state.masterData.error);
   const { t } = useLanguage();
   // Local state
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,6 +63,11 @@ const Products = () => {
   });
   const [sortBy, setSortBy] = useState("productName");
   const [sortOrder, setSortOrder] = useState("asc");
+  const {
+    data: products,
+    isLoading: isLoading,
+    error: error,
+  } = useGetProductsQuery();
 
   // Product categories
   const categories = [
@@ -81,7 +87,10 @@ const Products = () => {
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
-    let filtered = products.filter((product) => {
+    const productData = Array.isArray(products)
+      ? products
+      : products?.data || [];
+    let filtered = productData.filter((product) => {
       const matchesSearch =
         !searchTerm ||
         product.productName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -358,23 +367,28 @@ const Products = () => {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">{t('navigation.products')}</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            {t("navigation.products")}
+          </h1>
           <p className="text-muted-foreground">
-            {t('product.description', 'Manage product catalog and pricing information')}
+            {t(
+              "product.description",
+              "Manage product catalog and pricing information"
+            )}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleImport}>
             <Upload className="h-4 w-4 mr-2" />
-            {t('common.import')}
+            {t("common.import")}
           </Button>
           <Button variant="outline" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
-            {t('common.export')}
+            {t("common.export")}
           </Button>
           <Button onClick={handleAddProduct}>
             <Plus className="h-4 w-4 mr-2" />
-            {t('product.addProduct')}
+            {t("product.addProduct")}
           </Button>
         </div>
       </div>
@@ -385,7 +399,7 @@ const Products = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder={t('product.searchPlaceholder')}
+            placeholder={t("product.searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
@@ -396,7 +410,7 @@ const Products = () => {
           onChange={(e) => setCategoryFilter(e.target.value)}
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
-          <option value="all">{t('product.category')}</option>
+          <option value="all">{t("product.category")}</option>
           {categories.map((category) => (
             <option key={category} value={category}>
               {category}
@@ -408,9 +422,9 @@ const Products = () => {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
-          <option value="all">{t('common.allStatus')}</option>
-          <option value="active">{t('common.active')}</option>
-          <option value="inactive">{t('common.inactive')}</option>
+          <option value="all">{t("common.allStatus")}</option>
+          <option value="active">{t("common.active")}</option>
+          <option value="inactive">{t("common.inactive")}</option>
         </select>
         <div className="flex items-center gap-2">
           <input
@@ -443,7 +457,8 @@ const Products = () => {
       {/* Results summary */}
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
-          {filteredProducts.length} {t('common.of')} {products.length} {t('navigation.products').toLowerCase()}
+          {filteredProducts.length} {t("common.of")} {products.length}{" "}
+          {t("navigation.products").toLowerCase()}
         </span>
         <div className="flex items-center gap-4">
           <span>
@@ -468,7 +483,7 @@ const Products = () => {
         sortOrder={sortOrder}
         onSort={handleSort}
         searchable={false} // We handle search externally
-        emptyMessage={t('product.empty')}
+        emptyMessage={t("product.empty")}
       />
 
       {/* Add/Edit Product Modal */}

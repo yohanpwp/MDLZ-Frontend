@@ -61,13 +61,14 @@ class AuthService {
 
   /**
    * Get current authenticated user from storage
-   * @returns {import('../types/auth.js').User | null}
+   * @returns {import('../types/auth.js').LoginCredentials | null}
    */
   getCurrentUser() {
     try {
       const authData = localStorage.getItem(this.storageKey);
-      console.log('Auth data', authData)
-      if (!authData) return null;
+      const token = localStorage.getItem(this.tokenKey);
+
+      if (!authData || !token) return null;
 
       const { user, expiresIn } = JSON.parse(authData);
       
@@ -77,7 +78,7 @@ class AuthService {
         return null;
       }
 
-      return user;
+      return { user, token, expiresIn };
     } catch (error) {
       console.error('Error getting current user:', error);
       return null;

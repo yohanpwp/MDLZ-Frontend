@@ -1,9 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import MasterDataService from '../../services/MasterDataService.js';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { fetchBaseQuery } from "@reduxjs/toolkit/query";
+import MasterDataService from "../../services/MasterDataService.js";
 
 // Async thunk for importing master data
 export const importMasterData = createAsyncThunk(
-  'masterData/import',
+  "masterData/import",
   async ({ file, dataType, options = {} }, { rejectWithValue, dispatch }) => {
     try {
       const result = await MasterDataService.importData(
@@ -28,7 +29,7 @@ export const importMasterData = createAsyncThunk(
 
 // Async thunk for validating import file
 export const validateImportFile = createAsyncThunk(
-  'masterData/validateFile',
+  "masterData/validateFile",
   async ({ file, dataType }, { rejectWithValue }) => {
     try {
       const result = await MasterDataService.validateImportFile(file, dataType);
@@ -41,11 +42,11 @@ export const validateImportFile = createAsyncThunk(
 
 // Async thunk for rolling back import
 export const rollbackImport = createAsyncThunk(
-  'masterData/rollback',
+  "masterData/rollback",
   async (importId, { rejectWithValue }) => {
     try {
       const result = await MasterDataService.rollbackImport(importId);
-      
+
       if (!result.success) {
         return rejectWithValue(result.error);
       }
@@ -59,8 +60,11 @@ export const rollbackImport = createAsyncThunk(
 
 // Async thunk for exporting master data
 export const exportMasterData = createAsyncThunk(
-  'masterData/export',
-  async ({ dataType, filters, format, options }, { rejectWithValue, dispatch }) => {
+  "masterData/export",
+  async (
+    { dataType, filters, format, options },
+    { rejectWithValue, dispatch }
+  ) => {
     try {
       const result = await MasterDataService.exportData(
         dataType,
@@ -87,57 +91,58 @@ const initialState = {
   // Import state
   isImporting: false,
   importProgress: {
-    stage: 'idle',
+    stage: "idle",
     progress: 0,
-    message: ''
+    message: "",
   },
   currentImport: null,
-  
+
   // Validation state
   isValidating: false,
   validationResult: null,
-  
+
   // Data preview
   previewData: null,
-  
+
   // Import history
   importHistory: [],
-  
+
   // Export state
   isExporting: false,
   exportProgress: {
-    stage: 'idle',
+    stage: "idle",
     progress: 0,
-    message: ''
+    message: "",
   },
   exportHistory: [],
   exportFilters: {
     dateFrom: null,
     dateTo: null,
-    status: 'all',
-    search: '',
-    format: 'csv'
+    status: "all",
+    search: "",
+    format: "csv",
   },
-  
+
   // Master data
   customers: [],
   products: [],
   references: [],
-  
+  distributors: [],
+
   // UI state
-  selectedDataType: 'customers',
+  selectedDataType: "customers",
   showPreview: false,
   showRollbackConfirm: false,
   rollbackImportId: null,
-  
+
   // Error state
   error: null,
   validationErrors: [],
-  importErrors: []
+  importErrors: [],
 };
 
 const masterDataSlice = createSlice({
-  name: 'masterData',
+  name: "masterData",
   initialState,
   reducers: {
     // UI actions
@@ -147,47 +152,47 @@ const masterDataSlice = createSlice({
       state.previewData = null;
       state.error = null;
     },
-    
+
     setShowPreview: (state, action) => {
       state.showPreview = action.payload;
     },
-    
+
     setShowRollbackConfirm: (state, action) => {
       state.showRollbackConfirm = action.payload.show;
       state.rollbackImportId = action.payload.importId || null;
     },
-    
+
     // Progress updates
     updateImportProgress: (state, action) => {
       state.importProgress = { ...state.importProgress, ...action.payload };
     },
-    
+
     updateExportProgress: (state, action) => {
       state.exportProgress = { ...state.exportProgress, ...action.payload };
     },
-    
+
     // Clear actions
     clearValidationResult: (state) => {
       state.validationResult = null;
       state.previewData = null;
       state.validationErrors = [];
     },
-    
+
     clearImportProgress: (state) => {
       state.importProgress = {
-        stage: 'idle',
+        stage: "idle",
         progress: 0,
-        message: ''
+        message: "",
       };
       state.currentImport = null;
     },
-    
+
     clearError: (state) => {
       state.error = null;
       state.validationErrors = [];
       state.importErrors = [];
     },
-    
+
     // Data management
     loadImportHistory: (state) => {
       state.importHistory = MasterDataService.getImportHistory();
@@ -195,7 +200,14 @@ const masterDataSlice = createSlice({
     // TODO: Delete it later
     loadMasterData: (state, action) => {
       const { dataType } = action.payload;
-      const data = MasterDataService.loadFromStorage(`masterData_${dataType}`) || [];
+      const data =
+        MasterDataService.loadFromStorage(`masterData_${dataType}`) || [];
+      state[dataType] = data;
+    },
+
+    updateMasterData: (state, action) => {
+      const { dataType, data } = action.payload;
+        MasterDataService.saveMasterDataToStorage(dataType, data);
       state[dataType] = data;
     },
 
@@ -203,24 +215,24 @@ const masterDataSlice = createSlice({
       const newCustomer = action.payload;
       state.customers.push(newCustomer);
     },
-    
+
     // Export actions
     setExportFilters: (state, action) => {
       state.exportFilters = { ...state.exportFilters, ...action.payload };
     },
-    
+
     clearExportProgress: (state) => {
       state.exportProgress = {
-        stage: 'idle',
+        stage: "idle",
         progress: 0,
-        message: ''
+        message: "",
       };
     },
-    
+
     loadExportHistory: (state) => {
       state.exportHistory = MasterDataService.getExportHistory();
     },
-    
+
     // Reset state
     resetImportState: (state) => {
       state.isImporting = false;
@@ -233,23 +245,23 @@ const masterDataSlice = createSlice({
       state.validationErrors = [];
       state.importErrors = [];
       state.importProgress = {
-        stage: 'idle',
+        stage: "idle",
         progress: 0,
-        message: ''
+        message: "",
       };
     },
-    
+
     resetExportState: (state) => {
       state.isExporting = false;
       state.exportProgress = {
-        stage: 'idle',
+        stage: "idle",
         progress: 0,
-        message: ''
+        message: "",
       };
       state.error = null;
-    }
+    },
   },
-  
+
   extraReducers: (builder) => {
     builder
       // Validate import file
@@ -262,7 +274,7 @@ const masterDataSlice = createSlice({
       .addCase(validateImportFile.fulfilled, (state, action) => {
         state.isValidating = false;
         state.validationResult = action.payload;
-        
+
         if (action.payload.isValid) {
           state.previewData = action.payload.preview;
           state.showPreview = true;
@@ -275,34 +287,35 @@ const masterDataSlice = createSlice({
         state.error = action.payload;
         state.validationErrors = [action.payload];
       })
-      
+
       // Import master data
       .addCase(importMasterData.pending, (state, action) => {
         state.isImporting = true;
         state.currentImport = {
           dataType: action.meta.arg.dataType,
           fileName: action.meta.arg.file.name,
-          startTime: new Date().toISOString()
+          startTime: new Date().toISOString(),
         };
         state.error = null;
         state.importErrors = [];
       })
       .addCase(importMasterData.fulfilled, (state, action) => {
         state.isImporting = false;
-        
+
         // Update import history
         state.importHistory.unshift(action.payload.importRecord);
-        
+
         // Load updated data
         const dataType = state.currentImport.dataType;
-        const data = MasterDataService.loadFromStorage(`masterData_${dataType}`) || [];
+        const data =
+          MasterDataService.loadFromStorage(`masterData_${dataType}`) || [];
         state[dataType] = data;
-        
+
         // Store any errors or warnings
         if (action.payload.errors.length > 0) {
           state.importErrors = action.payload.errors;
         }
-        
+
         // Clear validation and preview
         state.validationResult = null;
         state.previewData = null;
@@ -313,19 +326,21 @@ const masterDataSlice = createSlice({
         state.error = action.payload;
         state.importErrors = [action.payload];
       })
-      
+
       // Rollback import
       .addCase(rollbackImport.pending, (state) => {
         // Keep UI responsive during rollback
       })
       .addCase(rollbackImport.fulfilled, (state, action) => {
         // Update import history
-        const importRecord = state.importHistory.find(record => record.id === action.payload.importId);
+        const importRecord = state.importHistory.find(
+          (record) => record.id === action.payload.importId
+        );
         if (importRecord) {
-          importRecord.status = 'rolled_back';
+          importRecord.status = "rolled_back";
           importRecord.rolledBackAt = new Date().toISOString();
         }
-        
+
         state.showRollbackConfirm = false;
         state.rollbackImportId = null;
       })
@@ -334,7 +349,7 @@ const masterDataSlice = createSlice({
         state.showRollbackConfirm = false;
         state.rollbackImportId = null;
       })
-      
+
       // Export master data
       .addCase(exportMasterData.pending, (state, action) => {
         state.isExporting = true;
@@ -342,7 +357,7 @@ const masterDataSlice = createSlice({
       })
       .addCase(exportMasterData.fulfilled, (state, action) => {
         state.isExporting = false;
-        
+
         // Update export history
         state.exportHistory.unshift(action.payload.exportRecord);
       })
@@ -350,7 +365,7 @@ const masterDataSlice = createSlice({
         state.isExporting = false;
         state.error = action.payload;
       });
-  }
+  },
 });
 
 export const {
@@ -369,25 +384,32 @@ export const {
   loadMasterData,
   resetImportState,
   resetExportState,
-  createCustomer
+  createCustomer,
+  updateMasterData
 } = masterDataSlice.actions;
 
 // Selectors
 export const selectIsImporting = (state) => state.masterData.isImporting;
 export const selectIsValidating = (state) => state.masterData.isValidating;
 export const selectImportProgress = (state) => state.masterData.importProgress;
-export const selectValidationResult = (state) => state.masterData.validationResult;
+export const selectValidationResult = (state) =>
+  state.masterData.validationResult;
 export const selectPreviewData = (state) => state.masterData.previewData;
 export const selectShowPreview = (state) => state.masterData.showPreview;
 export const selectImportHistory = (state) => state.masterData.importHistory;
-export const selectSelectedDataType = (state) => state.masterData.selectedDataType;
-export const selectMasterDataByType = (state, dataType) => state.masterData[dataType] || [];
+export const selectSelectedDataType = (state) =>
+  state.masterData.selectedDataType;
+export const selectMasterDataByType = (state, dataType) =>
+  state.masterData[dataType] || [];
 export const selectError = (state) => state.masterData.error;
-export const selectValidationErrors = (state) => state.masterData.validationErrors;
+export const selectValidationErrors = (state) =>
+  state.masterData.validationErrors;
 export const selectImportErrors = (state) => state.masterData.importErrors;
 export const selectCurrentImport = (state) => state.masterData.currentImport;
-export const selectShowRollbackConfirm = (state) => state.masterData.showRollbackConfirm;
-export const selectRollbackImportId = (state) => state.masterData.rollbackImportId;
+export const selectShowRollbackConfirm = (state) =>
+  state.masterData.showRollbackConfirm;
+export const selectRollbackImportId = (state) =>
+  state.masterData.rollbackImportId;
 
 // Export selectors
 export const selectIsExporting = (state) => state.masterData.isExporting;
