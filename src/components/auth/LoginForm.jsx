@@ -28,7 +28,7 @@ const LoginForm = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    rememberMe: false,
+    rememberMe: true,
   });
 
   const [validationErrors, setValidationErrors] = useState({});
@@ -171,7 +171,7 @@ const LoginForm = ({ onSuccess }) => {
           </div>
 
           {/* Remember Me Checkbox */}
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <input
               type="checkbox"
               id="rememberMe"
@@ -187,7 +187,7 @@ const LoginForm = ({ onSuccess }) => {
             >
               {t('auth.rememberMe')}
             </label>
-          </div>
+          </div> */}
 
           {/* Global Error Message */}
           {error && (

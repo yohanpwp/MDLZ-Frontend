@@ -50,7 +50,7 @@ const Layout = ({ children, className }) => {
       
       <div className="flex">
         {/* Sidebar */}
-        <div className="h-[calc(100vh-64px)] z-50">
+        <div className="min-h-[calc(100vh-64px)] z-50">
         <Sidebar 
           isOpen={sidebarOpen} 
           onClose={closeSidebar}

@@ -65,10 +65,10 @@ const UserMenu = () => {
     return null;
   }
 
-  const userDisplayName = `${user.firstname} ${user.lastname}`;
-  const userInitials = `${user.firstname.charAt(0)}${user.lastname.charAt(
+  const userDisplayName = `${user.firstname || 'M'} ${user.lastname || ''}`;
+  const userInitials = `${user.firstname?.charAt(0) || 'M'}${user.lastname?.charAt(
     0
-  )}`.toUpperCase();
+  ) || 'D'}`.toUpperCase();
 
   return (
     <div className="relative" ref={menuRef}>

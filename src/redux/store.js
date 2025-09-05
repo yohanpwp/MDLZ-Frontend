@@ -20,6 +20,7 @@ export const store = configureStore({
     masterData: masterDataReducer,
     userManagement: userManagementReducer,
     audit: auditReducer,
+    [api.reducerPath]: api.reducer
     // Add other reducers here as they are created
     // invoices: invoiceSlice,
   },

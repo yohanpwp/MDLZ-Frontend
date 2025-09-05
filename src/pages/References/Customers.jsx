@@ -29,49 +29,49 @@ import {
   validateImportFile,
   clearError,
   createCustomer,
+  updateMasterData,
 } from "../../redux/slices/masterDataSlice";
+import { useGetCustomersQuery } from "../../redux/api/customer";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useFormatters } from "../../hooks/useFormatters";
 
 const Customers = () => {
   const dispatch = useDispatch();
-  const customers = useSelector((state) => state.masterData.customers);
-  const isLoading = useSelector((state) => state.masterData.isImporting);
-  const error = useSelector((state) => state.masterData.error);
+  // const customers = useSelector((state) => state.masterData.customers);
+  // const isLoading = useSelector((state) => state.masterData.isImporting);
+  // const error = useSelector((state) => state.masterData.error);
   const { t } = useLanguage();
-  const { formatNumber } = useFormatters();
+  const { formatNumber, formatCurrency } = useFormatters();
 
   // Local state
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [editable, setEditable] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showAuditModal, setShowAuditModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [sortBy, setSortBy] = useState("customerName");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const {
+    data: customers,
+    isLoading: isLoading,
+    error: error,
+  } = useGetCustomersQuery({ page: currentPage, pageSize: itemsPerPage });
 
   // Load customers on component mount
-  useEffect(() => {
-    dispatch(loadMasterData({ dataType: "customers" }));
-    //TODO: Delete it before integrate with database
-    dispatch(createCustomer({
-    customerCode: '124ABD',
-    customerName: 'Peerawith',
-    email: '1234@hotmail.com',
-    phone: '0954121124',
-    address: '124/52',
-    city: 'Bangkok',
-    country: 'Thailand',
-    taxId: '7754',
-    creditLimit: 0,
-    isActive: true
-    }))
-  }, [dispatch]);
+  // useEffect(() => {
+  //     dispatch(loadMasterData({ dataType: "customers" }));
+  // }, [dispatch]);
 
   // Filter and sort customers
   const filteredCustomers = useMemo(() => {
-    let filtered = customers.filter((customer) => {
+    const customerData = Array.isArray(customers)
+      ? customers
+      : customers?.data || [];
+    let filtered = customerData.filter((customer) => {
       const matchesSearch =
         !searchTerm ||
         customer.customerName
@@ -102,21 +102,26 @@ const Customers = () => {
       }
     });
 
-    return filtered;
+    return filtered || [];
   }, [customers, searchTerm, statusFilter, sortBy, sortOrder]);
 
   // Table columns configuration
   const columns = [
     {
-      key: "customerCode",
-      header: t('customer.code', 'Code'),
+      key: "code",
+      header: t("customer.code", "Code"),
       render: (value, customer) => (
         <div className="font-medium text-primary">{value}</div>
       ),
     },
     {
-      key: "customerName",
-      header: t('customer.name'),
+      key: "distCode",
+      header: t("customer.distributor", "Distributor"),
+      render: (value) => <div className="font-medium">{value}</div>,
+    },
+    {
+      key: "name",
+      header: t("customer.name"),
       render: (value, customer) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
@@ -130,41 +135,44 @@ const Customers = () => {
       ),
     },
     {
-      key: "phone",
-      header: t('customer.phone'),
-      render: (value) => value || "-",
-    },
-    {
       key: "address",
-      header: t('customer.address'),
-      render: (value) => value || "-",
+      header: t("customer.address"),
+      sortable: false,
+      render: (value, customer) => `${customer.addr1} ${customer.addr3}` || "-",
     },
     {
       key: "city",
-      header: t('customer.location', 'Location'),
+      header: t("customer.location", "Location"),
       render: (value, customer) => (
         <div>
-          <div>{value || "-"}</div>
-          {customer.country && (
+          <div>{`${customer.addr4}` || "-"}</div>
+          {customer.addr5 && (
             <div className="text-sm text-muted-foreground">
-              {customer.country}
+              {customer.addr5}
             </div>
           )}
         </div>
       ),
     },
     {
-      key: "isActive",
-      header: t('common.status'),
+      key: "creditLimit",
+      header: t("customer.creditLimit"),
+      render: (value) => formatCurrency(value) || "-",
+    },
+    {
+      key: "status",
+      header: t("common.status"),
       render: (value) => (
-        <Badge variant={value ? "success" : "secondary"}>
-          {value ? t('customer.active', 'Active') : t('customer.inactive', 'Inactive')}
+        <Badge variant={value === "Active" ? "success" : "secondary"}>
+          {value === "Active"
+            ? t("customer.active", "Active")
+            : t("customer.inactive", "Inactive")}
         </Badge>
       ),
     },
     {
       key: "actions",
-      header: t('common.actions', 'Actions'),
+      header: t("common.actions", "Actions"),
       sortable: false,
       render: (_, customer) => (
         <div className="flex items-center gap-2">
@@ -172,7 +180,7 @@ const Customers = () => {
             variant="ghost"
             size="sm"
             onClick={() => handleViewCustomer(customer)}
-            title={t('common.view', 'View')}
+            title={t("common.view", "View")}
           >
             <Eye className="h-4 w-4" />
           </Button>
@@ -180,23 +188,23 @@ const Customers = () => {
             variant="ghost"
             size="sm"
             onClick={() => handleEditCustomer(customer)}
-            title={t('common.edit')}
+            title={t("common.edit")}
           >
             <Edit className="h-4 w-4" />
           </Button>
-          <Button
+          {/* <Button
             variant="ghost"
             size="sm"
             onClick={() => handleShowAudit(customer)}
-            title={t('common.history', 'History')}
+            title={t("common.history", "History")}
           >
             <History className="h-4 w-4" />
-          </Button>
+          </Button> */}
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleDeleteCustomer(customer)}
-            title={t('common.delete')}
+            title={t("common.delete")}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -214,17 +222,18 @@ const Customers = () => {
   const handleAddCustomer = () => {
     setSelectedCustomer(null);
     setShowCustomerModal(true);
+    setEditable(true)
   };
 
   const handleEditCustomer = (customer) => {
     setSelectedCustomer(customer);
     setShowCustomerModal(true);
+    setEditable(true)
   };
 
   const handleViewCustomer = (customer) => {
     setSelectedCustomer(customer);
-    // In a real app, this would navigate to a detailed view
-    alert(`Viewing customer: ${customer.customerName}`);
+    setShowCustomerModal(true);
   };
 
   const handleDeleteCustomer = (customer) => {
@@ -246,7 +255,7 @@ const Customers = () => {
   const handleSaveCustomer = (customerData) => {
     // In a real app, this would dispatch save action
     console.log("Saving customer:", customerData);
-    dispatch(createCustomer(customerData))
+    dispatch(createCustomer(customerData));
     setShowCustomerModal(false);
     setSelectedCustomer(null);
   };
@@ -280,10 +289,30 @@ const Customers = () => {
     dispatch(clearError());
   };
 
+  const customPagination = useMemo(() => {
+    const totalItems = customers ? customers.meta?.total : 0;
+    const totalPages = customers ? customers.meta?.totalPages : 1;
+    const handlePageChange = (page) => {
+      setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+    };
+    const handleItemsPerPageChange = (itemsPerPage) => {
+      setItemsPerPage(itemsPerPage);
+      setCurrentPage(1);
+    };
+    return {
+      currentPage: currentPage,
+      totalPages: totalPages,
+      totalItems: totalItems,
+      itemsPerPage: itemsPerPage,
+      onPageChange: handlePageChange,
+      onItemsPerPageChange: handleItemsPerPageChange,
+    };
+  }, [currentPage, itemsPerPage, customers]);
+
   return (
     <div className="space-y-6">
       {/* Error Alert */}
-      {error && (
+      {/* {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
@@ -293,28 +322,33 @@ const Customers = () => {
             </Button>
           </AlertDescription>
         </Alert>
-      )}
+      )} */}
 
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">{t('navigation.customers')}</h1>
+          <h1 className="text-3xl font-bold text-foreground">
+            {t("navigation.customers")}
+          </h1>
           <p className="text-muted-foreground">
-            {t('customer.description', 'Manage customer information and validation settings')}
+            {t(
+              "customer.description",
+              "Manage customer information and validation settings"
+            )}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleImport}>
             <Upload className="h-4 w-4 mr-2" />
-            {t('common.import')}
+            {t("common.import")}
           </Button>
           <Button variant="outline" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
-            {t('common.export')}
+            {t("common.export")}
           </Button>
           <Button onClick={handleAddCustomer}>
             <Plus className="h-4 w-4 mr-2" />
-            {t('customer.addCustomer')}
+            {t("customer.addCustomer")}
           </Button>
         </div>
       </div>
@@ -325,7 +359,7 @@ const Customers = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder={t('customer.searchPlaceholder', 'Search customers...')}
+            placeholder={t("customer.searchPlaceholder", "Search customers...")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
@@ -336,12 +370,14 @@ const Customers = () => {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="border border-border rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
         >
-          <option value="all">{t('customer.allStatus', 'All Status')}</option>
-          <option value="active">{t('customer.active', 'Active')}</option>
-          <option value="inactive">{t('customer.inactive', 'Inactive')}</option>
+          <option value="all">{t("customer.allStatus", "All Status")}</option>
+          <option value="active">{t("customer.active", "Active")}</option>
+          <option value="inactive">{t("customer.inactive", "Inactive")}</option>
         </select>
         <div className="text-sm text-muted-foreground">
-          {formatNumber(filteredCustomers.length)} {t('common.of', 'of')} {formatNumber(customers.length)} {t('navigation.customers').toLowerCase()}
+          {formatNumber(filteredCustomers?.length)} {t("common.of", "of")}{" "}
+          {formatNumber(customers?.meta?.total || 0)}{" "}
+          {t("navigation.customers").toLowerCase()}
         </div>
       </div>
 
@@ -350,11 +386,13 @@ const Customers = () => {
         data={filteredCustomers}
         columns={columns}
         loading={isLoading}
+        error={error?.data?.error}
         sortBy={sortBy}
         sortOrder={sortOrder}
         onSort={handleSort}
         searchable={false} // We handle search externally
-        emptyMessage="No customers found"
+        emptyMessage={t("customer.empty")}
+        customPagination={customPagination}
       />
 
       {/* Customer Modal */}
@@ -363,10 +401,12 @@ const Customers = () => {
         onClose={() => {
           setShowCustomerModal(false);
           setSelectedCustomer(null);
+          setEditable(false)
         }}
         onSave={handleSaveCustomer}
         customer={selectedCustomer}
         isLoading={isLoading}
+        edit={editable}
       />
 
       {/* Import Modal */}
@@ -386,7 +426,7 @@ const Customers = () => {
           "creditLimit",
         ]}
         isLoading={isLoading}
-        error={error}
+        error={error?.data?.error}
       />
 
       {/* Audit Modal */}

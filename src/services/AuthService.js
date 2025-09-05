@@ -22,18 +22,16 @@ class AuthService {
       // Simulate API call delay
       const user = credentials.user
       const token = credentials.token
+      const expiresIn = Date.now() + (60 * 60 * 1000) // expires in 1 hour
       await new Promise(resolve => setTimeout(resolve, 1000));
       const permissions = this.getUserPermissions(user);
 
-      // Store authentication data
-      if (credentials.rememberMe) {
-        this.storeAuthData({ user, token, expiresIn: Date.now() + (expiresIn * 3600000) }); // expires in 1 hour
-      }
-
+      this.storeAuthData({ user, token, expiresIn }); 
+      
       return {
         user: this.sanitizeUser(user),
         token,
-        expiresIn: Math.floor(Date.now() / 1000) + (20 * 60), // expires in 20 minutes
+        expiresIn, 
         permissions
       };
     } catch (error) {
@@ -61,12 +59,14 @@ class AuthService {
 
   /**
    * Get current authenticated user from storage
-   * @returns {import('../types/auth.js').User | null}
+   * @returns {import('../types/auth.js').LoginCredentials | null}
    */
   getCurrentUser() {
     try {
       const authData = localStorage.getItem(this.storageKey);
-      if (!authData) return null;
+      const token = localStorage.getItem(this.tokenKey);
+
+      if (!authData || !token) return null;
 
       const { user, expiresIn } = JSON.parse(authData);
       
@@ -77,7 +77,7 @@ class AuthService {
         return null;
       }
 
-      return user;
+      return { user, token, expiresIn };
     } catch (error) {
       console.error('Error getting current user:', error);
       this.clearAuthData(); // Clear corrupted data
@@ -250,116 +250,12 @@ class AuthService {
   }
 
   /**
-   * Generate mock JWT token
-   * @private
-   */
-  generateMockToken(user) {
-    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-    const payload = btoa(JSON.stringify({
-      sub: user.id,
-      username: user.username,
-      role: user.role,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + (8 * 60 * 60) // 8 hours
-    }));
-    const signature = btoa('mock-signature');
-    
-    return `${header}.${payload}.${signature}`;
-  }
-
-  /**
-   * Validate password (mock implementation)
-   * @private
-   */
-  validatePassword(inputPassword, storedPassword) {
-    // In real implementation, this would use proper password hashing
-    return inputPassword === storedPassword;
-  }
-
-  /**
    * Remove sensitive data from user object
    * @private
    */
   sanitizeUser(user) {
     const { password, ...sanitizedUser } = user;
     return sanitizedUser;
-  }
-
-  /**
-   * Get mock users for development/testing
-   * @private
-   */
-  getMockUsers() {
-    return [
-      {
-        id: '1',
-        username: 'admin',
-        email: 'admin@company.com',
-        password: 'admin123', // In real app, this would be hashed
-        firstname: 'System',
-        lastname: 'Administrator',
-        role: 'admin',
-        permissions: [],
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        lastLoginAt: null,
-        preferences: {
-          theme: 'light',
-          language: 'en'
-        }
-      },
-      {
-        id: '2',
-        username: 'fin_admin',
-        email: 'finadmin@company.com',
-        password: 'finadmin123',
-        firstname: 'Jane',
-        lastname: 'Smith',
-        role: 'financial_administrator',
-        permissions: [],
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        lastLoginAt: null,
-        preferences: {
-          theme: 'light',
-          language: 'en'
-        }
-      },
-      {
-        id: '3',
-        username: 'auditor',
-        email: 'auditor@company.com',
-        password: 'auditor123',
-        firstname: 'John',
-        lastname: 'Doe',
-        role: 'financial_auditor',
-        permissions: [],
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        lastLoginAt: null,
-        preferences: {
-          theme: 'dark',
-          language: 'en'
-        }
-      },
-      {
-        id: '4',
-        username: 'manager',
-        email: 'manager@company.com',
-        password: 'manager123',
-        firstname: 'Sarah',
-        lastname: 'Johnson',
-        role: 'finance_manager',
-        permissions: [],
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        lastLoginAt: null,
-        preferences: {
-          theme: 'light',
-          language: 'en'
-        }
-      }
-    ];
   }
 }
 

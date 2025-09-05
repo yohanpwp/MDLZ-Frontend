@@ -1,55 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { Save } from 'lucide-react';
-import Modal from '../ui/Modal';
-import Button from '../ui/Button';
-import { 
-  Form, 
-  FormField, 
-  FormInput, 
-  FormCheckbox, 
-  FormActions 
-} from '../ui/Form';
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Save } from "lucide-react";
+import Modal from "../ui/Modal";
+import Button from "../ui/Button";
+import {
+  Form,
+  FormField,
+  FormInput,
+  FormCheckbox,
+  FormActions,
+  FormSelect,
+} from "../ui/Form";
+import { useLanguage } from "../../contexts/LanguageContext";
 
-const CustomerModal = ({ 
-  isOpen, 
-  onClose, 
-  onSave, 
+const initialFormData = {
+  code: "",
+  name: "",
+  distCode: "",
+  status: "Active",
+  contactPerson: "",
+  contactNo: "",
+  mobileNo: "",
+  addr1: "",
+  addr2: "",
+  addr3: "",
+  addr4: "",
+  addr5: "",
+  postalCode: "",
+  customerHier3: "",
+  invTermCode: "",
+  creditLimit: "",
+  taxRegNo: "",
+  nodeDesc: "",
+  branchCode: "",
+  isActive: true,
+};
+
+const CustomerModal = ({
+  isOpen,
+  onClose,
+  onSave,
   customer = null,
-  isLoading = false 
+  isLoading = false,
+  edit = true,
 }) => {
-  const [formData, setFormData] = useState({
-    customerCode: '',
-    customerName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    country: '',
-    taxId: '',
-    creditLimit: 0,
-    isActive: true
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   const [errors, setErrors] = useState({});
 
-  // Reset form when modal opens/closes or customer changes
+  const distributors = useSelector((state) => state.masterData.distributors);
+  const { t } = useLanguage();
   useEffect(() => {
     if (isOpen) {
       if (customer) {
-        setFormData({ ...customer });
+        setFormData({ ...initialFormData, ...customer });
       } else {
-        setFormData({
-          customerCode: '',
-          customerName: '',
-          email: '',
-          phone: '',
-          address: '',
-          city: '',
-          country: '',
-          taxId: '',
-          creditLimit: 0,
-          isActive: true
-        });
+        setFormData(initialFormData);
       }
       setErrors({});
     }
@@ -58,22 +64,24 @@ const CustomerModal = ({
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.customerCode?.trim()) {
-      newErrors.customerCode = 'Customer code is required';
+    if (!formData.code?.trim()) {
+      newErrors.code = t("customer.customerCodeRequired");
     }
 
-    if (!formData.customerName?.trim()) {
-      newErrors.customerName = 'Customer name is required';
+    if (!formData.name?.trim()) {
+      newErrors.name = t("customer.customerNameRequired");
     }
 
-    if (!formData.email?.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    if (!formData.distCode?.trim()) {
+      newErrors.distCode = t("customer.distributorRequired");
     }
 
-    if (formData.creditLimit < 0) {
-      newErrors.creditLimit = 'Credit limit cannot be negative';
+    if (!formData.status?.trim()) {
+      newErrors.status = t("customer.statusRequired");
+    }
+
+    if (formData.creditLimit && parseFloat(formData.creditLimit) < 0) {
+      newErrors.creditLimit = t("customer.creditLimitNegative");
     }
 
     setErrors(newErrors);
@@ -87,10 +95,9 @@ const CustomerModal = ({
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -98,95 +105,217 @@ const CustomerModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={customer ? 'Edit Customer' : 'Add Customer'}
+      title={
+        customer
+          ? edit
+            ? t("customer.editCustomer")
+            : formData.code
+          : t("customer.addCustomer")
+      }
       size="md"
     >
       <div className="p-6">
         <Form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4">
-            <FormField 
-              label="Customer Code" 
-              required 
-              error={errors.customerCode}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormField
+              label={t("customer.code")}
+              required
+              error={errors.code}
+              className="col-span-1"
             >
               <FormInput
-                value={formData.customerCode}
-                onChange={(e) => handleInputChange('customerCode', e.target.value)}
-                placeholder="Enter customer code"
-                error={errors.customerCode}
+                value={formData.code}
+                onChange={(e) => handleInputChange("code", e.target.value)}
+                placeholder={edit ? t("customer.enterCustomerCode") : ""}
+                error={errors.code}
+                disabled={!edit}
               />
             </FormField>
+            <FormField
+              label={t("customer.distributor")}
+              required
+              error={errors.distCode}
+              className="col-span-2"
+            >
+              {edit ? (
+                <FormSelect
+                  value={formData.distCode}
+                  onChange={(e) =>
+                    handleInputChange("distCode", e.target.value)
+                  }
+                  error={errors.distCode}
+                  options={distributors.map((dist) => {
+                    return {
+                      value: dist.code,
+                      label: `${dist.name} (${dist.code})`,
+                    };
+                  })}
+                />
+              ) : (
+                <FormInput
+                  value={formData.distCode}
+                  onChange={(e) =>
+                    handleInputChange("distCode", e.target.value)
+                  }
+                  error={errors.distCode}
+                  disabled={!edit}
+                />
+              )}
+            </FormField>
 
-            <FormField 
-              label="Customer Name" 
-              required 
-              error={errors.customerName}
+            <FormField
+              label={t("customer.name")}
+              required
+              error={errors.name}
+              className="col-span-3"
             >
               <FormInput
-                value={formData.customerName}
-                onChange={(e) => handleInputChange('customerName', e.target.value)}
-                placeholder="Enter customer name"
-                error={errors.customerName}
+                value={formData.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                placeholder={edit ? t("customer.enterCustomerName") : ""}
+                error={errors.name}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField 
-              label="Email" 
-              required 
-              error={errors.email}
+            {/* <FormField label={t("common.status")}>
+              <FormSelect
+                value={formData.status}
+                onChange={(e) => handleInputChange("status", e.target.value)}
+                options={[
+                  {
+                    value: "Active",
+                    label: t("common.active"),
+                  },
+                  {
+                    value: "Inactive",
+                    label: t("common.inactive"),
+                  },
+                ]}
+              ></FormSelect>
+            </FormField> */}
+
+            <FormField
+              label={t("customer.contactPerson")}
+              className="col-span-2"
             >
               <FormInput
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="Enter email address"
-                error={errors.email}
+                value={formData.contactPerson}
+                onChange={(e) =>
+                  handleInputChange("contactPerson", e.target.value)
+                }
+                placeholder={edit ? t("customer.enterContactPerson") : ""}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField label="Phone">
+            <FormField label={t("customer.contactNo")} className="col-span-1">
               <FormInput
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder="Enter phone number"
+                value={formData.contactNo}
+                onChange={(e) => handleInputChange("contactNo", e.target.value)}
+                placeholder={edit ? t("customer.enterContactNo") : ""}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField label="Address" className="col-span-2">
+            <FormField
+              label={t("customer.addressLine1")}
+              className="col-span-3"
+            >
               <FormInput
-                value={formData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                placeholder="Enter address"
+                value={formData.addr1}
+                onChange={(e) => handleInputChange("addr1", e.target.value)}
+                placeholder={edit ? t("customer.enterAddress") : ""}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField label="City">
+            <FormField
+              label={t("customer.addressLine2")}
+              className="col-span-3"
+            >
               <FormInput
-                value={formData.city}
-                onChange={(e) => handleInputChange('city', e.target.value)}
-                placeholder="Enter city"
+                value={formData.addr2}
+                onChange={(e) => handleInputChange("addr2", e.target.value)}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField label="Country">
+            <FormField
+              label={t("customer.addressLine3")}
+              className="col-span-1"
+            >
               <FormInput
-                value={formData.country}
-                onChange={(e) => handleInputChange('country', e.target.value)}
-                placeholder="Enter country"
+                value={formData.addr3}
+                onChange={(e) => handleInputChange("addr3", e.target.value)}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField label="Tax ID">
+            <FormField
+              label={t("customer.addressLine4")}
+              className="col-span-1"
+            >
               <FormInput
-                value={formData.taxId}
-                onChange={(e) => handleInputChange('taxId', e.target.value)}
-                placeholder="Enter tax ID"
+                value={formData.addr4}
+                onChange={(e) => handleInputChange("addr4", e.target.value)}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField 
-              label="Credit Limit" 
+            <FormField label={t("customer.addressLine5")}>
+              <FormInput
+                value={formData.addr5}
+                onChange={(e) => handleInputChange("addr5", e.target.value)}
+                disabled={!edit}
+                className="col-span-1"
+              />
+            </FormField>
+
+            <FormField label={t("customer.postalCode")}>
+              <FormInput
+                value={formData.postalCode}
+                onChange={(e) =>
+                  handleInputChange("postalCode", e.target.value)
+                }
+                placeholder={edit ? t("customer.enterPostalCode") : ""}
+                disabled={!edit}
+              />
+            </FormField>
+
+            <FormField label={t("customer.mobileNo")}>
+              <FormInput
+                value={formData.mobileNo}
+                onChange={(e) => handleInputChange("mobileNo", e.target.value)}
+                placeholder={edit ? t("customer.enterMobileNo") : ""}
+                disabled={!edit}
+              />
+            </FormField>
+
+            <FormField label={t("customer.customerHier3")}>
+              <FormInput
+                value={formData.customerHier3}
+                onChange={(e) =>
+                  handleInputChange("customerHier3", e.target.value)
+                }
+                placeholder={edit ? t("customer.enterCustomerHier3") : ""}
+                disabled={!edit}
+              />
+            </FormField>
+
+            <FormField label={t("customer.invTermCode")}>
+              <FormInput
+                value={formData.invTermCode}
+                onChange={(e) =>
+                  handleInputChange("invTermCode", e.target.value)
+                }
+                placeholder={edit ? t("customer.enterInvTermCode") : ""}
+                disabled={!edit}
+              />
+            </FormField>
+
+            <FormField
+              label={t("customer.creditLimit")}
               error={errors.creditLimit}
             >
               <FormInput
@@ -194,36 +323,80 @@ const CustomerModal = ({
                 min="0"
                 step="0.01"
                 value={formData.creditLimit}
-                onChange={(e) => handleInputChange('creditLimit', parseFloat(e.target.value) || 0)}
-                placeholder="Enter credit limit"
+                onChange={(e) =>
+                  handleInputChange("creditLimit", e.target.value)
+                }
+                placeholder={edit ? t("customer.enterCreditLimit") : ""}
                 error={errors.creditLimit}
+                disabled={!edit}
               />
             </FormField>
 
-            <FormField className="col-span-2">
-              <FormCheckbox
-                label="Active"
-                checked={formData.isActive}
-                onChange={(e) => handleInputChange('isActive', e.target.checked)}
+            <FormField label={t("customer.taxRegNo")}>
+              <FormInput
+                value={formData.taxRegNo}
+                onChange={(e) => handleInputChange("taxRegNo", e.target.value)}
+                placeholder={edit ? t("customer.enterTaxRegNo") : ""}
+                disabled={!edit}
               />
             </FormField>
+
+            <FormField label={t("customer.nodeDesc")}>
+              <FormInput
+                value={formData.nodeDesc}
+                onChange={(e) => handleInputChange("nodeDesc", e.target.value)}
+                placeholder={edit ? t("customer.enterNodeDesc") : ""}
+                disabled={!edit}
+              />
+            </FormField>
+
+            <FormField label={t("customer.branchCode")}>
+              <FormInput
+                value={formData.branchCode}
+                onChange={(e) =>
+                  handleInputChange("branchCode", e.target.value)
+                }
+                placeholder={edit ? t("customer.enterBranchCode") : ""}
+                disabled={!edit}
+              />
+            </FormField>
+
+            {edit && (
+              <div className="col-span-1 md:col-span-3">
+                <FormCheckbox
+                  label={t("customer.active")}
+                  checked={formData.isActive}
+                  onChange={(e) => {
+                    handleInputChange("isActive", e.target.checked);
+                    handleInputChange(
+                      "status",
+                      e.target.checked ? "Active" : "Inactive"
+                    );
+                  }}
+                />
+              </div>
+            )}
           </div>
-
           <FormActions>
-            <Button 
-              variant="outline"
-              onClick={onClose}
-              disabled={isLoading}
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleSubmit}
-              disabled={isLoading}
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {isLoading ? 'Saving...' : 'Save Customer'}
-            </Button>
+            {edit ? (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={onClose}
+                  disabled={isLoading}
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button onClick={handleSubmit} disabled={isLoading}>
+                  <Save className="h-4 w-4 mr-2" />
+                  {isLoading ? t("common.saving") : t("common.save")}
+                </Button>
+              </>
+            ) : (
+              <Button variant="outline" onClick={onClose}>
+                {t("common.close")}
+              </Button>
+            )}
           </FormActions>
         </Form>
       </div>
